@@ -1,0 +1,65 @@
+Kiến thức DSAA để thi:
+
+1 array có C2n + n subarray
+segment tree tốn logn cho tree đó(hay áp dụng dynamic programming or divide and conquer)
+Cnk tính bằng đệ quy mà k dùng memorization sẽ tốn đến O(Cnk), còn dùng memorization tốn O(n*k)
+(a*b) mod c = (a mod c * b mod c) mod c
+(a+b) mod c = (a mod c + b mod c) mod c
+a^b mod c = (a mod c)^b mod c
+c nguyên tố => a^b mod c = (a mod c)^(b mod (c - 1)) mod c
+vì a^c mod c = a và a^(p-1) mod p = 1
+Divide and conquer chia đôi liên tục sẽ duyệt mọi phần tử với tốc độ O(log2n)
+VD tính a^b mod c hay a*b mod c hay binary_search thì tốc độ O(log2b)
+Bài cưa gỗ hay chia bánh độ phức tạp là log2(max height/max radius)
+Độ phức tạp của DC: T(n) = aT(n/b) + D(n) + C(n) với a là số lượng subproblems, n/b là size của mỗi subprobs, D(n) là cost của divide operation, C(n) là cost của combination operation
+master theorem: T(n) = aT(n/b)+f(n); T(1) = c; với a>=1, b>=2, c>0 và f(n)=c(n^d) với d>=0 => 
+T(n) = O(n^d) nếu a<b^d
+T(n) = O(n^d*log(n)) nếu a=b^d
+T(n) = O(n^(logba)) nếu a>b^d
+Với complexity ~ 10^6 thì độ phức tạp nên là O(nlogn), còn > 10^9 trở lên thì nên là O(n) mà thôi. <10^6 tầm ~10^4 thì có thể O(n^2). Tầm ~15-20 thì O(n!) được, cao hơn 1 tí thì nên <n! như dùng branch and bound. Còn nếu rất cao ~10^18 thì nên dùng là O(logn) thôi. Tuy nhiên tùy đề bài mà có thể khắt khe hơn
+-> Bước combine càng lớn thì thực hiện càng lâu. Combine mà duyệt 1 lần thì đã là O(nlogn) và chỉ thao tác được tầm 10^6 data r, nếu combine lâu hơn thì k dùng đc.
+Giảm để trị: với real ta check r-l<10^-x là dừng => O(log((r-l)/EPS)) với EPS = 10^-x là số lần chia
+Tính a^b bằng divide and conquer mất O(logb). Với bất kỳ phép nhân nào tương tự thì độ phức tạp là log(n)*f với f là cost thực hiện * operator
+sort bth: O(n^2); short hiệu quả: O(nlogn)
+Bài divide and conquer tìm max subarray có O(nlogn) tương tự merge sort khi bước combine ta duyệt qua toàn bộ phần tử
+TSP bitmask dynamic dùng max 21 phần tử vì 2^21 rất lớn r và độ phức tạp O(n^2*2^n) nhanh hơn n! của backtracking nhưngcunxgg chỉ khả thi với 20 phần tử. Trace tốn O(n^2)
+Dynamic memorization recursion top to bottom VD bài fibo thì độ phức tạp là O(n) vì O(n*f) với n là số lần gọi lại là số phần tử ở case này và f là thời gian xử lý 1 lần gọi lại trong n lần gọi lại là O(1)
+Đó cũng là độ phức tạp của đệ quy: O(n*f) bằng số lần gọi đệ quy nhân với độ phức tạp xử lý trong 1 lần gọi đệ quy. VD: binary search là O(x*y) thì x là số lần gọi đệ quy là log2n mà y là thời gian tính 1 lần đệ quy là O(1) thì O(logn) đó
+Fibo word hãy tìm ký tự thứ ith trong Gn thì dùng divide and conquer sẽ giải được với O(n) là nhanh nhất
+Disjoint set là data structure giúp traverse graph có thể implement bằng union by rank or Union_Find(path compression)
+Kruskal và PRIM tìm MST nhưng Kruskal kém hơn PRIM khi số cạnh > 10*số đỉnh
+Kruskal có O(|E|log|V|)
+PRIM O(V^2) khi dùng chay. Khi dùng priority_queue thì còn O(min(V^2, ((V+E)logV))
+Tìm số fibonaci thứ n bằng quy hoạch động mất O(n)
+Các bài dynamic 2 chiều độ phức tạp là a*b với a và b là max mỗi chiều
+Với dynamic 1 chiều thì hàm Trace có độ phức tạp ngang dynamic giải xuối
+Với dynamic 2 chiều thì hàm Trace có độ phức tạp là O(max(a,b))
+Increasing subsequence thì brute force cho O(n*2^n) còn dynamic cho O(n^2) và có thể cải tiến thành O(nlogn) bằng cây phân đoạn. Hàm trace của nó là O(n^2) nhưng cải tiến còn O(n)
+=> Nên nhớ trace 1 chiều luôn là O(n) vì nó có sẵn kết quả r chỉ cần duyệt 1 lần ra luôn
+Common subsequence là O(n*m) còn trace là O(n+m)
+
+Sigma(deg(v)) = |E|
+DFS có O(n+m): thành phần liên thông, xây cây DFS, tìm bridge bằng low và num, tìm các thành phần liên thông mạnh, topo sort, tìm shortest path unweighted graph,...
+
+Đường đi ngắn nhất của weighted graph:
+Djiska dùng cho đồ thị trọng số không âm có O(E*logV)
+Bellman-Ford có thể tìm ra chu trình trọng số âm với O(V*E)
+Floyd-Warshall tính toàn bộ đường đi ngắn nhất giữa các cặp đỉnh với O(V^3)
+Bài toán ghép cặp đồ thị là tìm tập con các cạnh F sao cho mỗi đỉnh thuộc ít nhất 1 cạnh trong F => độ phức tạp O(V^4)
+
+Bài toán về tính liên thông của đồ thị có thể giải được nhờ thuậttoán với thời gian tính là O(n2), vì vậy, nó là bài toán thuộc lớp P
+Bài toán nhân dãy ma trận giải được nhờ qui hoạch động với thờigian O(n3), cũng thuộc vào lớp P
+PcNP, NPCcNP, P M NPC = Empty
+
+Planar graph chia mp thành: số edge - số vertice + 2 miền
+Connected planar simple graph có V >= 3 thì có E <= 3V - 6
+Connected planar simple graph có V >= 3 thì deg mọi đỉnh <= 5
+Connected planar simple graph có V >= 3 và k có cycle length 3 thì e<=2v-4
+K3,3 và K5 không planar
+1 graph có >= 1 vertice bậc lẻ sẽ k có euler cycle. Ngược lại thì có ít nhất 1 euler cycle
+1 graph có > 2 vertice bậc lẻ sẽ k thể có euler path
+1 graph có = 2 vertice bậc lẻ thì có ít nhất 1 euler path bắt đầu từ vertice odd này và kết thúc tại vertice odd kia
+1 graph có >= 2 đỉnh bậc lẻ thì k có Hamilton cycle
+1 graph có >= 3 đỉnh bậc lẻ thì k có Hamilton path
+Connected graph có V>=3 và mọi V có bậc đều >= |V|/2 thì G có Hamilton cycle
+Connected simple graph có V >= 3 và deg(u)+deg(v)>=V với mọi cặp vertice (u,v) k kề nhau thì G có Hamilton cycle

@@ -1,0 +1,4 @@
+﻿  LearnIntermediate.cpp
+  LINK : D:\C\Projects Learning\Project Basic\LearnIntermediate\x64\Debug\LearnIntermediate.exe not found or not built by the last incremental link; performing full link
+LearnIntermediate.obj : error LNK2005: "int b" (?b@@3HA) already defined in Hello.obj
+D:\C\Projects Learning\Project Basic\LearnIntermediate\x64\Debug\LearnIntermediate.exe : fatal error LNK1169: one or more multiply defined symbols found

@@ -1,0 +1,190 @@
+﻿C++:
+
+# Basic
+1 số compiler k dùng được _getch()=> chỉ nên dùng getch() trong thư viện conio.h or dùng system("pause") trong stdlib.h
+cout<<(()?:)<<endl;or()?(cout<<):(cout<<);or int a=(b)?10:100;//có đủ ngoặc ms in đc,nhớ lỗi ss bằng
+
+Điều kiện cần để tìm kiếm nhị phân là data phải ở dạng mảng tuyến tính
+
+Copy constructor được gọi khi: khởi tạo đối tượng từ 1 đối tượng khác cùng kiểu; khi 1 đối tượng được truyền bằng phương thức giá trị để copy; khi 1 hàm trả về 1 đối tượng thì hàm tạo bản sao được gọi để tạo 1 temporary object.
+
+Trong C++ khi tính toán, kiểu toán hạng thấp hơn sẽ tự động thăng cấp thành kiểu cao hơn trong 1 phép tính, tức: long double>double>float>unsigned long int>long int>unsigned int>int
+VD: cout << 25u – 50 sẽ ra 4294967271 vì 50 là int sẽ thăng cấp thành unsigned int tức là unsigned int(-25)
+
+-> Mảng là 1 chuỗi các phần tử cùng kiểu ở vị trí bộ nhớ liên tiếp nhau. Cú pháp:
+int a[] = {1, 2, 3, 4, 5, 6};
+cout << (1 + 3)[a] << a[0] << (a + 1)[2];
+=> tương đương với a[4], a[0] và a[3] 
+
+-> Trap lồng trap:
+unsigned char half_limit = 150;
+for (unsigned char i = 0; i < 2 * half_limit; ++i)
+{
+    // do something;
+}
+Trap 1: nó là unsigned char nên khoảng của nó phải là max ở 2^8
+Trap 2: ta tưởng là nó bị overflow vì 2*half_limit vượt quá khoảng của unsigned char nhưng vc dùng 2* đã tự biến nó thành int và k bị overflow
+Trap 3: éo overflow thì vòng lặp này là vô tận vì i đến 255 là quay ngược lại
+
+-> Các lớp của biến lưu trữ trong C++ là auto, static, register, extern và mutable => Tuy nhiên, lưu ý rằng từ khóa register không được chấp nhận trong C++11. Trong C++17, nó đã bị loại bỏ và dành để sử dụng trong tương lai.
+
+
+
+# OOP C++
+Thường khai báo marco trong file h
+K thể nạp chồng Destructor
+
+-> Vấn đề kim cương xảy ra khi: A kế thừa B và C, mà B và C cùng kế thừa D => Khi khởi tạo A thì D sẽ gọi constructor 2 lần, tương tự khi xóa A. Điều này gây ra sự mơ hồ. Giải pháp bằng từ khóa virtual: 
+VD: class D / class B: virtual public D / class C: virtual public D / class A: public B, public C
+=> Khi dung như v mà trong D có 2 hàm khởi tạo mặc định và hàm khởi tạo có tham số. Biết B và C truyền vào hàm khởi tạo có tham số thì nó vẫn chỉ gọi hàm khởi tạo mặc định. Khác với TH k dùng virtual thì nó gọi hàm khởi tạo có tham số:
+Hàm khởi tạo mặc định của D bất kể B và C gọi hàm khởi tạo gì
+Hàm khởi tạo của B gọi từ A
+Hàm khởi tạo của C gọi từ A
+Hàm khởi tạo của A
+=> Kế thừa 1 cách virtual có vai trò là đảm bảo chỉ 1 bản copy của bases class được kế thừa bởi biến ở class cháu. Ở đây A k kế thừa từ 2 class D như trước mà chỉ 1. Còn class C và B cùng kế thừa từ D coi như k có
+TH1:
+class Person
+{
+public:
+    Person(int x) { cout << "Person::Person(int ) called" << endl; }
+    Person() { cout << "Person::Person() called" << endl; }
+};
+class Faculty : virtual public Person
+{
+public:
+    Faculty(int x) : Person(x)
+    {
+        cout << "Faculty::Faculty(int ) called" << endl;
+    }
+};
+class Student : virtual public Person
+{
+public:
+    Student(int x) : Person(x)
+    {
+        cout << "Student::Student(int ) called" << endl;
+    }
+};
+class TA : public Faculty, public Student
+{
+public:
+    TA(int x) : Student(x), Faculty(x)
+    {
+        cout << "TA::TA(int ) called" << endl;
+    }
+};
+int main()
+{
+    TA ta1(30);
+}
+=> Gọi hàm khởi tạo mặc định của Person
+TH2:
+class Person
+{
+public:
+    Person(int x) { cout << "Person::Person(int ) called" << endl; }
+    Person() { cout << "Person::Person() called" << endl; }
+};
+class Faculty : virtual public Person
+{
+public:
+    Faculty(int x) : Person(x)
+    {
+        cout << "Faculty::Faculty(int ) called" << endl;
+    }
+};
+class Student : virtual public Person
+{
+public:
+    Student(int x) : Person(x)
+    {
+        cout << "Student::Student(int ) called" << endl;
+    }
+};
+class TA : public Faculty, public Student
+{
+public:
+    TA(int x) : Student(x), Faculty(x), Person(x)
+    {
+        cout << "TA::TA(int ) called" << endl;
+    }
+};
+int main()
+{
+    TA ta1(30);
+}
+=> Gọi hàm khởi tạo có tham số của Person vì ta gọi hàm khởi tạo ở cháu của person. Vc gọi hàm khởi tạo của ông nội từ cháu chỉ có thể được thực hiện khi class cha kế thừa virtual, còn bth thì k đc phép.
+
+my_struct_t *bar;
+memset(bar, 0, sizeof(bar));
+=> fix bằng sizeof(my_struct_t) or sizeof(*bar) (sizeof tính trong thời gian biên dịch nên khi chạy nó thì bar* được khởi tạo r)
+
+mutable trong C++ giúp thay đổi biến kể cả trong hàm const(k thay đổi thành viên tĩnh), chỉ dùng với các biến trong class or struct
+volatile thể hiện rằng biến dễ dàng thay đổi. Biến có thể tự thay đổi giá trị dù code k hề thay đổi, điều này k tốt vì có thể gây ra hành vi k xác định nên thg dùng cho đơn luồng, đa luồng thì giá trị thanh ghi có thể thay đổi mà ta k biết. volatile dùng giá trị trực tiếp từ thanh ghi nên tốc độ nhanh hơn. Các biến được khai báo là volatile sẽ k được trình biên dịch lưu vào đệm cache và do đó luôn được đọc từ thanh ghi trên RAM. Và giá trị nó có thể bị đổi mà trình biên dịch k biết
+
+default constructor và copy constructor tự được tạo bởi trình biên dịch nếu dev k xđ
+
+Hàm thành viên là static const sẽ k được phép. VD: static void test() const {} là sai. Bản chất là mọi hàm số đều có cái gọi là this pointer. VD: void test(int a){} thì 1 lời gọi hàm Vd: object.test(10); se được biên dịch thành test(&object,10); vì cú pháp ẩn của nó đúng ra là void test(T* const this, int a); tức là con trỏ this tượng trưng cho objec gọi hàm đó. Khi ta khai báo const thì nó kiểu void test(const T* const this, int a);. Kể cả kp trong class, ta luôn có con trỏ this ở đây là 1 con trỏ tượng trưng cho 1 cái gì đó gọi class đó. Kể cả là public thì mỗi lần gọi hàm cũng đều gọi lại hàm đó mà k ảnh hưởng gì tới lần trước, thì mỗi lần như v đều có this. 
+Nhưng static function k có this. Nó là 1 instance global gọi lúc nào cũng được nên nếu là const thì ý là thêm const vào this kiểu: void test(const T* const this, int a); nhưng làm gì có this mà thêm const. Do đó dùng v là sai.
+static function cx k thể overload trong class
+
+Phân biệt thuật ngữ: nạp chồng phương thức(overloading function) là việc các hàm có cùng tên được xác định miễn là phương thức có khác nhau ở 1 cái gì đó; ghi đè override là ghi đè phương thức cho lớp cơ sở ở lớp kế thừa; overloading function và overloading operator cũng khác nhau
+
+Binding là quá trình xác định các biến và hàm bởi compiler xđ rằng call nào gọi đến đúng hàm nào. Nó có thể thực hiện trong runtimr or compile time. 
+Early Binding là quá trình Binding diễn ra ở compile time. Nó được thực hiện bởi compiler xác định sẵn vị trí call nào thì match với địa chỉ hàm nào rồi. Các hàm thông thường và các hàm class thông thường k có virtual đều dùng early binding
+Late Binding là binding xđ runtime. VD: các hàm có keyword virtual đều là late binding vì khi run rồi nó mới xác định hàm nào được gọi ở derived con nào
+
+Chỉ thị tiền xử lý là những dòng được xử lý bởi bộ tiền xử lý trước khi xử lý các thứ liên quan. Chúng k tự sinh ra bất kỳ mã nào và phải viết trên dòng riêng của chúng
+
+Constructor mặc định là constructor k có tham số và khởi tạo gt mặc định cho đối tượng
+
+-> TK OOP, cũng như java nhưng có hàm bạn:
+Kế thừa private, public, protected
+Overloading, operator overloading
+virtual override
+hàm friend
+constructor, destructor
+class, enum, struct
+hàm inline
+tính đa hình, abstract class và interface
+
+
+
+# Other
+-> API là phương thức giúp ta kết nối đến các thư viện or ứng dụng khác, cung cấp khả năng truy xuất từ đó ta dùng code có sẵn or code của ng khác.
+Win32 cung cấp cho ta các hàm thủ tục và truy xuất đến nó thì dùng cái gọi là win32 API
+API k phải ngôn ngữ lập trình mà chỉ là các hàm, thủ tục đc viết trên nh ngôn ngữ lập trình khác nhau(vd ng phục vụ trong nhà hàng là api, nhà bếp là hệ thống mà có hàm, thủ tục, khách hàng 
+là ngôn ngữ lập trình hay cj đó mà ta đang dùng cần dùng thêm các hàm bên trong nhà hàng. Người phục vụ sẽ ở đó giúp ta giao tiếp vs hệ thống nhà hàng để gọi món)
+Có các loại API framework(thư viện),API web(dùng trong các website khi ta kết nối or dùng cơ sơ dữ liệu), API hệ diều hành(các phuong thức giúp ta tương tác vs HĐH)
+
+trc h ta cứ ngỡ rằng k thể khai báo con trỏ cho hằng hoặc gán NULL cho con trỏ ngay từ đầu tiên để tránh lỗi. Nhưng khi làm cx vs thư viện động có sẵn thì ngc lại. Khi khai báo con trỏ auto gán NULL mà
+vẫn dùng bth,khi tạo hàm thì ta trả về kiểu con trỏ hoàn toàn bth vì gán và tạo biến đa số là con trỏ.thử full con trỏ nh nhất có thể
+
+các biến trong thư viện động nh lúc nó ảo vl. nếu để ở ngoài k const thì dùng static vào, cả class khi làm hướng đối tg. mẹ nó toàn cục r mà vẫn lỗi phải thêm static => h thì đã hiểu
+
+-> 1 số GT đb: Màu đen: rgb(0,0,0)
+Màu đỏ: rgb(255,0,0)
+Màu xanh lá cây: rgb(0,255,0)
+Màu xanh dương: rgb(0,0,255)
+Màu vàng: rgb(255,255,0)
+Cyan(0,255,255)
+Magenta(255,0,255)
+Màu Trắng: rgb(255,255,255)
+
+Nếu dùng unsigned _int8 cho 1 kiểu dữ liệu thì nó chỉ chạy từ 0-255, nếu dùng có phép trừ 0-1 cho kết quả là 255
+
+
+-> Phân biêt: 
+&& là toán tử trả về đúng chỉ khi 2 bên đều đúng or có giá trị =1; & là toán tử AND trên bit, toán tử bitwise or reference địa chỉ biến
+
+kích thước của string có thể dùng size or length; kích thước của const char* thì dùng strlen(const char*)
+
+void * memset ( void * ptr, int value, size_t num ) => hàm set Num byte đầu tiên của của vùng nhớ mà ptr trỏ tới với GT value
+void * memcpy ( void * destination, const void * source, size_t num )=> copy num byte đầu tiên từ source vào destination
+
+Phân biệt các phương pháp đổi các kiểu chuỗi ký tự:
+std::to_string(số)=>đổi số thành string, có thể dùng stringstream
+string.data()=>từ string về const char* giống c_str()
+<stringstream>.str() trả về string từ stringstream
+c_str() là const char* từ string
+

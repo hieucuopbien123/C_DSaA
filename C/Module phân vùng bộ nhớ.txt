@@ -1,0 +1,47 @@
+﻿# Phân vùng bộ nhớ
+
+
+-> Máy tính nào cũng có bộ nhớ vật lý(bộ nhớ thật) là RAM. Tuy nhiên khi ta dùng các Ct trong máy tính, ta chỉ đang thao tác với bộ nhớ ảo trỏ tới bộ nhớ thật mà thôi. Bộ nhớ ảo là 1 kỹ thuật quản lý bộ nhớ được thực hiện bởi phần mềm ta sử dụng và phần cứng máy tính. Khi ta thao tác cấp phát 1 ô nhớ thực ra là ta đang cấp phát 1 địa chỉ ảo cho phần mềm, bằng kỹ thuật trên, địa chỉ này sẽ đc liên kêt với địa chỉ vật lý trên thanh RAM. Khi ta thao tác,MMU nằm trong CPU sẽ phụ trách xử lý địa chỉ(nó chuyển từ địa chỉ ảo sang địa chỉ vật lý để sử dụng)
+Các phần mềm nằm trong hệ điều hành có khả năng tạo ra những vùng địa chỉ ảo, nó làm nv vì địa chỉ ảo sẽ mở rộng khả năng lưu trữ của bộ nhớ. Bộ nhớ ảo khiến cho việc lập trình dễ hơn bởi chúng ủy thác cho kernel vc quản lý và phân cấp bộ nhớ.
+
+MMU(Memory Management Unit): trang quản lý bộ nhớ. Nó là phân cứng có tác dụng than chiếu từ bộ nhớ ảo vào bộ nhớ vật lý. Nó thg đc tích hợp luôn vào CPU, nhưng cx có thể tách riêng biệt.
+
+Bây h ta xét 1 phân vùng trên bộ nhớ ảo chẳng hạn ta dùng trong 1 Ct: 
+Code segment->lệnh đã được compile và chờ xử lý bởi CPU. Nó chỉ chịu sự chi phối của hệ điều hành(CPU). Nó là công vc đầu tiên hđh làm khi chạy
+Data->lưu biến global,static,const
+.bss(BBS segment)->biến chưa khởi tạo giá trị, ví dụ 1 biến static chưa khai báo giá trị
+Heap segment->cấp phát động. Biến thuộc quản lý của ng dùng tự cấp->k tự giải phóng trừ khi ng dùng xóa or kết thúc Ct,chậm,dung lượng lớn
+Stack segment->biến cục bộ, tham số hàm. Dùng kiểu dữ liệu stack để lưu.
+
+VD: khai báo n1,n2,n3 liên tiếp trong 1 hàm r->chúng sẽ đc khai báo địa chỉ liên tiếp trong stack->gặp } ra khỏi hàm->n3,n2,n1 lần lượt bị xóa.
+Giả sử hàm này bị bao bởi 1 hàm f có 1 biến n0 cục bộ ở trong hàm f, nhưng ngoài hàm này. Như v cái biến n0 sẽ đc khai báo trong stack ở dưới n1,n2,n3-> n0 k thể bị xóa nếu như n1,n2,n3 bị xóa trước->chắc chắn đúng vì cục bộ mà
+->stack phân vùng bị hạn chế, nhanh. 
+Đó là cơ chế cấp phát và giải phóng vùng nhớ trên stack. Chứ kp là cơ chế khi ta sử dụng. Khi sử dụng, các biến trong stack đều có thể truy xuất thông qua định danh
+
+Khi đó, các hàm lồng nhau sẽ được đóng vào các frame nằm trong stack. Xét VD:
+->void m1() { int x =20; m2(10); } =>stack[main(hàm là 1 frame){..},m1{x},m2{}] -> tạo frame m1 lưu x 
+->void m2(int b) {int c; m3();} =>stack[main(hàm là 1 frame){..},m1{x},m2{b,c},m3{}] ->trong frame m2 có 2 biến b,c đc nhét vào stack theo thứ tự đó và tạo 1 frame mới là m3
+->void m3() {Account*acc=new Account();} 
+Account(){int p; int q;} 
+=>stack[main(hàm là 1 frame){..},m1{x},m2{b,c},m3{acc}] ->tức m3 trên stack nên acc là biến lưu trên stack, nó là cấp phát động nên trên stack lưu acc thực chất là địa chỉ thôi, còn giá trị của nó là p,q lưu trên heap. acc là reference tới p,q trong heap=>tách ra địa chỉ trên stack, giá trị trên heap
+=>heap[p,q]
+
+Khi chạy xong m3 và Ct kết thúc. Ct sẽ từ từ xóa trong stack từ trên xuống. Gặp } kết thúc m3 thì sẽ xóa acc->kết thúc m2->xóa c->xóa b->xóa x->.. Lúc này trên heap lưu giá trị p,q và giá trị này bị trỏ tới bởi 1 ô nhớ. Lúc này acc trỏ tới bị xóa mất r, do đó nếu k có con trỏ nào trỏ tới vùng nhớ này thì sẽ k thể truy cập, và đó là hiện tượng gây lãng phí vùng nhớ, phải kết thúc Ct thì ô nhớ trỏ đến p,q mới bị xóa và trả lại cho hệ điều hành. Để xử lý, ta có thể return biến acc và cho biến nào khác trỏ tới nó nếu cần dùng tiếp(k để 1 ô nhớ nào cấp phát mà k có pointer trỏ tới). Hoặc nếu k dùng nx thì delete nó ở cuối m3 để giải phóng.
+
+Như v stack lưu biến và chỉ định luôn thứ tự thực hiện các hàm. Vc lấy ra các hàm và biến từ trên stack theo thứ tự gọi là call stack. Vd tương tự trong qt khi ta debug sẽ thấy điều đó. Khi Ct compile sẽ thực hiện như trên và lưu các hàm vào theo 1 dãy liên tục có đánh số, r run thực hiện theo thứ tự từ trên xuống thì cái danh sách đó chính là stack. Stack cx lưu biến tạm mà ta đã biết.
+
+-> micro processor là hàng ngàn IC trong chip silicon đó.
+CPU thực hiện các lệnh trong main memory theo từng bước. Bao gồm: Control unit(CU): xử lý operation; ALU(Arithmetic logic unit): phép tính+logic; Register File(RF): lưu temporary data mà CPU xử lý. Internal Bus(system bus): kết nối 3 phần đó, còn external bus kết nối ra ngoài.->tốc độ: đo bằng đồng hồ tốc độ of CPU
+Microprocessor và CPU đôi khi mang ý nghĩa như nhau nhưng đúng ra thì microprocessor sẽ phức tạp hơn CPU 
+
+-> Internal memory: có 2 loại là cache và main memory(hay primary memory)->tốc độ cao, dung lượng thấp, truy cập trực tiếp.
+External memory(secondary memory): hard drive, CD,..
+-RAM(Random Access Memory) và ROM(Read Only Memory) là primary memory của máy tính->sắp xếp theo stack. Dữ liệu trong stack có thể đổi nhưng địa chỉ là cố định.
+ROM(volatile memory) chỉ là chứa câu lệnh cho vc khởi động máy tính nên là read only, có thể giữ lại nội dung ngay cả khi máy tắt.   
+RAM(non volatile memory) các Ct lưu tạm thời để truy xuất nhanh khi cần. Khi thao tác với 1 file chẳng hạn thì dữ liệu từ ổ cứng sẽ copy sang RAM->thế là ta thao tác thay đổi trên RAM->sau đó save thì dữ liệu từ RAM sẽ lưu lại vào ổ cứng(phải làm như v vì tốc độ RAM nhanh do là internal memory)-> mất điện là mất hết dữ liệu do chưa kịp save sang ổ cứng. Thiếu RAM có thể gắn thêm thanh RAM vào mother board. Nó lưu kiểu bảng, 1 cột là địa chỉ, 1 là giá trị binary.
+1 ROM chip lưu vài MB, 1 RAM chip lưu vài GB. RAM có nh loại: DRAM, SDRAM,..
+cache còn nhanh hơn cả RAM, nhưng bộ nhớ ít. Chia thành nh level. cache L1: là 1 phần của microprocessor chip; cache L2: bên ngoài chip, lớn hơn L1.
+-Còn external memory lưu data lâu dài gắn với IO bên ngoài->dung lượng cao, tốc độ chậm: đĩa cứng, DVD,CD,USB,..
+
+Còn memory management, cơ chế CPU thực hiện lệnh theo từng bước phức tạp nx.
+

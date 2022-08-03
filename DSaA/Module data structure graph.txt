@@ -1,0 +1,175 @@
+# Data Structure Graph:
+Với undirect và direct ta coi là chung 1 dạng vì undirect lưu 2 hướng, direct thì chỉ lưu 1. Còn weight graph là 1 dạng riêng. Với weight graph, các bài với graph bình thường đều hoạt động được nhưng mở rộng thêm các dạng bài khó liên quan đến weight
+
+-> Mấy bài như buglife hay check bipartile. Các newbie thg có xu hướng nghĩ là duyệt các edge, thậm chí nhiều lần nhìn vào ta còn nghĩ như v. Nhưng rõ ràng như v là không tốt và hầu như chỉ có mỗi thuật Kruskal là làm điều đó. Còn hầu hết tất cả các bài graph, ta đều phải duyệt qua graph và k thể duyệt bừa cạnh này cạnh kia được mà duyệt 1 node, xong duyệt các node gắn với node đó VD BFS or DFS v. Luôn phải tư duy là duyệt liên tiếp sao cho các node nối tiếp nhau chứ đừng bh tư duy duyệt các cạnh rất occho. Đây là tiền đề cơ bản để giải quyết các bài graph
+
+-> Nâng cao hơn DFS với bài Q AddEgde:
+1 số hướng đi khi thao tác với queue:
+Khi ta cần kiểu xóa 1 node hay xóa 1 edge trong tree đi: tạo ra 1 vector cây mới và ta duyệt như bth-> nếu thỏa mãn điều kiện thì add vào cây, nếu k thì thôi
+Với cây undirected ta lưu 2 chiều vào, với cây directed chỉ có 1 chiều
+Ta tưởng thao tác với cây khó lắm thật ra rất dễ, nó chỉ quanh đỉ quẩn lại có mỗi 1 tập mảng vector và ta muốn xây hay xóa cái gì thì chỉ cần xây edge nối 2 cái node là đc. Chỉ là có 1 mảng vector và duyệt qua các edge của graph liền nhau và cho ra kết quả mà thôi. BFS cho duyệt theo level, DFS cho duyệt xong tính backtrack về.
+
+Ta đã biết cách thao tác với các tính chất mảng đặc biệt của BFS và DFS. Đôi khi để nhìn ra thuật toán, ta nên vẽ cây và ghi ra cụ thể low và num của mỗi node trên cây chẳng hạn để tìm ra quy luật
+
+Về vị trí VD trong DFS cơ bản: ở đây ta để khi for trong main thì check luôn là chưa visit 
+DFS(<node hiện tại>){
+  gán đã duyệt node hiện tại
+  for các phần tử nối với node hiện tại
+    nếu chưa visit 
+      thì visit
+    nếu đã visit 
+      thì bỏ qua
+}
+=> phát triển:
+DFS(<node hiện tại>, <node parent>){
+  gán đã duyệt node hiện tại
+  (1) thời điểm thao tác với node hiện tại có thể gán các thông số liên quan đến node hiện tại, lấy đc dữ liệu từ node parent
+  có thể chơi kiểu nếu node này là gì thì làm gì
+  for các phần tử nối với node hiện tại
+    nếu chưa visit
+      (2) trước khi visit node liền với node này
+      thì visit
+      (3) sau khi visit node liền với node này hay cả nhánh này r đó(giống kiểu dynamic recursion ấy)
+    nếu đã visit 
+      thì bỏ qua
+    (4) ta có thể thêm rất nhiều điều kiện như node hiện tại != node parent hay bằng 1 giá trị gì đó, điều kiện về cái edge hiện tại để bắt
+  (5) thời điểm sau khi visit toàn bộ node con của node hiện tại, ta muốn làm gì
+}
+
+Vận dụng giải bài addedge: cho 1 undirected graph, có bao nhiêu cặp edge nếu nối lại thì sẽ tạo thêm đúng 1 cycle
+
+Bài toán cho có bnh cặp edge tức ta có thể tìm đc đó là cặp edge nào chứ kp chỉ là đếm số. Mà đúng 1 cycle tức là tree
+Giản lược bài toán: cho undirected graph, tìm các phần của tree là spanning tree
+
+Nhìn vào cây mẫu để giải: 
+ví dụ từ cây này ta cần lấy ra 123456, 7 14 15 9 10 11
+=> khi lấy ra các node đó là ta biết nó là các tree rồi và chỉ cần tính số backedge có thể tạo được rất dễ
+Như v vấn đề là lấy các node này lưu như thế nào để việc tính được dễ nhất
+
+Theo các thứ ta đã học thì rất ez để giải bài này. Để lấy ra các node đó thì chỉ cần bỏ các node không thỏa mãn khi lấy từng cục như cục đầu tiên thì bỏ 7,8 -> cục thứ 2 là bỏ 12, 13. Nhưng rõ ràng làm sao mà ta xóa node hay edge trên cây được, điều này chỉ có thể là xây cây mới, gặp edge cần thì lấy, k cần là bỏ
+
+-> Khi ta dùng DFS và BFS ta duyệt qua các node, node nào đã đi thì ta k cần đi nx. Nhưng thực tế nó cũng giúp ta duyệt qua các edge là vì ở mỗi node ta đều chạy for mọi node liên kết với node đó thì đó là các cạnh còn gì:
+DFS(<node hiện tại>){
+  gán đã duyệt node hiện tại
+  for các phần tử nối với node hiện tại
+    (đây là 1 cạnh: node hiện tại->phần tử nối với node hiện tại)
+    nếu chưa visit 
+      thì visit
+    nếu đã visit 
+      thì bỏ qua
+}
+Do đó khi gặp 1 cạnh ta hoàn toàn có thể check được nó là cạnh gì và duyệt được hết mọi cạnh
+
+Các node muốn bỏ là 7,8 hay 12,13 đều có chung 1 tính chất làm ta nhớ tới analyze DFS khi xây 2 mảng low và num. num là mảng lưu thứ tự được duyệt của từng node, low là mảng lưu: nếu node đó nằm trong 1 cycle thì low của mọi node trong cycle trả ra num nhỏ nhất trong cycle. 
+Ta có thể detect cycle và nếu là 1 node trong cycle thì ta k lấy trừ node có num nhỏ nhất trong cycle là 11 và 6. 
+
+kết quả của ta sẽ lưu là tree chứa các connected components cần tìm nhưng thực chất chỉ là xây 1 mảng vector biểu diễn các edge trong tree mà thôi
+=> tức là duyệt qua mỗi edge thì ta quyết định edge đó có nằm trong tree cần xây hay không và add vào(tức trong vòng for con)
+
+Nếu ta nghĩ bình thường thì tưởng như nó rất lằng nhằng nhưng nếu nhìn vào biểu đồ low num thì sẽ dễ thấy điều kiện:
+Xây low, num:
+Nếu đã visit
+  so sánh cập nhập low nhỏ hơn
+Nếu chưa visit
+  thì visit
+  visit xong
+    cũng so sánh cập nhập low nếu low của node sau nhỏ hơn low hiện tại
+=> có thể thấy bài này sẽ tốt hơn là ta lấy các edge chứ kp lấy node nào vì tập ta cần xây chỉ là các edge mà
+=> các edge ta lấy là (u, v) sao cho low[v] > num[u] dựa vào đồ thị với low 
+Cx đúng vì khi nó backtrack về mà 2 cái thuộc cùng 1 cycle thì low của v sẽ luôn <= num[u] vì low của v chứa cái num nhỏ nhất của cycle mà
+
+=> Sau khi ta có được forest chứa 2 tree như v ta sẽ duyệt từng tree bằng cách dfs 2 tree xem có bao nhiêu đồng thời ta tính xem mỗi connected components đó có bao nhiều phần tử và tính được kết quả
+
+1 tính chất khác ta cũng thấy ở đây là các edge ta muốn lấy chính là các bridge, ta chỉ cần tìm nếu là bridge thì add vào cây là được. Nên nghĩ theo hướng này vì mục đích ta cần là lấy các edge nào chứ kp là lấy các node nào
+=> chú ý các TH node hay cạnh cần lấy có gì đặc biệt như ở đây là bridge thì ez r
+
+Chú ý các cạnh hay node đặc biệt: 
+bridge, backedge, forward edge, tree edge, cross edge
+
+-> Kiến thức giải weight graph:
+Disjoint set là data structure thứ 3 giúp traverse graph bên cạnh BFS và DFS tree. Ta có thể implement bằng union by rank hoặc path compression(union find) => trong đa số các Th thì path compression tốt hơn union by rank nên ta sẽ chỉ dùng path compression -> disjoint set-> Kruskal
+
+--> 2 thuật toán tìm minimum spanning tree: Kruskal dùng Union-Find và Prim dùng priority queue implementing binary heap(k cần implement lại)
+Kruskal k tốt bằng Prim khi m > 10n(số cạnh > 10 lần số đỉnh)
+
+Kruskal có thể implement chay mà không dùng union find cũng được nhưng sẽ rất phức tạp như môn Discrete Math nhưng dùng union find sẽ giảm độ phức tạp nhiều hơn
+
+Độ phức tạp Prim: O(V^2) => cách của thầy gộp phần khởi tạo ở vòng chạy đầu tiên luôn. 
+Implement theo thầy, khi ta push và pop khỏi queue, ta thường nghĩ rằng k thỏa mãn thì pop ra ngay luôn nhưng thật ra với các kiểu dữ liệu nó có sự sắp xếp như queue hay stack kp lúc nào họ cũng pop và push vào được. VD dùng queue mà muốn pop 1 giá trị ở giữa queue thì phải dùng đến 2 queue. Hướng đi khác mà ng ta thg dùng là cứ cần thì push vào xong khi nào cần lấy ra dùng thì trước khi dùng ta check bằng vòng while nếu giá trị đó cần phải pop ra thì pop ra r mới lấy=> pro hơn
+Độ phức tạp của Prim giảm đi khi dùng priority_queue còn O((V+E)log(V))
+
+Ứng dụng Prim là thuật toán Dijkstra dùng để tìm đường đi ngắn nhất giữa 2 node. Ứng dụng chính của Prim và Kruskal là tim MST
+
+Khi tìm MST, ta nên dùng Kruskal vì thuật toán đơn giản. Khi cần làm gì đó dùng đến prim mới giải được thì ms dùng prim
+Dùng Kruskal giúp ta duyệt edge weight graph theo thứ tự edge từ nhỏ đến lớn, kể cả các edge k thêm vào MST cũng duyệt qua. 
+Dùng Prim cũng thế nhưng phức tạp hơn vì nó có bước update và bước pop ra khỏi queue. Có thể phát triển là ở mỗi bước là lưu 1 cái gì ở mọi node tới node root liên quan đến vấn đề về weight. VD ta có thể lưu khoảng cách ngắn nhất từ mọi node đến node root. Prim nó giúp lưu kiểu đệ quy VD A B C là kc min thì khi ta tính kc min từ A đến C nó sẽ tính kc min từ C đến mọi node nối với A và lưu vào mảng node C đó nên dis[c] = dis[b] + weight[b,c] => cơ chế là v
+Tương tự kc chi phí nhỏ nhất mà bất cứ 1 cái gì lq đến queue. Khi đó priority queue phải dùng đúng. Priority queue trong prim ở mỗi bước lưu 1 cái gì đó (nhỏ) nhất trong các node đến cái cây đang xây. Có thể là kc nhỏ nhất or khoảng cách lơn nhất ta có thể tùy chỉnh
+Để làm chủ được prim: Với thuật tìm MST thì prim nó tìm các node thỏa mãn tính chất là kc nhỏ nhất đến cái cây hiện tại thì chơi. Còn Dijkstra nó tìm mọi node có edge gắn với node vừa duyệt chứ chả lọc gì cả
+Bh ta cứ hiểu khi dùng Dijkstra nó cho phép ta duyệt 1 cái graph theo thứ tự: lấy các node và edge tách ra 1 tập riêng, khởi đầu bằng việc thêm 1 node vào-> sau đó đi từ node đó thêm dần các edge hay node khác vào tập riêng theo thứ tự do ta quyết định thứ tự nào và edge nào lấy, edge nào k. Với cơ chế là mọi node đều lưu 1 cái gì đó trong quá trình duyệt và update sau khi duyệt được từng edge
+VD: bài tìm MST bằng Prim là ta duyệt từ 1 node dần các edge lấy edge nhỏ nhất
+VD: bài Dijkstra là ta duyệt từ 1 node dần mọi edge kết nối với node đó và lấy ra mọi node khoảng cách nhỏ nhất tới node gốc
+
+Thật ra graph y hệt tree với 2 kiểu search DFS và BFS. Chỉ khác ở việc nó có thêm các edge là: backedge, forward edge, cross edge mà thôi. 
+Ta hoàn toàn duyệt graph y hệt duyệt tree, chỉ là khi gặp các edge kia thì ta check nếu search r thì k search nx thành ra search theo đúng thứ tự tree luôn
+=> Nó như kiểu tree nâng cao ấy, mở rộng hơn. 
+Trong graph chỉ có 2 loại cycle mà ta có trong 2 bức ảnh. loại cycle 1 vòng quá cơ bản. Khi mà có 2 cycle gắn kèm với nhau thì chỉ có 2 loại như v. Các loại cycle khác đều là mở rộng và kết hợp 2 loại cycle đó. Khi làm bài nghĩ thuật toán thì nên check 2 cycle đó
+
+=> Cẩn thận để tránh nhầm ta đừng tìm quy tắc bừa theo hình mà phải suy nghĩ vì sao ta lại lấy như v
+Vd bài xđ articulation point ấy
+Ta phải hiểu khi duyệt xuôi 1 lần, xong sẽ backtrack về thì lúc trước khi duyệt hay lúc backtrack về(các giá trị node con được gán low num hết r thì cha nên xử lý như thế nào). Xử lý làm thế nào với node cha hiện tại(chứ kp làm thế nào với node con hiện tại)
+
+Ta có thể cấp nh vùng nhớ nhưng khi ta dùng đến 1 lượng quá mức cho phép mới bị sai. Bài ICBUS dùng BFS để duyệt và xây cây nhanh hơn và ít vùng nhớ hơn là vì nó check nếu đã duyệt r thì k đi nx. Thành ra đi lại node cũ là k tính=> VD 1 node nào đó connect với 2000 node khác thì gặp cái trùng là dừng chứ cứ kéo dài 2000 vòng for thì chết à=> chú ý khi cần làm gì mà duyệt qua các node hay các edge thì nên cân nhắc BFS, DFS có đc k đã r mới tự làm
+
+Với Union_Find ta có thể kiểm định bất cứ lúc nào rằng 2 vertex bất kỳ có thuộc chung 1 component mà ta đã xử lý hay k. Đông thời cho ta ghép 2 component vào thoải mái. Đây là thuật toán tối ưu khi ta muốn duyệt qua graph theo thứ tự các edge rời rạc, chứ k liền nhau như BFS, DFS
+Lỗi sai kinh điển là số lượng phần tử iParent khởi tạo phải là n+1
+
+Khi dùng Union_Find chuẩn, nó cho ta duyệt từng cạnh và check nếu cạnh đó k là backedge thì làm gì=> nch là ta có thể duyệt mọi cây của graph vì dựa vào toán tử find có thể bỏ được cycle => MR của thuật Kruskal
+=> duyệt mọi edge theo thứ tự và check được edge nào gây cycle. 
+Thuật Kruskal chuẩn sẽ cho ta lấy ra 1 forest có tập hợp các tree lấy từ graph(trong TH graph k là connected component)=> để check đầy đủ có thể check thêm là res lấy ra k là connected component thì cái hiện tại k là tree => thông thường mặc định thao tác với connected graph r
+
+--> Bài ICBus cũng bá đạo cho ta cách xây lên 1 graph mới dạng khác dựa vào graph đã cho r dùng thuật toán có sẵn để xử lý. Nếu các bài mà nhiều dữ kiện rất hay kiểu quy về weight graph kiểu này
+
+-> Euler graph là graph chứa Euler cycle. Euler cycle là 1 path traverse được qua mọi edge bắt đầu và kết thúc tại cùng 1 điểm sao cho mỗi edge chỉ traverse 1 lần.
+Tính chất: graph có >=1 vertex bậc lẻ-> k có euler cycle; còn tất cả chẵn và connected thì có ít nhất 1 euler cycle; nếu >2 đỉnh là bậc lẻ thì k có euler path; có =2 đỉnh bậc lẻ thì có ít nhất 1 euler path bắt đầu từ đỉnh lẻ này, kết thúc đỉnh lẻ kia;
+Ở đây ta chỉ cần quan tâm tính chất thứ 2 là xong. Nó cũng đúng với cả multigraph.
+
+-> Hamilton graph là graph chứa Hamilton cycle. Hamilton cycle là cycle duyệt qua mọi đỉnh đúng 1 lần. VD bài TSP có thể quy về tìm Hamilton cycle có fee min.
+Để detect nó tốt nhất là dùng backtracking: duyệt từ 1 đỉnh tới mọi đỉnh khác chưa duyệt và nếu đủ số node thì check có path từ node đầu tới node cuối này k. Nếu đến 1 node mà k thể duyệt tiếp thì cx k là Hamilton cycle. backtrack như cái cách trong TSP for các node gắn với node hiện tại và trước đó add vào node đầu tiên r. Thật ra nó giống kiểu DFS hơn. DFS cx là 1 kiểu backtrack đó. Ta DFS và đến khi xong node cuối nếu có đường đi về node đầu thì là Hamilton cycle nếu k có thì cái path hiện tại k là Hamilton cycle và backtrack về. Thật ra DFS chính là backtrack cmnl r. 
+For các thứ xong check xong backtrack. DFS nó chỉ thiếu điều kiện dừng là duyệt đến cuối như backtrack thì xử lý như nào thì DFS k cần làm v vì phần lớn đều là xử lý lúc backtrack về. Còn backtracking chuẩn là xử lý trước khi duyệt tiếp con. 
+
+Ta nên tuân theo cấu trúc bên trong hàm là for luôn khi dùng backtracking. Chỉ có 1 vài trường hợp có thể chia if else r mới backtrack như bài bracket sequence vì xếp cái gì vào ô, nếu ô chưa có mới dùng for, còn có rồi thì k cần dùng for nx lúc đó thêm if else thôi.
+điều đặc biệt là với kiểu backtrack như dfs như này, ta k: for->xử lý->check dừng->else Try(+1)->backtrack
+ta dùng: for->check dừng->else Try(+1)->sau khi có mọi thứ nhánh con đó r thì xử lý node hiện tại như nào
+=>tùy bài ta dùng cho phù hợp. Cách thứ nhất dùng cho backtrack thuần tùy. Cách thứ 2 người ta thg gọi là DFS và được mở rộng rất nhiều cho nhiều dạng bài graph, thêm thắt đủ thứ đầu cuối
+
+Function(element, global vòng này):
+if ô này k cần for
+  xử lý
+  if đi hết rồi
+    lấy kết quả rồi xử lý
+  else if đi tiếp vẫn ổn
+    Gọi đệ quy lại hàm này nếu lấy có sẵn như v
+  quay lui đánh dấu
+else if ô này cần lấy
+  if xử lý rồi
+    lấy kết quả có sẵn từ mảng kết quả sẵn
+  for tập candidate có thể là ô này or các node nối với node này
+    if thỏa mãn đánh dấu
+      xử lý + đánh dấu phần tử này
+      if đi hết rồi
+        lấy kết quả xử lý
+      else if đi tiếp vẫn ổn
+        Gọi đệ quy lại hàm này xử lý tiếp nếu hiện tại lấy phần tử candidate
+      quay lui cái đã đánh dấu
+  lưu lại vào mảng kết quả sẵn
+
+-> Other:
+Nên nhớ graph kp là 1 thuật toán, nó chỉ là 1 cách khác để ta lưu dữ liệu và có các toán tử thao tác với dữ liệu như bfs, dfs để duyệt theo 1 thứ tự xác định mà thôi. Đúng ra là phải dùng các thuật toán khác đã học như dynamic để giải bài toán dùng data structure lưu data là graph mới đúng
+
+Thuật toán PRIM chính là BFS với dynamic. Thuật toán recursive mà ta dùng trong TSP dynamic chính là DFS với dynamic. VD DFS trong graph ta dùng isVisited để check nếu visit r thì k visit nx, và đến cuối mọi node visit với node visit hết r thì nó tự dừng. Còn TSP thì ta k dùng isVisited mà thay bằng bitmask S lưu các thành phố trạng thái visited như nào và đến cuối nếu visit hết r thì nó cần bắt và update lên. Nch là các dạng dynamic BFS, dynamic DFS, dynamic DFS bitmask hay thay thế bằng backtrack ta đều làm hết r. Bh cần tùy biến. Tức nếu k dùng S mà dùng isVisited trong dynamic bitmask cx được thôi nhưng sẽ phức tạp khi dùng memorization
+
+Với dynamic BFS ta cứ tư duy là 1 cái cây nhiều nhánh thì DFS sẽ cho ta duyệt từng nhánh 1, mỗi khi duyệt xong từng nhánh của node đó, ta làm gì với node đó.
+Mấu chốt dynamic DFS(k bitmask) ta phải tìm được formula. Bài Network: [m][n] là node m dùng k route có minimum route weight là bnh với cơ chế [m][n] = [con của m][n-1] + m->n => đừng nghĩ đến table nhé. Và TH m xen giữa nx
+
+Nhiều bài ép buộc dùng printf mới nhanh. Bắt buộc mới được cơ.
+

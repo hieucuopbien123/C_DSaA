@@ -1,0 +1,50 @@
+Tổng kết kiến thức ôn thi môn Discrete Math:
+
+Cover and Partition: 
+E là tập hợp chứa các tập hợp là vài subsets của M, nếu mọi phần tử của M trong Ei thì E là phủ của M, Ei không giao nhau và hợp lại ra E thì E là phân hoạch của M
+Binary relation R là set of ordered pair nên ta nói aRb thì (a,b) thuộc R. Còn relation on a set A tức là set of ordered pair mà a và b đều thuộc set A đó
+function A -> B thì #A=m, #B=n thì số lượng possible function là n^m
+
+C(n+k-1,k) với x1,..,xn >= 0 gọi là combination of multiset
+D(n)/n!=1/e khi n>10 => số cách để n người đều k nhận lại đúng mũ của mình. TQ: D(n)/n!=1-1/1!+1/2!+...+(-1)^n/n!
+C(n,k)=C(n-1,k-1)+C(n-1,k)
+giải truy hồi tuyến tính bằng hàm sinh và bằng hàm đặc trưng
+
+Sigma(deg(v))=2|E|
+Sigma(deg-(v))=Sigma(deg+(v))=|E|
+undirected graph thì số đỉnh bậc lẻ là số chẵn
+Bipartile graph k chứa cycle độ dài lẻ
+K3,3 và K5 k là planar graphs
+Planar graph chia mp thành: số edge - số vertice + 2 miền
+Connected planar simple graph có V >= 3 thì có E <= 3V - 6
+Connected planar simple graph có V >= 3 thì deg mọi đỉnh <= 5
+Connected planar simple graph có V >= 3 và k có cycle length 3 thì e<=2v-4
+1 graph có >= 1 vertice bậc lẻ sẽ k có euler cycle. Ngược lại thì có ít nhất 1 euler cycle
+1 graph có > 2 vertice bậc lẻ sẽ k thể có euler path
+1 graph có = 2 vertice bậc lẻ thì có ít nhất 1 euler path bắt đầu từ vertice odd này và kết thúc tại vertice odd kia
+1 Half Hamilton graph có vertex bậc 1 thì vertex đó buộc là điểm bắt đầu or kết thúc của Hamilton path
+1 graph có >= 2 đỉnh bậc lẻ thì k có Hamilton cycle
+1 graph có >= 3 đỉnh bậc lẻ thì k có Hamilton path
+Connected graph có V>=3 và mọi v đều có deg(v) >= |V|/2 thì G có Hamilton cycle
+Nếu liên thông mạnh với V đỉnh thì deg+(V)>=V/2 và deg-(v)>=V/2 thì mới là Hamilton graph
+Connected simple graph có V >= 3 và deg(u)+deg(v)>=V với mọi cặp vertice (u,v) k kề nhau thì G có Hamilton cycle
+Bài toán tô màu graph sao cho 2 đỉnh kề nhau được tô màu khác nhau và ta phải tìm số màu ít nhất để tô kín graph => Mọi planar graph đều có thể tô bằng max 4 màu
+
+BFS, DFS: O(|V|+|E|) => mọi thuật toán liên quan chỉ dùng 2 cái này cũng có độ phức tạp tương tự
+directed graph là strongly connected khi tồn tại 1 path từ v tới mọi vertices khác và cũng luôn tồn tại 1 path từ mọi vertices tới v(đảo ngược chiều và tiếp tục duyệt từ v trong code để check)
+Bài toán oriented cho undirected graph để strongly connected: graph chỉ oriented nếu mỗi edge đều nằm trên ít nhất 1 cycle => dfs bình thường 1 lần để orient cho edge-> các edge chưa được orient còn lại check 2 mảng d và f để biết node nào là cha, node nào là con và orient ngược cho nó từ con sang cha
+Đồ thị phẳng là đồ thị k chứa subgraph isomorphic với K5 và K3,3
+
+G is connected no cycle = luôn có 1 simple path qua mọi cặp đỉnh u, v của G = G connected và mọi edge đều là bridge = G k có cycle, thêm bất cứ edge nào cx tạo thêm đúng 1 cycle cho nó = G connected và |E|=|V|-1
+Every undirected graph contains a spanning tree
+Complete graph Kn có n^(n-2) spanning tree
+
+Kruskal có O(|E|log|V|)
+PRIM O(V^2) khi dùng chay. Khi dùng priority_queue thì còn O(min(V^2, ((V+E)logV))
+S(u,v) là shortest path u->v thì S(s,v) = S(s,u)+S(u,v) nếu u nằm trên shortest path từ s->v
+Relaxation là hàm update d[v] nếu tìm được đường ngắn hơn. d[v] ở đây là shortest path từ v tới gốc
+Djiska dùng cho đồ thị trọng số không âm có O(V^2) nhưng dùng vói queue thì O(V + E*logV)
+Bellman-Ford có thể tìm ra chu trình trọng số âm với O(V*E)
+DAG sắp xếp topological order: luôn có 1 vertex có in-degree=0 tức có vertex không là điểm cuối của 1 directed nào cả => tìm ngược dần cho đến khi ra vertext đó r DFS từ nó là đc
+Floyd-Warshall tính toàn bộ đường đi ngắn nhất giữa các cặp đỉnh với O(V^3)
+Bài toán ghép cặp đồ thị là tìm tập con các cạnh F sao cho mỗi đỉnh thuộc ít nhất 1 cạnh trong F => độ phức tạp O(V^4)

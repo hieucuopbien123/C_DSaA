@@ -1,0 +1,174 @@
+# Thao tác với text
+Tổng hợp các thao tác cơ bản với char[]: #include <string.h>
+strlen();strcmp(,);strcpy(,);strcat(,);strncat(,,);atof();atoi();atol();isalpha();isdigit();isspace();tolower();
+
+Hiểu gt trả về của: fprintf,fscanf,fgetc,fgets,fputs,fputc,fseek,fread,fwrite,fopen,scanf,printf,getchar,getc,gets,putc,puts,putchar,fclose.
+(giá trị trả về của put/close là EOF nếu thất bại)(fseek trả 0 nếu tcong)
+
+-> Basic
+Sự khác biệt đổi số const char[] và char[]; const char là đã khai báo =" "; còn char thì là biến có thể chưa khai báo
+
+Tương tự với char[] string chứ kp file thì có gets, getc, puts,putc,printf,scanf
+thao tác với char[] trong C khác với string trong C++; coi nó là hai mảng thì k thể +; k thể gán =""; k thể gán cho một mảng char khác str1=str2 vì k thể đổi địa chỉ của một mảng, chỉ đổi đc với con tro=> muốn gán dùng strcpy(,"")
+
+gan ='\0' nếu muốn xoá 
+
+string ta + đc char* k + đc
+
+string chỉ là k có * thôi, chả khác thg là mấy
+
+strcmp=> so sánh từng cặp từ trái sang phải
+
+khi có biến char lưu số, ta muốn lấy số đó lưu vào int d=> d=char-'0'; (k đc gán =char vì sẽ lưu số thứ tự trên bảng) 
+
+Trap: char name[100] = name2;=> sai, ta muốn là khai báo ra name 100 phần tử và gán cho name 2 nhưng k đc vì nó hiểu là gán phần tử thứ 100 k tồn tại cho name 2 v. Nếu muốn gán cứ khai bao r strcpy ms đúng=> chỉ dùng = khi khởi tạo "" ban đầu
+Switch case trap: trong case khi ta khai báo con trỏ thì cần chú ý con trỏ chỉ đc dùng trong phạm vi case chứ k đc sử dụng ở case khác. Nhưng nếu ta khai báo bth và dùng thì compiler k hiểu sẽ báo lỗi nên ta phải đặt cái case ở trong {} thì mới xác định rõ phạm vi của biến con trỏ=>đặt case vào {}nếu khai báo 1 con trỏ ở trong nó.
+
+Hàm atol/atoi/atof của C có tác dụng chuyển từ const char*(cx là cả char*) thành long int/int/double trong stdlib.h
+nó chuyển gần nhất cho đến khi gặp space nhé=>nếu có 1 char* mà bên trong lưu kiểu cả số cả chữ và ta muốn lấy số riêng chữ riêng thì phải for nó r atoi và strcpy khi gặp ký tự gì...
+
+Về kiểu biến char cha[]: xét char hieu[50]
+' ' kiểu int; " " kiểu con trỏ; hieu kiểu con trỏ; hieu[i] kiểu int;
+Điều đặc biệt là khi in ra thì nó sẽ in ký tự, khi tính toán nó mới dùng đúng của nó là int hay con trỏ;
+Trap ta k thể so sáng hieu[5]==" " vì nó như so sánh con trỏ với int là vô lý
+Trap khi ta dùng char[] truyền vào hàm thì nó thực chất là địa chỉ dù ta in nó ra là string bth(muốn in địa chỉ thì %p), nhưng bản chất là địa chỉ nên khi đổi giá trị của nó thì đổi cả. Nhưng nếu đổi địa trực tiếp nó thì bản chất nó là biến copy nên k còn trỏ như cũ=> ra ngoài vẫn giữ nguyên nếu đổi trực tiếp cả biến hieu(đổi từng phần tử chỉ là giá trị k sao)
+
+-> Nhập xuất text
+getchar va putchar trả về int. gán c=getchar()!='\n' tức là gán int cho char sẽ thực hiện ép kiểu, nếu kp ss vs int
+ấn enter sẽ phát signal printf nên đổi sang ký tự khác nhưng ấn enter nó k lấy mà phát ra signal printf
+EOF=CTRL-Z trong win và ctrl-d trong linux
+xét thực hiện vòng while(c=getchar()!=EOF), đầu tiên compile làm từ trên xuống sẽ thực hiện hàm gán bằng, nhưng bắt gặp hàm getchar nên sẽ thực hiện hàm getchar. Hàm này sẽ lưu các giá trị ta nhập vào trong stdin dưới dạng int ASCII, c gán bằng nó thì sẽ lần lượt gán hết các giá trị trong stdin sau mỗi vòng(tính chất). Lưu ý hàm getchar chỉ thực hiện được khi bộ nhớ stdin trống. Chạy vòng 1 ta gõ 10 ký tự và ấn enter thì getchar release kết thúc và bắt đầu chạy trong while. đầu tiên sẽ in c ra màn hình ký tự đầu tiên, stdin cx fflush ký tự đầu tiên đó. Ở vòng 2, c gán gt thứ 2 và getchar k thực hiện vì stdin k trống=> in c và tiếp tục đến khi stdin trống thì getchar tiêp or gặp đk kết thúc vòng while.
+
+dùng scanf(%[^\n]s)=fgets(biến char* cần lưu vào,số lượng-1,stdin);(vì bản chất nhập vào stdin r mới lưu vào)=gets(char*)(nhập đc cả space tất cả nhưng kiểu 3 sẽ có warning)
+
+Thao tác với char* ta k dùng bth mà chỉ cần nhớ các hàm sau:
+ghi thêm vào: char *strcat(,)
+so sánh strcmp(,) sẽ so sánh nhưng điều đặc biệt là k có bất cứ 2 string nào khác nhau mà bằng nhau(nó k so sánh tổng ASCII). Điều này khiến ta có thể sắp xếp lại string theo thứ tự từ nhỏ đến lớn mà k sợ trùng.=> strcmp còn ss đc 1 phần chuỗi nếu đặt con trỏ, VD: strcmp(name1 + 10, name2 + 20);=> dạng bài ss first name ta cứ truyền đúng vị trí con trỏ là so sánh từ đó trở đi
+gán giá trị strcpy(<vào cj>,) chú ý k gán từng chữ hay gán char*= mà phải dùng hàm này=> strncpy(char*,const char*,<bnh phan tu>)
+strlen() lấy độ dài chuỗi
+strstr(,) tìm chuỗi trong chuỗi trả về con trỏ xuát hiện đầu or null nếu k tìm đc, tìm đc trả ra char*-> nếu lưu thay đổi nó thì chuỗi gốc cx đổi, nó tham chiếu đến 1 phần chuỗi gốc
+
+Ôn lại: ta bảo khi dùng gets là khi nhập 1 dòng chỉ dừng khi có dấu enter; getchar dùng khi ta muốn thao tác ký tự gì thì làm gì; scanf nếu gặp kiểu truyền các loại ký tự liên tiếp khác nhau theo 1 format nào đó=> dạng bài đếm số lần xuất hiện của ký tự thì dùng getchar() chứ sao lại scanf, nghĩ theo hướng getchar sẽ ez hơn nh.(thao tác vs ký tự: vào ký tự gì thì làm gì)
+Trong thực tế ta có thể dùng scanf để thay thế tất cả các kiểu khác. Chú ý scanf %s chỉ viết đc từ liền éo nhận space. VD: scanf("%[^\n]s"); là nhận cả space và enter ms dừng, scanf("%s\n") là nhận s sau đó ta ấn enter 2 lần mới kết thúc hàm vì 1 dấu enter đúng format là \n, nếu làm k đúng format sẽ hiểu sai.
+
+Làm sao để khai báo mảng rỗng-> đương nhiên là char name[MAX] = {}; nhưng vấn đề là nếu dùng trong struct thì éo gán v đc, nếu dùng mảng int thì cx k thể gán v đc=> Trap nếu dùng strcpy(name,"\0"); thì cx k đc vì nó chỉ gán môi phần tử đầu tiên là \0 mà thôi. => TH strcpy vói \0 là TH đặc biệt
+=>Chỉ còn cách tổng quát nhất là dùng vòng for-> rồi gán =0 or ='\0'. Nếu là int thì ảnh hưởng k lớn nhưng là char thì ảnh hưởng quá lớn. Nó làm cho ký tự ta in ra bị lỗi, thay đổi cả strlen() tính ký tự rác luôn.
+Để gán, ta dùng i<MAX chứ kp i < strlen(expression) vì cái strlen thật ra nó lấy k chuẩn. Ví dụ '\0' đứng trước 1 thì nó coi 1 k có trong mảng và strlen sẽ dừng trc \0 khi đếm. Hơn nx mọi thứ có thể bị đổi trong quá trình thao tác=>khi muốn gán giá trị rỗng cho nó thì hãy chạy toàn bộ
+
+Hiểu hàm fscanf và scanf: chú ý khi ta dùng %[^<ký tự>] thì k cần s ở cuối nx, nó sẽ tự hiểu là cần điền 1 char* khi gặp ký tự nào thì sẽ dừng, mặc định là ^\t => ký tự kết thúc đó sẽ lưu vào đệm
+=>Dẫn đến lỗi sai là dùng scanf("%[^a]s%d",char*,int); dùng thế này đã là sai với mọi đầu vào vì khi gõ gặp ký tự a nó sẽ kết thúc khối [] và lưu a vào đệm, cứ tưởng nó sẽ lưu tiếp int nhưng éo, nó sẽ nhét a vào đệm và gặp s->mà a khác s nên dòng scanf sai cú pháp và kết thúc=> dùng đúng phải là scanf("%[^a]a%d",char*,int); mới là chuẩn. 
+Như v ký tự a để kết thúc sẽ k dùng vào cụm đằng sau, nếu ta muốn dùng a vào ký tự đằng sau thì chỉ cần %[^a]%s là xong-> a sẽ lưu vào đệm và sẵn sàng lưu vào biến %s sau.
+
+Chú ý khi dùng scanf or fscanf thì các ký tự thừa bị lưu vào đệm. Đặc biệt là khi dùng fscanf đọc từ file từng chuỗi liên tục trong từng dòng nó cx lưu vào đệm cứ như là ta dùng nhiều scanf liên tục và ấn enter thì enter lưu vào đệm v. 
+Ví dụ ta fscanf(file,"%s",data[i++]); từng dòng 1-> chỉ nv thôi thì dấu \n ở cuối dòng đầu sẽ được lưu vào vị trí đầu của biến data next. Điều này dẫn đến khi in bị thừa dấu \n trong dữ liệu. Ta có thể fix bằng cách fscanf(file,"%s\n",data[i++]); để mọi data[i] đều chỉ lưu đúng data chứ k lưu dấu space ở đầu hay cuối.
+Lưu ý là các dấu space và \n nó từ trong đệm chỉ lưu sang biến nếu tương thích, k tương thích sẽ bỏ qua.
+Ví dụ đọc dòng: "Hieu; 10\n" trong file bằng fscanf(file,"%[;];%d\n",char*,number) thì dấu space ở ngay sau ; sẽ k được lưu vào đâu cả vì cái int k nhận space, còn nếu chỗ đó là char* thì sẽ lưu cả space vào char *=> do đó ta nên chuẩn mực các cái lưu theo đúng format khi ta thao tác để LƯU CHAR*->chỉ cần chú ý khi lưu char*, kiểm tra trc và sau char* có space hay \n k.
+Nếu như file nó bố láo có dòng có nhiều dấu cách chẳng hạn hay xuống dòng nhiều lần chẳng hạn. Thì khi đó ta sẽ phải xử lý hoặc là đọc từng loại ký tự một thì xử lý space riêng từng loại, hoặc là ta xử lý chung thì cx ok, kiểm tra nếu là space or \n thì sẽ skip nó, còn nếu vào ký tự chuẩn r thì lui lại 1 bước với fseek và bắt đầu đọc.
+Tệ nhất mới nghĩ đến dùng fgetc chắc chả bh cần đọc từng ký tự
+
+Ví dụ muốn lấy từ bàn phím liên tục nhưng có 1 nhược điểm của scanf là chỉ kết thúc khi ấn enter nên nếu muốn gõ bàn phím lưu và xử lý liên tục vào biến char buộc dùng getchar(). getc và gets từ trước đã biết là k nên dùng vì đã có specific với getchar và fgetc, fgets
+
+scanf và fscanf=> trả về số lượng ký tự hợp lệ nhập vào or lấy đc từ stream
+
+Qtrong:dùng fscanf khi muốn ghi cả int,..các type kp char* và các trường hợp ghi bỏ dấu cách.Dùng fgets nếu lấy 1 dòng, lấy từng dòng. fgetc nếu lấy ký tự, ta có thể kiểm soát gặp ký tự gì thì làm gì.
+Tương tự với vc nhập từ bàn phím bth: dùng scanf nếu muốn nhập theo form or nhập các kiểu int,.... dùng gets nếu nhập từng dòng. dùng getc nếu nhập từng phần tử, kiểu gặp phần tử nào thì làm gì(ví dụ đếm phần tử). Gets và getc chỉ làm đc với char
+Nhập từng dòng với scanf thì rewind đi nhé=> Luôn luôn là như v khi dùng scanf vì cái \n sẽ lưu mãi trong stdin k mất
+
+-> Trong linux viết đc tiếng việt.
+Xét Th ta cần nhập vào nội dung cho 1 string(scanf hay fscanf tương tự nhau)->phần này sai, bỏ
+Xét Th 1 string thì nếu ->scanf("%[^o]",name);=>khi ấn enter nó k kết thúc nhưng ấn phím o r ms enter thì sẽ kết thúc, name sẽ mang các ký tự ta nhập trc o, còn từ sau o cho đến khi enter nó sẽ lưu vào đệm=> enter như là câu lệnh kết thúc vc nhập, khi ấn o tức là %s đã kết thúc->enter phát là câu lệnh scanf kiểm tra nếu các cái %s bên trong kết thúc hoặc câu lệnh %[^]s đầu tiên kết thúc
+giả sử ta dùng scanf("%[^n]s",name); scanf("%[^b]s",name1); liên tiếp thì giả sử ta ấn abnm<enter>bjk<enter> thì ab lưu vào name,nm<enter> lưu vào name1 còn bjk<enter> lưu vào đệm(nên fllush đệm)->lấy đến trước ký tự kết thúc chứ k lấy ký tự kết thúc
+Còn nếu ta dùng scanf("%[^n]s%[^b]s",name,name1); 1 cục thì k đc(nên tránh liên tiếp khi dùng char mà ta thay đổi ký tự kết thúc %s)->giả sử truyền abcnm<enter>-> cơ chế của nó k như ta nghĩ, khi ta dùng %[^]s thì ngay khi ta dùng ký tự kết thúc nó sẽ ghi các ký tự còn lại vào đệm luôn và bỏ qua các % khác đằng sau, chờ enter và kết thúc hàm scan->do đó cần tách làm 2 hàm như v và khi lưu vào đệm nó lại gặp scanf sau lại lấy từ đệm ra lưu vào-> 1 scanf chỉ đc có 1 ký tự két thúc
+TH ta dùng %[^\n]s tức là ký tự kết thúc %s cx là ký tự kết thúc scanf, lưu các ký tự trc \n vào s còn \n lưu vào đệm->sai nhé, sai mnr
+Vc ta lấy từ file ra cx chính là gõ từ bàn phím vào, tương tự dùng fscanf
+
+
+
+# Thao tác với file
+-> Basic
+mở:fopen(tên file, mode)/r,w,a,r+,a+,w+
+đọc:fscanf();fgetc();fgets()
+ghi:fprintf();fputs();fputc()
+file binary: fwrite(,,,);fread() trả về số lượng phần tử thành công
+đóng:fclose()
+Trap bị ngược:fscanf() là đọc từ file lưu ra biến chứ kp ghi vào vì nó tương ứng với stdin của fscanf là lấy từ bàn phím lưu vào biến tức lấy từ stdin/file lưu vào biến
+
+int feof(FILE*). Ví dụ if(feof(file)) cx kiểm tra đc con trỏ trỏ dến cuối file chưa dùng kt đk file
+
+pb:fwrite(<ghi từ đâu>,<mỗi phần tử kích thước bnh>,<bnh phần tử>,<ghi vào đâu>)
+
+puts(<chỉ có 1 biến để lấy ra r in ra màn hình>); fputs(<lấy từ đâu>,<ghi vào file nào>) 
+Tương tự làm với gets,fgets.
+với hàm fgets() thêm đối số giữa là số lượng tối đa được đọc bao gồm cả NULL
+Cách nhớ cứ get là lấy từ stream ra nhét vào biến, với file thì có tên file, nếu l thì là gets lấy từ stdin tức standardInput từ bàn phím. Puts thì ngược lại từ biến cơ bản vào stream
+
+int fseek(FILE *stream, long int offset, int whence) sẽ thiết lập vị trí con trỏ đọc
+offset là số byte để offset kể từ đó, cái "từ đó" ấy là whence SEEK_CUR,SEEK_END,SEEK_SET
+
+printf(...)/fprintf(stdout,...)
+fputs(char*,FILE*),fputc(char,FILE*)/puts(char*),putchar(char)
+fgets(char*,int,FILE*),fgetc(FILE*) trả về ký tự/gets(char*) trả về chuỗi lay đc,getchar(void)
+chỉ là getchar nó lấy dữ liệu từ bàn phím
+
+Tổng hợp các thao tác với file(kp binary):(file trong C khai bao con tro ms open dc, con qt la bien thoi)
+mở file: FILE* fopen(<tên file>,<mode>);//r+,w+,a+ chỉ khác r,w,a là nó dùng thêm update thôi(đc viết,đọc)(thêm b là binary/binary file nhẹ hơn và nhanh hơn file text).Về TT=>r:phải tồn tại; w: tạo mới ghi, nếu có thì discard nội dung và ghi; a:tạo mới nếu k tồn tại.Về con trỏ=>append mở phát là con trỏ tự động ở cuối. Đó là tất cả, tuy nhiên nếu ta muốn vừa đọc vừa viết trực tiếp vào file hiện tại thì có thể dùng w+ or a+=> Nhưng nếu w+ mode này tự động tạo file mới or nếu có file cũ thì sẽ xóa hết nội dung đi mất, đổi đc con trỏ vs fseek. Nếu dùng a+ thì ok nhưng lại chỉ có 1 con trỏ-> khi đọc thì nó đọc từ đầu nhưng ghi thêm vào thì luôn ghi từ cuối, dù fseek cx chỉ đổi con trỏ đọc, k đổi đc con trỏ ghi=> nch là vừa đọc vừa ghi thì k nên->các đ đ của mode thì k đổi
+Cách ghi vào giữa file đồng thời đọc đc: Dùng r+ là tuyệt vời nhất(fucking magic)=> dùng r+ ok hết(r+ chú ý file phải tồn tại r)
+đọc file: fscanf(FILE*,"",...);fgets(char*,99,FILE*);fgetc(FILE*);
+kiểm tra đến cuối chưa: feof(<biến FILE*>)=>là độc nhất, là đk tối ưu để kt kết thúc file or dùng fgetc()!=EOF->có lỗi
+ghi file: fprintf(FILE*,"",...);fputs(char*,FILE*);fputc(char,FILE*);
+đóng file: fclose(...); tra về 0 nếu thành công, EOF là thất bại
+(lưu ý fgetc k có giá trị char để lưu ký tự mà nó là giá trị trả về của hàm luôn, hàm fgets còn trả về giá trị cùng gt với tham số đầu tiên)
+Dùng char getchar(); lấy từ bàn phím một ký tự tính cả dấu cách lưu vào file nào
+TH1(ghi cả dấu cách và dừng khi gặp ký tự @): tốt nhất dùng while lấy từng char 1 và lưu char vào mảng, chỉ cần while(char!='@')
+TH2(đọc file ngược từ cuối lên):C1:ghi vào chuỗi r chép ngược nó vào file là xong nhưng sẽ bị vô cùng chậm
+C2:
+     char ch[100]="";
+     
+int i=0;
+
+     FILE* f=fopen("text.txt","r");
+    
+     fseek(f,0,SEEK_END);
+
+     while(fseek(f,-2,SEEK_CUR)==0)
+
+     {
+        
+         ch[i]=fgetc(f);
+
+         i++;
+    
+     }
+    
+    
+     fclose(f);
+    
+     printf("%s",ch);
+vì hàm fseek trả về false nếu thất bại tức là k lùi đc nx vì ở đầu file r
+
+hàm fgetpos/fsetpos sẽ cho ta lấy vị trí hiện tại của con trỏ file và set cho nó(fseek chỉ set chứ k lấy đc). Nó lưu vào kiểu fpos_t nhưng biến này k dùng đc nên cứ dùng int(cast từ int sang biến đó đc nhưng k chuyển đc từ nó sang int) => nhưng tránh lằng nhằng như v chỉ cần dùng ftell() cho luôn long int
+
+thao tác với fprintf() và fscanf() thì lệnh fscanf() k dùng %.3lf vì đọc phải đọc hết chứ. Ta có thể tùy biến vc đọc ntn bằng [^EAB]thì gặp 1 trong các ký tự E A B thì sẽ dừng nhưng nếu k có thì sẽ đọc hết file lưu như 1 char*.
+fscanf() return số lượng parameter read thành công. Ví dụ đi đến cuối file k đọc đc nx or sai format nào thì nó sẽ trả ra loi or EOF
+Thêm nx chẳng hạn dùng hàm fscanf liên tục, thì khoảng cách trong file khi đọc giữa 2 hàm fscanf sẽ tự động bỏ qua các khoảng trống nếu có.Đb nếu đọc file suôn sẻ từ đầu tới cuối thì tới khi đọc hết đến sau làn cuối nó sẽ return EOF
+fprintf() return tổng số lượng ký tự đc ghi vào file tính cả EOF
+(cx tương tự với hàm scanf và printf)
+
+size_t fread(void *ptr,size_t,size_t,FILE*)=> trả vế số lượng ký tự đọc thanh cong, 2 là kích thước 1 ký tự, 3 là số lượng ký tự
+size_t fwrite(const void*,size_t,size_t,FILE*)=>tương tự; size_t tương tự kiểu long int,(khi viết vào file 1 struct nhớ khai báo thêm mode b,và tên file là .dat(là loại file lưu dữ liệu thô raw data, or .bin trong window) vì bát buộc)(2 hàm này hoạt động cả với text file và binary file).
+=>fread và fwrite nó cho ta thao tác với block of data, là 1 khối dữ liệu có kích thước byte xác định, tức là ta có thể đọc 1 phát cả cục luôn hoặc đọc liên tiếp mỗi lần là 1 block bnh bytes
+hàm fwrite khi dùng ghi mà ta truyền nhiều hơn số phần tử ta đang có thì nó sẽ in ra ký tự lạ cần tránh, khi đọc nhiều hơn thì k sao nhưng khi ghi thì phải tìm cách để lấy đc chuẩn số lượng kích thước để thao tác.
+Như v là ta thao tác được với file: 1 ký tự, 1 dòng, theo các kiểu dữ liệu liên tiếp, 1 khối có kích thước cố định=> điểm lợi của vc thao tác với byte và lưu file nhị phân là nó lưu trong file k chỉ các kiểu dữ liệu cơ bản mà là bất cứ kiểu dữ liệu gì(giống như QDataStream nhưng nó k cần định nghĩa lại). Khi dùng vs kiểu dữ liệu cơ bản thì file sẽ lưu hiện rõ nhưng kiểu dữ liệu phức tạp thì file chỉ hiện ký tự lạ và chỉ có thể đọc bằng fread ms nhìn đc
+giả sử ta đọc từ file binary bằng fread(file binary chỉ đọc đc bằng fread()), r ta cần ghi nó vào file khác bằng fwrite or cần dùng đến số lượng phần tử thì fread trả về số lượng ký tự đọc được->hãy dùng nó vi fwrite can so luong chuan
+=>TK: while(!feof(file))->bị lỗi khi đọc đến cuối sẽ thừa thêm bước nx vs fscanf và fread
+      while(fscanf()!=EOF)   while(fgets()!=0)   while(fgetc()!=EOF)   while(fread(,,1,)==1)
+
+Lỗi khó hiểu=> Khi thao tác với file thì close ngay khi nó kết thúc vc sử dụng file chứ k đc close ở cuối hàm. 
+
+Lỗi feof(file)->feof kiểm tra với fgets và fgetc là ok nhưng kiểm tra với fscanf và fread thì lỗi vì 2 kiểu đọc này là theo biến dữ liệu và kiểu biến dữ liệu nào-> do đó nó sẽ k đọc eof ở lần sát cuối mà chỉ đọc đúng kiểu dữ liệu đó. Như v đọc lần cuối cùng là chỉ đọc ký tự eof nhưng lại vẫn thực hiện vòng while lần nx, nếu làm gì trong vòng while thì sẽ thừa 1 bước cuối=> ta có thể chặt chẽ hơn nếu có dữ liệu thì mới thực hiện while bằng cách while(fread(data,sizeof(data),num,file) == num ){} để chắc chắn mọi dữ liệu đọc đều đúng format và đủ số lượng chỉ đến khi gặp eof là nó đọc thiêu số lượng. Điều này là đúng với struct nhưng nếu ta đọc cụm char[] thì lần cuối đọc thiếu char sẽ k chạy nx lại lỗi->thiếu j cách kiểm tra thêm feof bên trong lần nx là đc, qtr là biết đc cái lỗi này của feof
+
+Nếu text file ta fread r fwrite vào binary thì datfile sẽ y hệt text file, vì nó tưởng text file là
+file dat nên ghi vào file dat y hêt->chỉ nên dùng fread,fwrite cho dat file cho chuẩn
+
+Ví dụ: khi file có 1 đoạn text có cả \n \t ta muốn đọc tất cả lưu vào 1 char[]-> dùng fgets k đc vì vướng \n, dùng fgetc ok nhưng phải while liên tục, dùng fread cx ok nhưng chỉ nên dùng cho binary, dùng fscanf cho txt chỉ đc với 1 kiểu dữ liệu xác định=> dùng fscanf(file,"%[^EOF],s); cx ok
+Trap: fread(<var>, kich thước 1, số lượng kích thước lưu vào var, file)=>tức là đối số 1 và 3 có quan hệ với nhau=> nếu dùng while(fread) với 1 là mảng và 3 là số lượng phần tử có trong var thì ta sẽ lưu full mảng var. Nếu dùng while(fread) với 1 là 1 phần tử của mảng thì 3 buộc là 1. Nếu dùng trái khoáy tức VD while tương tự nhưng 1 là var mảng, 3 là 1 phần tử-> thế thì vòng while ở đây là sai, nếu while(fread() == 1) sẽ kbh xảy ra vì nó đọc full mảng mà, ở TH này nó chỉ ghi vào mỗi index[0] thôi=> dùng đọc full mảng luôn nếu cần lưu(vì fread nếu file hết sẽ tự dừng chứ k ghi rác cho đủ đối số 3). Còn dùng đọc từng phần tử khi muốn mỗi lần đọc xong từng phần tử ta thao tác thêm cái gì khác thì 1 phải là từng phần tử của mảng và tăng index sau mỗi vòng.

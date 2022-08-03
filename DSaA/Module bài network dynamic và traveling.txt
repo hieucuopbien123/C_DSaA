@@ -1,0 +1,108 @@
+# Phân tích 2 bài:
+
+  1 2 3 4 5 6
+1 0 4   1 3 2
+2 4 0 1
+3   1 0
+4 1     0
+5 5       0
+6 2         0
+
+dù ta có nghĩ cách nào thì nó cũng quy về backtracking
+
+1-> 2, 4, 5, 6
+2-> 1, 3
+3-> 2
+4-> 1
+5-> 1
+6-> 1
+=> đó là mảng vector a[u][i]
+
+dp[u][k]: chi phí nhỏ nhất đi từ u sang k thành phố khác
+
+formula: 
+chi phí nhỏ nhất đi từ u sang k thành phố khác = chi phí đi từ u sang v + chi phí đi từ v sang k - 1 thành phố khác
+
+=> Nó như kiểu bài traveling vậy. Nhưng điểm khác là traveling thì ta biết rõ bắt đầu từ thành phố số 1 đi thăm các thành phố khác. Ở đây là 1 mạng network ta không bắt đầu từ thành phố nào cả mà có thể từ bất cứ thành phố nào. Nếu tư duy thông thường sẽ chạy vòng for và mỗi turn sẽ gọi bắt đầu từ node đó tức mỗi turn làm như traveling-> k thể vì có đến 10^4 turn toang-> ta phải tìm cách tính tất cả gộp luôn trong hàm đó
+
+bài này backtracking chắc mượt vl vì cơ sở bài giống backtracking mà backtrack implement dễ hơn
+
+Điểm khác biệt gì làm cho nó phải làm dynamic recursion mà k làm bth thg đc
+=> Với các bài mà for xong lại for tiếp khi làm dynamic sẽ quy về được 2 dạng là mảng 2 chiều và vòng for lồng for 1 bậc bottom to top. Khi k thể làm bằng 2 cách đó thì sẽ rơi vào TH này => master phân tích:
++) Ví dụ bài chọn rương warehouse hay goldmining hay nurse là các bài kinh điển của for lồng for bottom to top: VD bài nurse ta duyệt tất cả các mốc thời gian-> nó có thể là làm 2 ngày, làm 3 ngày or nghỉ thời điểm kế tiếp-> ta phải chạy vòng for cho 3 TH này. Nếu backtrack ta phải for mọi ngày và check 3 TH này, nếu trước đó làm thì nghỉ, nếu nghỉ thì chọn 2 cái làm, xong làm 2 cộng 2 ngày, làm 3 cộng 3 ngày, nghỉ cộng 1 ngày-> dừng khi đủ số ngày
+=> Nếu dynamic for dần xây từng ngày, và để xử lý vòng for thứ 2 ta lồng nó vào bên trong chia ra 3 TH kết thúc bằng làm 2 ngày, 3 ngày hay nghỉ => mấu chốt là về sau ta tính các ngày sau hoàn toàn phụ thuộc vào các ngày trước bằng việc cộng dần lên thì bài toán thức sự giải được cha từ con
+=> Thật ra bài nurse này vừa là lai của 2 PP for lồng bottom to top và mảng 2 chiều. Vì for lồng áp dụng khi chia TH nhiều vòng for nhưng các vòng for đó không độc lập với nhau mà tính toàn phụ thuộc vào cái trước 1 chiều:
+VD k có điều kiện ngày nghỉ và chỉ có thể làm 2 or 3 ngày thì:
+số cách làm việc tạo 5 ngày = số cách làm việc tạo 5 ngày kết thúc bằng 2 + kết thúc bằng 3 ngày làm việc = số cách làm việc tạo 3 ngày + số cách làm việc tạo 2 ngày
+=> đặc biệt là nó chỉ có 1 chiều vì mọi TH kết thúc băng 3 hay 2 nó đều phụ thuộc vào cái ngày làm việc trước đó chứ k sang chiều thứ 2. Cụ thể là số cách làm việc tạo 2 ngày và số cách làm việc tạo ra 3 ngày là 2 cái cùng tính chất, có thể cùng lưu 1 mảng 1 chiều là [2] và [3]. Để xem cái khác tính chất nó như nào
+Bh ta thêm điều kiện ngày nghỉ như đúng VD mẫu của đề bài:
+số cách làm việc tạo 5 ngày = số cách làm việc kết thúc bằng 1 ngày nghỉ, 2 or 3 ngày làm = số cách làm việc tạo 3 ngày or 2 ngày kết thúc bằng ngày nghỉ + số cách làm việc tạo 4 ngày kết thúc bằng ngày làm
+=> như v tạo ngày thì cùng tính chất r nhưng mà kết thúc bằng 1 ngày nghỉ or làm thì khác tính chất vì làm sao lưu: làm việc 2 ngày/3 ngày/... kết thúc bằng ngày nghỉ và làm việc 2 ngày/3 ngày/.. kết thúc bằng ngày làm cùng 1 mảng được. Do đó phải dùng PP mảng 2 chiều: [2][1], [3][1] và [2][0], [3][0]
+=> tương tự nếu mở rộng nếu nó chia nhỏ hơn nx như ngày lễ cho phép làm nửa ngày kèm điều kiện gì đó thì không thể lưu: làm cả ngày, làm nửa ngày, làm 1 ngày cùng 1 mảng, lúc đó thêm 1 trường [2][2],[3][2] nx => vẫn trong chiều thứ 2 vì 3 cái tính chất kia lại cùng 1 tính chất 
+VD bài Knapsack or đồng xu: mảng chính chắc chắn là tạo ra khối lượng từ 1 đến 14 là mảng 1 chiều [1],...,[14] nhưng về sau để dễ dàng + kinh nghiệm, ta đã chia ra mảng 2 chiều dùng đến 1 đồng, dùng đến 2 đồng, dùng đến 3 đồng để lấy kết quả cuối là dùng đến 3 đồng tính nó cho dễ. Thực chất đó là chiều không gian thứ 2 ta không thể lưu trong cùng 1 mảng: chỉ dùng 1 đồng tạo ra khối lượng 1,2,3,.. và chỉ dùng 2 đồng tạo ra khối lượng 1,2,3,.. được
+=> Nếu lấy ví dụ thì bài nurse là bài tổng quát nhất của 2 dạng này
+
+Phân tích tiếp traveling: thử cố áp dụng 2 cái trên cho traveling xem tại sao k áp dụng được
+Bài Nurse: 1 period có thể là 3 TH, cứ thế cho fit hết số ngày-> backtrack for các period xem hiện tại là period nào-> dynamic vòng for xây từng ngày, vòng for con là for xử lý kết thúc bằng làm 2, làm 3, nghỉ
+Bài traveling: Lần visit hiện tại từ thành phố 1 có thể visit toàn bộ thành phố khác không rõ thành phố nào mới là ngắn nhất-> backtracking thành phố xem hiện tại là thành phố nào, fee cao phải quy lại-> dynamic hình như được
+period = thành phố 
+kết thúc bằng period hiện tại là period nào = kết thúc visit thành phố hiện tại là thành phố nào, nhưng nó thêm điều kiện là k trùng nên phải lưu thêm các thành phố nào đã visit r do đó nó dùng bitmask ở đây
+period mảng là [<ngày hiện tại thứ mấy r>][<kết thúc bằng cái gì ngày làm việc hay ngày nghỉ>] = traveling [visit đến chặng đường thứ mấy r][kết thúc bằng thành phố nào]
+=> ta for từng ngày xem ngày cụm ngày đó kết thúc bằng period nào => ta for từng cụm tour-> xem tour hiện tại kết thúc bằng thành phố nào
+=>đó chỉ là ý tưởng, ta xem tính chất nó như nào: chặng đường trên tour = ngày/ thành phố = period
+[3][S]: visit được 3 thành phố trong tour rồi và thành phố kết thúc và thành phố đã visit đều lưu trong S => S nó có thể tích được cái 3 kia luôn mà k cần chia mảng 2 chiều => mảng 1 chiều: [S] chi phí rẻ nhất visit được n thành phố kết thúc bằng thành phố thứ i với các thành phố đã visit được xác định hết trong S
+Cha từ con: Để update S4 từ S3 thì vòng for bottom to top được => toang. Vòng for này k kham nổi
+
+for(từng thành phố = số chăng)
+  base case đang visit thành phố đầu tiên
+  kp là base case thì xây tiếp
+
+=> Như v không áp dụng được là dù ta làm 2 cái PP trên thì vòng for vẫn bị lồng backtrack bên trong
+VD ta for các period để tính ra period hiện tại được, nhưng ta không thể for thành phố để tính ra thành phố hiện tại được vì sau khi for thành phố, mỗi thành phố đó lại phải for tiếp đến hết vì chỉ khi tính hết tất cả mọi TH lúc đó, ta mới biết là ta nên chọn cái nào tiếp theo, chứ for 1 lần k chọn được-> for lồng for tiếp như v là backtrack=> dynamic lúc này vẫn phải backtrack thì phải làm dynamic recursion
+=> Kinh nghiệm: Các bài mà sau khi ta dùng for lồng for mà không tính ra được giá trị hiện tại mà mỗi vòng for trong ta phải for tất cả liên tục thì phải dùng dynamic recursion
+
+Phân tích bài network: 
+Bài network là đi từ 1 node bất kỳ tới 1 lượng node khác nếu đi được sao cho chi phí nhỏ nhất=> bài này nhìn là thấy hơi hương traveling dựa vào kinh nghiệm là biết dùng gì r nhưng thử phân tích xem. 
+Xác định chọn ra cái gì thì for cái đó
+Ta cần chọn ra 1 con đường đi với chi phí rẻ thì chẳng hạn ta lưu node1/node2/fee2node thì giả sử ta chọn n + 1 node đi=> for n + 1 và bắt đầu chọn node đưa vào đây-> mỗi vị trí trong n + 1 vị trí có thể là các node nên for các node là có mảng 2 chiều [<vị trí nào>][kết thúc bằng node nào và đã visit những node nào(có thể lưu như S traveling)]-> rất đau đớn là for xong mỗi node thì phải for toàn bộ các node còn lại thì mới biết ta đi đúng hay sai-> traveling r
+=> các bài như này dynamic sẽ ez hơn nhiều vì dynamic recursion xong còn khác kiểu traveling nx thì kp đơn giản
+=> bài này k lưu như traveling là visit hết các node thì S == ((1 << số city) - 1) << 1 mà visit được k node thì tính rất khó, fix được bằng biến count truyền thêm vào hàm
+Bài này khó hơn là ta không biết bắt đầu từ thành phố nào:
+Cách 1 => k áp dụng được
+hàm(int node hiên tại, int S){
+  đã visit đủ thì return
+  đã tính r thì return giá trị đã có
+  for(các node visit được từ node này đổ đi){
+    nếu node này chưa visit{
+      recur hàm(visit từ node hiện tại k - i node còn lại với các node đã visit trong S)
+    }
+  }
+  return chi phí visit (k - i) node từ node hiện tại, nếu k có node để visit được v thì cho vô cực
+}
+for các node{
+  gọi hàm bắt đầu từ từng node và so sánh lấy max
+}
+=> traveling dynamic thực ra là 1 cách viết khác của backtrack mà thôi
+
+=> Vấn đề: mảng của ta phải lưu là [m][S] là visit từ m trở đi các node chưa visit được xác định trong S => điều này là không thể thay thế làm cho các bài như traveling kích thước rất nhỏ k quá 25 vì cái S lưu đã visit hay chưa sẽ chứa bitmask rất lớn. Bài này 2000 phần tử có thể visit làm S nó max là 2^2001 là vô lý nên cách này k được. Nếu ta k dùng bitmask mà dùng mảng bth để check sẽ rất phức tạp về đối số này nọ
+Cách 2: của ô Trần Hải Đăng
+VD: 6 2
+4
+1 2 4
+2 4 1
+1 6 2
+2 3 1
+Cơ chế: 
+Đi từ 0 tới 1(bắt đầu bằng 1) là 0-> Các node có thể đi của 1 là 2 và 6-> duyệt 2 và 6
+-> đi từ 2 tới 2 là 0-> các node có thể đi tới từ 2 là 1 và 3 và 4 loại 1 vì trùng cái trước đó-> duyệt 3 và 4
+  -> đi từ 0 tới 3 là 0-> từ 3 duyệt tiếp éo được-> nên chỉ đi được từ 3 ra 0 node là 0 mà thôi-> đi từ 3 tới 0 node còn lại là 0 thì đi từ 2 tới 1 node khác là 3 thì    là fee(2,3), còn đi từ 2 tới 0 node khác luôn là 0
+  -> duyệt đến 4-> đi từ 0 tới 4 là 0 duyệt tiếp của 4 thì 4 có thể đi tới mỗi 2 trùng nên k được-> chỉ có thể đi từ 4 ra 0 node còn lại là 0-> update giá trị đi từ 2 tới 1 node còn lại là fee(2,4) hay fee(2,3) cái nào rẻ hơn thì lấy
+  -> duyệt xong chạy vào phần sau update res đi từ 2 tới 2 node khác nhưng k thể
+  -> phần for thứ 2 check đi từ 2 có lớn hơn 1 cách nên lấy dần 2 cái của tập có thể đi từ 2 trong 1,3,4-> thì khi lấy 3 và 4 nó ok
+  -> vì đi từ 2 ra 2 node khác = đi từ 2 tới 3 + đi từ 2 tới 4. Ở đây là vòng for nx vì nếu k = 3 chẳng hạn thì đi từ 2 tới 3 + đi từ 3 tới tới 1 node nx + đi từ 2 tới 4 or đi từ 4 tới 0 node nx = đi từ 2 tới 4 + đi từ 2 tới 3 + đi từ 4 tới 1 node nx + đi từ 3 tới 0 node nx
+    -> từ 1 có thể đi tới 1 node khác = (đi từ 1 đến 2) + (đi từ 2 tới 0 node khác là 0) = fee(1,2)
+    -> từ 1 có thể đi tới 2 node khác = (đi từ 1 đến 2) + (đi từ 2 tới 1 node khác là vừa tính fee(2,3) hay fee(2,4)
+-> duyệt 6 cũng làm tương tự
+
+=> bài này đặc biệt cứ biết cách làm là được r, chắc k gặp bài nào quái khác bài này đâu nên chỉ có thể vào bài tương tự mà thôi
+=> k nắm rõ đề bài: trước tiên network mà đề bài cho thì phải có tính chất k có node nào rời ra ngoài mạng lưới-> nên ta thấy nó duyệt các node từ 0 tới 1 đầu tiên và cứ thế đi tiếp các node liên kết với các node liên kêt với 1 được duyệt hết mà k lo bị rời; Đề bài cũng cho là k có cycle trong mạng nên nó luôn như kiểu sơ đồ cây mà k có back edge. Bài này đúng hơn là dùng tc của graph: cho 1 connected graph k có cycle, tìm k edge liên tiếp k trùng sao cho khối lượng là nhỏ nhất. Dù sao thì ta vẫn học được cách lưu và nếu lần sau vào bài này sẽ làm được; Do đề bài cho k có cycle nên ta thoải mái đi từ 1 và đi tiếp chỉ cần check edge của node hiện tại không nối với node trước đó là được vì nó sẽ k thể nối lại với bất cứ node nào đã qua; 

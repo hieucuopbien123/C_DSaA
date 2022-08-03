@@ -1,0 +1,76 @@
+# Divide and conquer
+-> Chỉ là đệ quy mở rộng nên các bài dùng chia để trị ta đều gọi đệ quy hàm. Tốc độ thu lại nhanh và hạn chế được các bài toán con gối nhau của đệ quy.
+Quy trình: tìm cách chia bài toán lớn thành nhỏ, gọi đệ quy đến khi bài toán con đã có lời giải, kết hợp nghiệm các bài toán con lại.
+Mô hình: 
+divide_and_conquer(A, x) // Tìm nghiệm x của bài toán A.
+{
+    if (A_đủ_nhỏ)
+        {Giải_bài_toán_A};
+    else 
+    {
+        {Phân_rã_A_thành_các_bài_toán_con: A_1, A_2,..., A_m}
+        for (i = 1 to m)
+            divide_and_conquer(A_i, x_i); // Gọi đệ quy để tìm nghiệm x_i của bài toán con A_i.
+            
+        {Kết_hợp_nghiệm_của_m_bài_toán_con -> Thu_được_nghiệm_bài_toán_A}
+    }
+}
+=> binary search k là chia để trị vì chia để trị cần ít nhất 2 bài toán con ở mỗi bước phân ra để kết hợp nghiệm của chúng lại, còn binarysearch là giảm để trị vì chỉ còn 1 bài toán con ở mỗi bước=> thật ra cũng là 1 dạng của chia để trị
+
+Chú ý chia để trị n ví dụ ta duyệt hết các phần tử. Khi chia 2 nửa xong 2 nửa ta lại chia tiếp đến khi chỉ còn 1 phần tử thì nó như là 1 kiểu duyệt với độ phức tạp là log2n v. Thú vị là dù ta đúng là gọi đệ quy tất cả phần tử thật nhưng độ phức tạp chỉ log2n trong khi duyệt tuyến tính là n. Nên ưu tiên dùng divide and conquer hơn duyệt trâu. Dù v nó vẫn chậm hơn dynamic programming nhiều lúc
+
+-> Phương pháp chặn 2 đầu mút liên tục đến mức xấp xỉ. Mô hình:
+while(kết quả tìm ra so với kết quả cần tìm > sai số){
+	mid = (right + left)/2;
+	tính toán với mid;
+	nếu giá trị tính ra quá mid
+		cho left lên mid	
+	nếu giá trị tính ra nhỏ hơn mid
+		cho right xuống mid
+}
+Lưu ý: kết quả cho ra sẽ luôn xấp xỉ, k thể tìm được giá trị chuẩn. Nếu áp dụng với các bài tìm số nguyên chắc là chuẩn được. Tốc độ co lại rất nhanh là log2n
+Điều kiện dùng cách này: 1 là phải biết được khoảng mà giá trị hiện tại nằm trong là khoảng nào; 2 là phải check được kết quả tính toán ra là cần tăng left hay giảm right để có kết quả xấp xỉ là kết quả cần tìm;
+Ví dụ bài chia bánh cho người: diện tích là số thập phân chỉ cần xấp xỉ nên dùng được
+1 là: diện tích cần tìm bị chặn từ 0 đến kích thước bánh lớn nhất
+2 là: khi tính ra là dùng số bánh đó, nếu k đủ để chia thì phải giảm right xuống, nếu chia thừa thì tăng left lên
+
+Điều kiện dừng so sanh với sai số, có thể là right - left < sai số thì cái mid sẽ bị lệch nhiều nhất là sai số/2; or kết quả tính ra - kết quả thực < sai số thì là chuẩn nhất
+
+Dạng chặn bound khi thao tác với số nguyên thì cx v thôi. Nhưng nếu kết quả ta cần là số thập phân và ta phải lấy số nguyên sát với số thập phân đó thì cứ căn left hay right r xử lý thôi. Chú ý ta có thể dùng là right - left > 1 cx đc, nó sẽ dừng khi right và left là 2 số liên tiếp nhau. Nhưng ta nên đặt chung theo kiểu while right>=left khi đó chỗ dưới phải dùng là left = mid + 1 và right = mid - 1. Còn right-left>1 thì là left = mid và right = mid thôi
+=> trong float point thì éo được + 1 nhé 
+
+Các lỗi thg gặp phải trong divide and conquer: for chạy từ left đến mid chứ kp từ 0 đến mid; tìm min thì cho return 9999 ở điều kiện dừng k thỏa mãn chứ kp return 0 hay -1 sẽ phải xử lý thêm
+
+Bài cưa gỗ hay chia bánh: độ phức tạp thuận toán kp nlogn nhé vì cái chia của ta là chia từ height cao nhất cứ chia đôi nên phải là log2(max height)
+Độ phức tạp: T(n) = O(1) nếu n < nc; T(n) = aT(n/b) + D(n) + C(n) với a là số lượng subproblems, n/b là size của mỗi subprobs, D(n) là cost của divide operation, C(n) là cost của combination operation => master theorem
+Với complexity ~ 10^6 thì độ phức tạp nên là O(nlogn), còn > 10^9 trở lên thì nên là O(n) mà thôi. <10^6 tầm ~10^4 thì có thể O(n^2). Tầm ~15-20 thì O(n!) được, cao hơn thì nên <n! or Cnk như dùng branch and bound. Còn nếu rất cao ~10^18 thì nên dùng là O(logn) thôi. Tuy nhiên tùy đề bài mà có thể khắt khe hơn
+-> Bước combine càng lớn thì thực hiện càng lâu. Combine mà duyệt 1 lần thì đã là O(nlogn) và chỉ thao tác được tầm 10^6 data r, nếu combine lâu hơn thì k dùng đc.
+
+Trong thực tế, việc chia ra rất đa dạng. Nếu ta chia theo kiểu A(n) => A(n-1) thì nó chính là tuyến tính O(n). Nhưng ta chia đôi thì là log(n) lý tưởng nhất. Còn nh kiểu chia như lấy giá trị nhỏ nhất để chia đôi-> khi đó nên dùng segment tree để vc tìm giá trị nhỏ nhất là log(n) thì D(n) sẽ là log(n)
+
+Cách làm dạng bài divide and conquer kiểu cơ bản:
+Xác định chính xác thứ ta cần tìm =>thg là tổng số lượng trong 1 nhóm
+Tìm cận trên và cận dưới của thứ đó =>nó có thể là -1, 0, 1 thg là thứ nhỏ nhất or thứ lớn nhất or tổng các thành phần or vô cực, phải xét cả TH 1 nhóm chứa tất cả.
+Làm thử giả sử với 1 giá trị tìm được thì liệu có đúng là ra kết quả k => thứ ta có được sau khi dùng PP này chỉ là 1 giá trị duy nhất, liệu giá trị đó có dẫn đến kết quả k
+Lấy mid và tính để giảm cận dần dần để tìm giá trị chuẩn và in kết quả thôi =>mid đa phần là chia đôi. In kết quả dựa vào bước thứ 3 bên trên. Để tính thì phải tự làm r, thg là duyệt từ 2 phía or tính ra 1 cái gì mà có thể so sánh với thứ đề bài cho. Nếu lớn hơn hay nhỏ hơn thứ đó thì tăng left or giảm right
+
+-> 1 dạng của divive and conquer là decrease and conquer như binary search. Nhưng đa phần divide and conquer sẽ k là decrease and conquer mà ta phải dùng cả 2 or nhiều nửa đã chia để kết hợp lại thành bài toán lớn như thuật merge sort. Bài toán nhỏ hơn của merge sort là sắp xếp các phần tử của 2 tập tăng dần nhưng nó dễ hơn ở chỗ 2 tập đó đã được sắp xếp sẵn r nên chỉ duyệt qua 1 lần là O(n) mà vc chia đôi trong divide and conquer chính là 1 kiểu duyệt và xử lý phần tử có complexity O(log(n)) nên là O(nlogn)
+=> Tức là phương pháp divide and conquer thông dụng ở level1 này cho ta khả năng với mọi tập bất kỳ, ta có thể duyệt nó theo 1 kiểu rất dị là xử lý từng phần tử từ trước theo 1 thứ tự rất dị ví dụ 1234 thì là 1,2,12,3,4,34,1234 or ta bỏ phần combine tức là 1,2,3,4 -> 1 lần duyệt từ trái sang phải và ta có thể thao tác gì đó để bài toán trở nên dễ hơn sau đó ta giải bài toán bình thường ở các lần combine -> nếu như ta k thể duyệt qua các giá trị kia để làm 1 cái gì đó làm cho bài toán dễ hơn mà bài toán chả dễ hơn gì cả thì divide and conquer level1 k nên dùng.
+
+Giảm để trị: số nguyên thì check l>r mới dừng, với real thì check r-l<10^-x là dừng. Khi đó độ phức tạp sẽ là O(log((r-l)/EPS)) với epsilon là 10^-x là số lần chia
+
+Ứng dụng: tính a^b bằng divide and conquer giả sử k có hàm pow thì ta phải viết hàm tính với độ phức tạp O(logn) là cách tính nhanh nhất. Nhưng ta có thể mở rộng phép nhân này thành đủ mọi thứ như phép nhân 2 số floating point, nhân 2 ma trận, nhân ma trận kèm module,.. mọi phép nhân đặc biệt nào khác thì độ phức tạp là O(logn*f) với f là cost để thực hiện 1 lần * operator
+
+Tính chất fibonacii words: chiều dài của word thứ n là giá trị của số fibonacii thứ n
+Tìm ký tự thứ ith của fibo words thứ n -> so sánh i với n - 2 để biết no nằm ở bên nào r lại gọi giảm để trị ở phần chứa nó => phức tạp O(n)
+
+-> Divide and conquer level2 phát triển từ level1 thực ra chính là cách mà branch and bound phát triển từ backtracking. Ta xét 2 tập 2 bên nhưng đặt giói hạn cho nó mà thôi. Cứ cho là sau khi divide thì ta có thêm được 1 điều kiện gì đó giúp tính dễ hơn. Ta phải xem xét, sau khi divide và conquer tập nhỏ r thì ta có lợi gì để tính cho tập lớn, k có thì k dùng cách này-> đó là level1. Ở level2 ta chỉ cần thêm thắt các thứ như sắp xếp nó trước r mới divide chẳng hạn, hoặc ta đặt điều kiện để conquer bị chặn như cái cách branch and bound sử dụng kết quả đã tính để làm cho tập kết quả cần tính bị thu hẹp
+
+Lỗi sai: viết divide and conquer thì viết muốn thực hiện như nào trước thì viết riêng ra. Ở bài clopair ta mà gọi return min(recur(nửa phải),recur(nửa trái),a()) nó lại thực hiện a trước cơ làm mất thứ tự đúng là phải thực hiện 2 bên trước
+
+-> Bài Scriber write books là 1 ví dụ nâng cao của PP divide and conquer cơ bản và nếu k hiểu tường tận mà đã viết pseudo code là toang. Nó mở rộng thêm ở phần tính cái max của 1 nhóm thì phải duyệt vòng for từ cuối lên chứ k dễ như bth.
+Nó có khó thêm 1 chỗ là tính xong phải chừa lại ít nhất 1 chỗ cho các cái kia khi in ra. Nhưng thực chất phần đó là của in kết quả tự nghĩ về sau, qtr là bên trên
+
+=> Với dạng bài divide and conquer cơ bản đó. Ta nên chia ra tập thành 2 phần: trái - phải
+Trái và phải có tính chất đối lập nhau gì đó và ta phải tìm ra được điểm giao giữa trái và phải => bí kíp 
+

@@ -1,0 +1,62 @@
+-> Lỗi con trỏ:
+
+Tư duy: Khi cần làm 1 cái gì, bth ta chỉ cần code trực tiếp, nhưng các thứ mà trong quá trình làm bị biến mất thì ta phải dùng biến lưu nó lại để dùng được sau khi thực hiện. VD: ta cần xóa b trong a->b->null. Nhưng mà xóa b thì nó mất liên kết với a và a->next và b đều khác NULL. Để xử lý ta phải lấy biến a->xóa->gán a->next bằng NULL, tệ hơn là a->b->c thì phải lưu a, lưu c và cho a->next = c=>occho
+Chính vì v, ta code 1 chức năng đơn giản nhưng lại k tối ưu. Quá nh code có thể rút gọn, các TH bị bao nhau và quá nhiều biến lưu phức tạp. Trước khi ta quyết định lưu hay làm nó, hãy lùi lại một bước để thay đổi thứ tự thực hiện hay xử lý theo luồng tổng quát hơn để gộp code. Quan trọng là biến lưu có mục đích là ta k muốn mất một cái gì khi thao tác nên mới lưu lại và đảm bảo các biến khác sẽ k mất, mất thì lưu=>chọn biến lưu sao cho tối ưu nhất, cũng là biến đóng vai trò chính khi thao tác vì ta thg có xu hướng tách riêng một cái gì ra để thao tác với nó
+VD: thay vì lưu c ta lùi lại 1 bước. Ta sẽ lưu b->gán b=c->xóa biến lưu.
+Luôn xem xét theo 1 luồng rằng xử lý cái TH lớn sao cho bao đc Th nhỏ là tốt. VD thay vì chia 3 Th là null, có 1 con, có 2 con, ta có thể xử lý TH có 2 con bao có 1 con và có 1 con bao TH null k. VD: kiểm tra có 1 con left or right thì xử lý tổng quát sao cho nếu left,right trống thì vẫn đúng(sẽ bao cả TH NULL)
+=>Gặp 1 trap khác khi xóa: Nên nhớ ta thao tác với các biến có tên, là những thứ trỏ tới vùng nhớ, còn máy tính thao tác với các vùng nhớ cố định. Ta k thể làm j để thay đổi vùng nhớ mà chỉ có thể quyết định 1 biến có trỏ tới nó hay k. Hơn nx, các biến có tên kbh có quan hệ gì với nhau: vc thay đổi giá trị 1 biến thì máy tính sẽ đổi giá trị vùng nhớ nên các biến khác trỏ tới vùng nhớ đó đều đổi, còn thay đổi địa chỉ thì éo ảnh hưởng vì là 2 biến có tên trả có qh j.
+=>Do đó a->b->c tức là a,b,c là 3 biến có tên trỏ tới 3 vùng nhớ khác nhau, bh ta muốn vùng nhớ 1 trỏ trỏ tới vùng nhớ 3 luôn bằng cách trả vùng nhớ 2 cho hệ điều hành=>Ta k thể gán b=c rồi free(b) đc. Ta cần đứng dưới góc của cái máy tính muốn thao tác với vùng nhớ chứ kp thao tác với biến có tên. Ta đang có 3 vùng nhớ trỏ tới nhau và ta muốn vùng 1 trỏ tới vùng 3. Nếu gán b=c thì ta đang thay đổi 1 biến độc lập là b trỏ sang c chứ kp thao tác với vùng nhớ. 3 vùng nhớ đó vẫn cố định: 1(a trỏ tới)->2(k có biến nào trỏ tới)->3(b,c cùng trỏ tới). Dù có làm bất cứ 1 cái gì thì 3 vùng nhớ đó luôn là cố định và k bao giờ đổi. Như v, mục đích của ta chính là khiến cho cái biến trỏ từ a là next trỏ tới c, chứ kp là dùng 1 biến có tên khác trỏ tới 2 cho trỏ tới 3=> buộc phải đổi a->next chứ kp đổi b.
+Pt: vì cái thứ nối các node là *next. Nên dù vùng nhớ có biến mất mà next vẫn trỏ tới thì nó vẫn là 1 thành phần của next. Ngược lại dù k xóa vùng nhớ nhưng next trỏ tới vùng nhớ khác thì nó vẫn mang GT vùng nhớ khác. 
+Ta thử vận dụng tính chất, các biến phụ thuộc nhau về cùng giá trị vùng nhớ nhưng độc lập về địa chỉ để xóa b mà k dùng tới a=> để đổi a->next, ta gán nó là giá trị của 1 con trỏ **u, b cx là giá trị của 1 con tro **v và 2 con trỏ ** này đều có giá trị là con trỏ trỏ tới vùng nhớ 2(u=v). ta gán giá trị của v là con trỏ vùng nhớ 3 thì a->next là giá trị của u cũng phải trỏ sang vùng nhớ 3 vì u=v thì u,v đều phải cùng giá trị. =>Đệ quy chính là dùng cách này vì ta truyền &con trỏ mỗi lần
+Thông thường thì lỗi trên là một lỗi logic tiềm ẩn rất khó phát hiện. Đáng lẽ nó k xảy ra, vì mỗi khi ta dùng 
+Mỗi lần dùng hàm là một lần nó tạo ra 1 biến tạm mới
+
+Tức là: int*a,*b và a=b; thì a,b->ô nhớ 3->giá trị rác; *a=5; thì a,b->ô nhớ 3->giá trị 5; các biến trỏ đến 1 ô nhớ chứ kp mỗi biến có 1 ô nhớ riêng biệt. Khi khai báo biến thì nó luôn trỏ đến 1 ô nhớ nào đó
+1 biến số luôn có vùng nhớ, trong các compiler chuẩn, nếu int*a; thì ta k thể in a ra được vì chưa có vùng nhớ
+VD: Khai báo *b,*c cùng 1 ô nhớ thì sẽ cùng ô nhớ(giả sử ô nhớ đó giá trị 1). Khai báo **d trỏ đến b, **e trỏ đến c cũng là việc d và e cùng trỏ đến 1 ô nhớ
+c,b -> ô nhớ 1 -> giá trị 1
+d,e -> ô nhớ 3 mà b,c cùng trỏ đến -> giá trị là địa chỉ ô nhớ 1
+=> nếu đổi giá trị của d thì ô nhớ 3 mà b,c cùng trỏ đến sẽ đổi giá trị sang 1 ô nhớ khác -> e cũng sẽ đổi
+=> nếu coi biến trong ô nhớ, biến nhảy khắp nơi còn ô nhớ cố định thì:
+ô nhớ [d,e] -> ô nhớ [b,c] -> giá trị 1
+và khi xóa thì nó k xóa ô nhớ mà xóa biến nên VD delete c thì: ô nhớ [d,e] -> ô nhớ [c] -> giá trị 1 => vẫn dùng c được là *c = 1
+đồng nghĩa với vc ta k thể gán int*h = c rồi xóa h và hy vọng c sẽ bị xóa là sai vì khi đó: ô nhớ [d,e] -> ô nhớ [h,c] -> giá trị 1 => muốn xóa biến gì thì phải xóa
+bản chất biến đó, còn truyền vào hàm thì phải truyền trên cấp nó ** để xóa *
+
+Khi khai báo: int*a,*b,*c; thì a,b,c -> NULL; ô nhớ 1,2,3,4,5,... thuộc quyền hệ điều hành
+Khi gán: a = new int() thì b,c-> NULL; hđh cấp random vùng nhớ cho a ở đây ta giả sử nó gán vùng nhớ số 3 thì: a -> ô nhớ 3 thuộc quyền quản lý của ta; ô nhớ 1,2,4,.. thuộc quyền hệ điều hành
+Khi xóa: delete a; thì b,c->NULL; a-> ô nhớ 3 thuộc quyền hệ điều hành; ô nhớ 1,2,3,4,5,.. vẫn thuộc hết về hđh
+Khi gán NULL: a=NULL thì a,b,c -> NULL; ô nhớ 1,2,3,4,5 thuộc quyền hệ điều hành
+=> phải như v mới quay về đúng trạng thái ban đầu
+
+Vấn đề là mọi thứ dùng trong hàm đều là biến tạm thời, kể cả ta truyền con trỏ vào(đã biết). Ví dụ ta truyền con trỏ vào thì đổi đc giá trị: quy trình là nó sẽ tạo ra 1 con trỏ tạm trỏ đến cùng ô nhớ với con trỏ truyền vào, xong ta đổi giá trị của nó thì giá trị của ô nhớ bị đổi nên con trỏ bên ngoài cũng bị đổi. Tức là ta đổi giá trị vùng nhớ. Truyền con trỏ ** cũng v, đổi con trỏ * tức là đổi giá trị của vùng nhớ nên con trỏ bên ngoài mới bị đổi. Nhưng đổi con trỏ copy thì k.
+Bên cạnh đó thì cái return của hàm cũng chỉ là 1 biến tạm và return hàm luôn có tính chất là rvalue. k thể lấy địa chỉ của rvalue với dấu &. Nó là rvalue thì chỉ desired là lấy ra giá trị dùng tạm thời lúc đó. 
+=>Chính vì nó cứ tạo biến tạm liên tục mà gặp vấn đề với con trỏ. Đó là tính chất, 2 con trỏ khác nhau thì độc lập với nhau(kp 2 con trỏ mà 2 biến bất kỳ thì luôn độc lập với nhau về giá trị của con trỏ). Khi thao tác, ta luôn tư duy là gọi 1 hàm thì nó sẽ tạo ra 1 biến có tên khác trỏ đến cùng vùng nhớ và thao tác, thao tác xong biến đó bị xóa đi. Khi return nó cx tạo ra 1 cái biến rvalue tạm thời có 1 cái tên khác trỏ đến ô nhớ đó và return=> chính vì v, khi gán int*a=func() thì cái a của ta là 1 cái tên khác trỏ tới vùng nhớ của func chứ kp cái biến có tên ta return ban đầu. 
+Tóm lại là khi đi vào hàm thì cái biến của ta lấy ra k còn là cái biến ban đầu nx. Nó là 1 biến khác trỏ tới vùng nhớ của cái biến ban đầu nên có giá trị như nhau.
+
+=>Khi thao tác với biến, k đc đặt bừa bãi, hãy chắc chắn là ta đang thao tác với đúng biến có tên đó hay là chỉ đang thao tác với 1 biến có tên khác trỏ tới cùng vùng nhớ.
+VD:  XoaNode(&(*t)->next, data); thì k có lỗi nhưng: Node* temp; temp= (*t)->next; XoaNode(&temp,data); thì có lỗi vì đúng là xóa đi đc thật nhưng bước:
+Node *X = *t;
+*t = (*t)->next;
+free(X); lại sai vì *t = (*t)->next; nhưng bản chất chỉ là đổi con trỏ của 1 biến có tên khác chứ kp đổi (*t)->next. Tức temp = temp->next chứ (*t) k bằng(*t)->next vì (t*) và temp đổi giá trị thì đc chứ đổi con trỏ thì độc lập
+Hay vc truyền XoaNode(&new1, 2); và XoaNode(&new2,2); tt
+=> tức là xóa thì ta k xóa vùng nhớ mà xóa biến
+
+Thắc mắc trọng điểm: Rõ ràng ta đc học là truyền vào hàm thì nó sẽ copy ra và do đó biến có tên của ta kp là biến có tên gốc, cứ truyền vào hàm kể cả đệ quy cx như v nhưng vẫn đổi đc NN là vì ta truyền con trỏ 2** và đổi giá trị nên ms đc. Còn vc ta gán biến Node* temp cho nó r truyền temp vào hàm thì k đc-> hiển nhiên r vì nó là biến có tên khác, nếu muốn đc thì phải là Node** temp = &t=>muốn đổi giá trị con trỏ phải copy con trỏ 2 sao.
+
+=>VD: khi dùng biến có tên cần đổi truyền vào hàm thì hàm copy giá trị con trỏ của nó và thực hiện, nhưng mọi thao tác chính là với cái biến có tên gốc ta cần thao tác chuẩn. Tức bên trong ta sử dụng cái para truyền vào ấy như là sử dụng (*t)->next trực tiếp v. Còn nếu ta truyền 1 biến có tên khác trỏ vào cùng vùng nhớ đó vào hàm=>tương tự hàm sẽ copy và thao tác với nó kp là thao tác với biến có tên gốc. Ví dụ đổi giá trị của nó là đổi giá trị của ô nhớ thì ok nhưng nếu đổi giá trị của con trỏ đó sang 1 ô nhớ khác thì cái biến có tên (*t)->next sẽ k đổi vì (*t)->next và new2 là 2 biến độc lập, (*t)->next vẫn trỏ tới như cũ
+=>Kinh nghiệm: nếu muốn đổi giá trị của một con trỏ thì phải đảm bảo nó chính là giá trị ta đang sử dụng or truyền trong hàm sử dụng chứ kp thông qua 1 biến có tên khác. Và giá trị đó k bh đc truyền vào hàm trung gian nào đó, vì nếu như v hàm sẽ copy và giá trị ta có là biến tạm k chứ còn là (*t)->next nx(Hàm trung gian mà truyền đúng bản chất biến có tên của ta chứ k copy thì cx ok với ** nhưng nếu hàm thay đổi biến thì bên ngoài cũng bị đổi, nếu muốn dùng bản chất biến phải chịu thay đổi. Tức là ta k thể để hàm copy biến tạm mà lại muốn thay đổi biến có tên chuẩn=>trong tree ta đã fix bằng hàm lấy parent để thao tác fix như biến có tên gốc)
+Đương nhiên là ta có thể truyền bản chất của (*t)->next vào nhiều hàm lồng hàm thoải mái. giả sử là đệ quy hai lần thì lần thứ 2 cái para ta dùng sẽ là chuẩn biến có tên (*t)->next->next và đổi giá trị con trỏ là đổi cái này chứ kp cái tên khác kia=>Các TH dùng hàm vẫn truyền bản chất biến có tên gốc nv đều ok
+
+(Sai->)Vd bài delete 1 node trong tree: nếu ta dùng hàm search cái vị trí đó để xóa. V thì k thể đặt biến lưu là biến cần xóa đc vì gán cái cũ nó k chạy. Hàm search trả ra là biến tạm copy nên là 1 biến có tên khác r=> hoặc là dùng hàm lấy parent trc khi xóa, hoặc là đệ quy truyền chính cái biến cây->next chuẩn=>chỉ lỗi với hàm xóa=>sai, thật ra hàm search ổn cả vì con trỏ 2 sao mà, qtr là cái biến tạm ta dùng kp là **
+
+Bth: int *a; *a=*b; là gán giá trị a là b; a=b là gán địa chỉ a trỏ tới b; 
+Nhưng dùng struct: Node *a; thì a=b; là gán địa chỉ a trỏ tới b; a->data = b->data là gán thành phần data trong a là data của b; Còn a=b là đổi giá trị a thành b, tất cả các giá trị trong a đều là của b=> nó sinh ra thêm cái gán 2 struct cho nhau.
+=>cái lỗi bên trên chính là TH 3 gán khi cố gán giá trị 1 struct,class thành 1 struct/class khác thì phải đảm bảo là thao tác với đúng biến có tên của nó
+
+=>muốn thay đổi giá trị con trỏ thì phải thay đúng cái bản chất của con trỏ đó->trong suốt quá trình con trỏ đó k đc chuyển thành biến có tên khác->nếu địa chỉ của nó chuyển sang biến tạm để đổi giá trị là nó thì vẫn ok(con trỏ 2 sao copy địa chỉ của nó và đổi nó thì vẫn ok(đệ quy))
+=>tức là bth ta dùng con trỏ 2 sao đổi giá trị thì con trỏ bị đổi nhưng ở đây có TH mà đổi giá trị mà biến nó k bị đổi bởi vì con trỏ 1* của 2* đó khi truyền vào đã bị copy biến tạm ở chỗ nào đó nên đổi giá trị con trỏ 2* ok đấy nhưng chỉ đổi con trỏ biến tạm mà thôi chứ bản chất ban đầu thì k->tức con trỏ 2** mà ta dùng lúc đó là con trỏ 2** trỏ tới con trỏ 1* của biến tạm chứ kp biến gốc
+
+=>TK: Khi đổi giá trị con trỏ thì phải chắc chắn là thao tác với bản chất biến(trong 1 số TH đổi bị ảnh hưởng vd hàm xóa) kể cả dùng con trỏ 2** cx phải chắc chắn con trỏ 2* có địa chỉ của đúng bản chất con trỏ 1* của ta
+=>Hàm và các phép tạo biến để gán sẽ sinh ra 1 biến có tên độc lập trỏ vào cùng vùng nhớ, nó khác biến ban đầu
+

@@ -1,0 +1,188 @@
+# Backtracking
+VD bài toán giải mê cung=> ta sẽ đi vào từng hướng 1, mỗi hướng rẽ nhành lại đi vào các hướng nhỏ hơn-> nếu hướng nhỏ hơn k ra đc kết quả sẽ quay lui lại vị trí trước và tìm tiếp-> cứ thế cho đến khi nào thoát khỏi maze.
+=>nó khá giống bruteforce là xem xet mọi khả năng xảy ra của vấn đề và đi vào từng cái 1 cho đến khi nào thành công. Backtracking thg dùng để tìm các TH thảo mãn các yêu cầu nào đó. Còn bruteforce nói về các thuật toán tìm kiếm tất cả các TH có thể xảy ra. Tuy nhiên có những bài toán chỉ sử dụng đc backtracking mà k dùng đc bruteforce.
+Backtracking có thể đi với recursive tùy ý còn bruteforce thì bắt buộc duyệt liên tục đến hết.
+
+-> Ví dụ bài toán tổng quát của backtracking: in ra tất cả các string n=10 phần tử từ tập hợp X có 2 phần tử {0,1} chẳng hạn.
+Nếu ta dùng bruteforce đồng nghĩa ta phải dùng 10 vòng for liên tiếp, tức là duyệt qua từng phần tử để gán vào, mỗi phần tử ta lại duyệt qua từng giá trị 0,1 có thể gán cho phần tử đó.
+Backtracking no recursion: PP pro vì thay vì sử dụng 1 vòng for ta có thể gộp lại chỉ còn 2.
+int n, count,k;
+int a[100], s[100];
+void PrintSolution() 
+{
+    int i;
+    count++;
+    cout << "String # " << count << ": ";
+    for( i=1 ; i <= n ; i++) 
+    cout << a[i] << " ";
+    cout << endl;
+} 
+// giả sử mảng có {0,1,3}
+void GenerateString()
+{
+    k=1;
+    //k là biến lưu index giá trị current 
+    s[k]=0;//giá trị đầu tiên của mảng các phần tử con số xuất hiện
+    //s[k] là mảng lưu để kiểm soát ta sẽ lưu phần tử nào vào. 
+    while(k > 0)
+    {
+        while(s[k] <= 3)
+        {
+            a[k] = s[k];
+            if(s[k] != 1)
+            s[k] = s[k] + 1;//gán đúng với giá trị theo kiểu tăng lên
+            else{
+                s[k] += 2;
+            }
+            if( k == n )
+            PrintSolution();
+            else
+            {
+                k++;
+                s[k]=0;//giá trị đầu tiên
+            }
+        }
+        k--; //bth thì gặp ngõ cụt thì quay lui, ngõ cụt ở TH này k phải là mê cung mà là khi đã xét hết các TH, ta sẽ quay lui
+    }
+}
+//luồng chạy dự đoán: ta muốn là gán tất cả các phần tử là giá trị đầu tiên-> sau đó thay thế các phần tử ở cuối là giá trị của mảng-> sau khi chạy hết thì quay lui 1 lần rồi lại gán các phần tử hiện tại là các phần tử của mảng->mỗi phần tử đó lại gán các phần tử sau nó giá trị của mảng.=>ta k thể dùng nhiều vòng for lồng cho bài này mà buộc làm như trên -> backtrack thì ta cũng làm k recursion được nhưng phức tạp ra
+S[k] là một mảng có cùng kích thước với mảng đích là a[k] để bám sát các giá trị đã lưu, từ đó ta có thể check đang lưu số 0 thì số sau phải lưu tiếp số 1. Ta k dùng mảng nào để lưu các số 0,1,3 cả. Tập Sk gọi là candidate set. Mỗi TH tm Đk gọi là feasible solution.
+//luồng chạy thực tế tổng quát:
+//!
+void Backtraking()
+{
+    k=1;//khởi tạo giá trị ban đầu, ở đây ta cho chạy từ 1
+    //xây dựng s[k] bám vào phần tử cần lưu
+    while(k > 0)//kiểm tra nếu quay lui lùi về thấp quá giá trị ban đầu thì xong. Vòng while này thể hiện là vẫn đang quay lui từng nhánh
+    {
+    	while(S[k] khác rỗng)//nếu chưa va phải ngõ cụt, còn đi đc tiếp. Vòng while này xử lý 1 nhánh
+        {
+            a[k] = S[k];//bắt đầu chạy vào từng nhánh
+            if(k == n)//thỏa mãn điều kiện thì lấy
+            {
+                printfSolution();//xử lý kết quả
+            }
+            else{ 
+                k = k+1;
+                //nếu chưa thỏa mãn thì ta đi tiếp đến khi nào thỏa mãn
+                //xây dựng s[k] bám sát vào phần tử
+            }
+        }  
+        k = k - 1;//quay lui từng cái
+    }
+}
+=>tức là:
+khởi tạo các giá trị cho vc quay lui, phần tử đầu tiên là gì, mỗi lần khởi tạo phải đi với khởi tạo mảng bám sát là s[k]
+while(quay lui chưa hết)
+{
+    while(nhánh chưa xử lý)
+    {
+        xử lý một phần của nhánh
+        khởi tạo gt s[k] tiếp theo bám sát vào phục vụ cho vc xử lý
+        if(thỏa mãn yêu cầu)  
+        {
+            xử lý kết quả
+        }
+        else{
+            đi sang phần tiếp theo của nhánh
+            khởi tạo giá trị s[k]
+        }
+    }
+    quay lui
+}
+Backtracking with recursion: cái trên đau cmn đầu, nếu dùng recursive ez hơn
+void Try(int k)//thử với 1 phần tử
+{ 
+    //khởi tạo tập S chứa các phần tử sử dụng {0,1,3}
+    for(từng phần tử của S)
+    {
+        a[k]= y;//xử lý 1 phần nhánh
+        if(k == n) //nếu thỏa mãn tức (a1, a2, ..., ak) đã là kết quả cần tìm
+        {
+             printfSol();//xử lý kết quả
+        }
+        else Try(k+1);//nếu chưa thỏa mãn thì chạy tiếp với k+1 phần tử
+    }
+}
+=>vc recursive ở đây đã khiến ta xử lý vấn đề 10 vòng for lồng nhau. Vc gọi try(k+1) chính là vòng for con sau vòng for lớn=> như là nhét các vòng for vào đệ quy v
+=>nó sẽ chạy gán là 0->gán các phần tử khác cũng là 0->đến khi quay lui nó sẽ gán phần tử cuối là 1 r cứ quay lui liên tục đến khi hết các vòng for.
+Công dụng nx của recursive-> rút gọn vô số vòng for có quy luật vào nhau => however, backtrack có thể thực hiện bằng 2 vòng while loop như trên tức là mọi dạng đệ quy ta đều có thể khử được 
+
+-> Để tạo backtracking có 2 VĐ cần giải quyết: ta xét cái cách recursive thôi 
+Xây dựng candidate set Sk, giả sử tổng quát khi đã có S(k-1): ví dụ bài trên S[k] luôn là {0,1}=> ví dụ phải xây đc S1,S2,S3,.. Tập ứng cử viên là các tập hợp mà tập kết quả a[k] phải lấy ra từ đó. 
+Tạo vòng lấy các phần tử của S[k]: for(int i = 0; i <= 1; i++)
+Ví dụ: Ban đầu ta chỉ có 1 tập root rỗng->Ta cần tìm 1 tập hợp(a1,a2,a3) lấy từ 1 tập mẹ-> từ tập mẹ ta chọn ra các kết quả có thể dùng cho a1 là S1->Lấy 1 phần tử từ S1 đc a1-> có a1, ta tạo S2-> chọn từ đó ra a2=> tương tự ra a3-> nếu gặp ngõ cụt, VD: k tồn tại a3 thỏa mãn hoặc ĐB yêu cầu liệt kê dùng tất cả các a trong S3 sau đó vẫn là ngõ cut-> quay lui về S2 và chọn 1 a2 khác-> cứ nv đến hết.
+
+-> Để làm đầy đủ 1 bài backtracking thì có template đơn giản:
+void try(int k){
+  <xây dựng Sk cho phần tử si biết đã có Sk cho s(i-1) từ trước r>
+  foreach phần tử của Sk{
+     if(candidate){ //<check phần tử này có thật sự cần lấy không>
+       <xử lý>
+       <thêm thông tin ở vòng này (vào 1 biến lưu nào đó chẳng hạn)>
+       if(k == n){ //<nếu thỏa mãn điều kiện duyệt toàn bộ r>
+         <handle solution>
+       }
+       else try(k + 1);
+       <xóa bỏ thông tin ở vòng này>
+     }
+  }
+}
+try(<start>);
+//Ở trên ta có thể dùng 1 trong 3 TH là được: xây tập Sk chỉ toàn candidate(nếu xây được luôn) xong for nó là cứ thế mà dùng thôi; for tất cả luôn(khi k xây được luôn) rồi gọi hàm candidate để check phần tử đó có thỏa mãn k; for tất cả nhưng k dùng hàm candidate nx mà chơi kiểu thêm thông tin vào biến nào đó để các vòng phía sau k dùng các thứ đã đánh dấu ở vòng trước chẳng hạn, khi đó xử lý xong thì phải xóa bỏ thông tin
+=> nếu có thể thì cách 3 là chuẩn nhất vì trong đa số TH nó cho độ phức tạp ít nhất. Nếu k hàm candidate hay quá trình xây tập Sk sẽ phải chạy vòng for phức tạp lồng nhau. Cách 3 có thể cần nhiều vòng for để gán các giá trị ban đầu nhưng nó chỉ là các vòng for + lại. Còn vòng for lồng của các TH kia là nhân lại cơ.
+VD: bài toán xếp n queen vào bàn cờ nxn ô
+Cách 1 ta tạo tập chứa mọi ô và for tất cả các ô đã điền và loại bỏ chúng xong có được 1 tập Sk hoàn chỉnh-> for tập Sk đó
+Cách 2 ta for tất cả r gọi vào hàm candidate, for các ô đã điền và check xem ô hiện tại có đc k
+Cách 3 là ta xây 3 mảng để đánh dấu: A[n] với A[i] là false nếu col i đã có; B[n] với B[i] là false nếu ô (row,col) đã có với col-row = i; Tương tự C(2n) cho đường chéo còn lại. 
+=> Để xây được theo cách 3: hãy tìm 1 điểm chung của các TH k thỏa mãn làm sao mà nhét đc nó vào 1 mảng mà check đc(chú ý là phải k bị trùng và check đúng và đủ). Ở đây với đường thẳng thì các ô k thỏa mãn có cùng đặc điểm là row = bnh thì ta lưu row đó vào 1 mảng r cứ check với mảng đó thôi(lưu vào mảng vì mảng có O(1) phức tạp để refer đén bất cứ phàn tử vị trí nào của nó), với đường chéo thì đường \ có chung đặc điểm là r-c=hso, đường / thì r+c=hso. 1 bảng có 2n-1 đường chéo \ or / nên ta lấy 1 mảng có 2n phần tử để lưu nè. Nch cái này phải tự tùy biến.
+
+-> Xếp a vào b khi backtrack: kiểu mới là thay vì tạo ra 1 tập b các vị trí có thể xép, ta xếp vào mọi vị trí b và xử lý gặp cái nào thì làm gì sẽ tốt hơn.
+=> if else các TH của b-> viết ra xem có gộp được bước nào ra ngoài thì gộp
+Code phải chú ý mọi thứ k được nhầm, mỗi khi viết 1 biến gì là phải hiểu biến đó có vai trò gì, viết có đúng k
+
+-> Vcl thật đấy: điều đặc biệt là việc gán a = b = c = 1; nhanh hơn a = 1; b = 1; c = 1; Khi dùng backtracking mà chạy nhiều lần thì điều đó trở nên đáng kể
+Khi mà backtracking mà chỉ sai có 1 test cuối thì rất có thể là chỉ bị lệch có 1 tẹo về code, ta thử rút gọn code lại nhé.
+
+-> Backtracking phải dùng linh hoạt: Bài xếp đồ vào túi là 1 ví dụ. Ta k chặn đc cận trên nhưng vẫn backtrack được với tốc độ cao và duyệt có thứ tự.
+=> Bằng cách sắp xếp cái mảng trước khi backtrack thì có thể check khi nào trùng vào giá trị lớn nhất hay nhỏ nhất. Để lấy có thứ tự thì chỉ cần cái hiện tại phải lớn hơn cái trước nó. Có thể dùng backtrack for tất cả r check or xây Sk r for đc.
+Khi đó k cần check giá trị đã đi qua bằng mảng check làm gì. Cái đó chỉ dùng cho các bài lấy A và B xong lấy B và A vẫn đc mà thôi
+Khi dùng Try vòng này để xây Sk mà cần dùng số liệu của vòng Try trước thì truyền nó thành tham số hàm Try sẽ dễ nhìn hơn, dễ nhận ra hơn.
+
+-> Lại là backtracking giải quyết time limit tối ưu:
+Ta vẫn mắc lỗi timelimit. Để fix ta phải tối ưu đặc biệt trong hàm backtrack, tối ưu hết mức có thể như gán a=b=c nhanh hơn gán a=b; b=c => nhưng thế vẫn là chưa đủ
+Để tối ưu hơn nx thì ta phải tìm cách tạo ít biến nhất trong hàm Try đồng thời giảm tất cả các thao tác đến mức tối ưu
+=> tách ra hàm riêng=> vc tách ra hàm riêng sẽ k làm tốc độ k đổi nên ta có thể lợi dụng điều đó để giảm số biến
+Vd: Try(int k){
+  for()
+    ta tiến hành check luôn tại đây
+    nếu check sai
+      goNext = false;
+    if(goNext == false) {đi tiếp}
+}
+=> Trông tưởng đã rút gọn nhưng thật ra là có thể tối ưu hơn được nx
+Try(int k){
+  for()
+    if(check(params cần để check)) {
+      đi tiếp
+    }
+}
+=> đã loại bỏ được biến goNext
+=> tốc độ trong hàm check điều kiện kết thúc thì k qtr nhưng khi chạy bên trong vòng for ngoài điều kiện kết thúc hoặc check điều kiện của branch and bound thì phải tối ưu vì tốc độ của nó tăng cấp giai thừa
+
+Trap tối ưu khi bỏ ngoặc:
+if(){
+  if(){
+    //oneline code
+  }
+}else{
+  //oneline code 
+}
+=> thì k được bỏ ngoặc tùy tiện:
+if(){
+  if()
+    //oneline code
+}else
+  //oneline code
+=> cái ngoặc còn lại mà rút gọn là bốc cức
+

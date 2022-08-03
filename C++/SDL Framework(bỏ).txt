@@ -1,0 +1,306 @@
+Các kiểu biến ta cần dùng:
+SDL_Window*  = NULL=>cái trình mà ta nhìn thấy, là cái tồn tại từ đầu tới cuối CT
+SDL_Renderer*  = NULL=>là cái TT đưa lên window, mọi thứ đi qua nó r ms lên window, là cái tồn tại từ đầu tới cuối CT
+SDL*Surface*=NULL{format,w,h,clip_rect(nếu set thì SDL_bool SDL_SetClipRect(SDL_Surface*,const SDL_Rect*))}=>bề mặt đầu tiên mà ta load bất cứ thứ j lên sẽ chứa ảnh,text,hình vẽ,...
+SDL_PixelFormat*=>1 loại biến có thông tin format pixel của cái surface
+SDL_Event{type,key.keysym.sym,button.button,key.repeat,text.text,window.event,tfinger.x/y,mgesture.dTheta,mgesture.dDist,mgesture.numFingers}=>khai báo biến chứa 1 sự kien bất kì
+(int type,SDL_KeyboardEvent key,SDL_Keysym keysym,SDL_Keycode sym,SDL_MouseButtonEvent button,int(enum mouse button đó) button.button,SDL_TextInputEvent text,char[32] text.text,
+SDL_WindowEvent window,SDL_WindowEventID(Uint8) window.event,Uint8 key.repeat,Sint32 window.data1/window.data2,SDL_TouchFingerEvent tfinger,float tfinger.x/y,SDL_MultiGestureEvent mgesture,float mgesture.dDist,float mgesture.dTheta)
+(muốn lấy vị trí touch thì phải *SCREEN.x/h vì nó nhét màn hình thanh từ 0 đén 1)
+(key.repeat vô cùng qtr:nếu k có nó mà ta ấn giữ thì máy sẽ kiểm tra điều kiện liên tục tức là lần ấn nào cx là lần ấn đầu tiên, còn có nó thì ta ấn giữ thì TT đó đc duy trì tức là ấn 1 lần giữ TT đó k cộng dồn lên ==0 thì là k nhấn giữ)
+(SDL_WindowEventID:SDL_WINDOWEVENT_SIZE_CHANGED,SDL_WINDOWEVENT_EXPOSED(window TH này cần vẽ lại),SDL_WINDOWEVENT_ENTER, SDL_WINDOWEVENT_LEAVE, SDL_WINDOWEVENT_FOCUS_GAINED, SDL_WINDOWEVENT_FOCUS_LOST,SDL_WINDOWEVENT_MINIMIZED,SDL_WINDOWEVENT_MAXIMIZED,SDL_WINDOWEVENT_RESTORED,SDL_WINDOWEVENT_SHOWN(),SDL_WINDOWEVENT_HIDDEN,SDL_WINDOWEVENT_CLOSE(khi có sự kiện rằng cửa sổ sẽ đóng, ấn quit chẳng han, do đó k phải SDL_Quit như khi có 1 cửa số nên muốn đóng ta phải TỰ hide nó đi)...)
+
+(SDL_EventType:SDL_QUIT,SDL_MOUSEBUTTONUP,SDL_KEYUP,SDL_FINGERUP,SDL_MOUSEMOTION,SDL_FINGERMOTION,SDL_TEXTINPUT,SDL_WINDOWEVENT,SDL_FINGERMOTION,SDL_MULTIGESTURE,...)
+(SDL_TEXTINPUT sẽ lấy các kí tự bàn phím)
+
+(SDL_Keycode:SDLK_0,SDLK_m,SDLK_F6,SDL_UP,SDLK_RETURN,SDLK_BACKSPACE,...)
+(SDL_BUTTON:SDL_BUTTON_LEFT,SDL_BUTTON_MIDDLE,SDL_BUTTON_RIGHT)
+(ta dùng type để kiểm tra thuộc loại gì, nếu là bàn phím thì ốp keycode, nếu là chuột thì ốp SDL_BUTTON_,còn 1 loại finger nx ghi sau)
+SDL_Rect{x,y,w,h}=>set tọa độ và kích thước
+SDL_BlendMode=>mode 1 là k trộn màu, ảnh cho vào vẫn giữ nguyên.mode2 là trộn theo số alpha truyền vào.3 là blending cộng,4 là chỉnh màu
+(enum:SDL_BLENDMODE_NONE,SDL_BLENDMODE_BLEND,SDL_BLENDMODE_ADD,SDL_BLENDMODE_MOD)
+SDL_RendererFlip
+(enum:SDL_FLIP_NONE,SDL_FLIP_HORIZONTAL,SDL_FLIP_VERTICAL)
+SDL_Point{x,y}
+TTF_Font*=NULL
+SDL_Color{r,g,b,a}=>1 là decimal hết, 2 là hexa hết.Khi khởi tạo biến thì truyền 3 đối số r,g,b thôi cx đc
+Mix_Music*=NULL=>khai báo biến lưu nhạc(music)
+Mix_Chunk*=NULL=>biến này chỉ nên lưu âm thanh ngắn(sound)
+SDL_Keymod là trạng thái của vài phím đb đang được ấn xuống
+(KMOD_NONE(k có phím đb nào đc ấn),KMOD_LSHIFT,KMOD_LCTRL,KMOD_CAPS,KMOD_ALT,KMOD_LGUI,KMOD_ALT(tức là phím ALT phải or trái đang trong TT ấn xuống))
+SDL_RWops*=NULL=>biến structure cung cấp 1 interface trừu tượng cho luồng IO.ta dùng nó khi cần mở 1 file nào đó thì dùng làm biến lưu
+SDL_PixelFormat{format}=>cấu trúc lưu pixel
+SDL_PixelFormatEnum{SDL_PIXELFORMAT_RGBA8888,...}
+(truyền SDL_PIXELFORMAT_RGBA8888 để dùng 32 bit màu, thg dùng làm đối số truyền vào SDL_CreateTexture) 
+SDL_TimerID (kiểu biến tạo ra khi dùng đến hàm SDL_AddTimer phục vụ cho vc làm gì đó lặp lại độc lập vòng while)
+SDL_Thread*(kiểu biến khi cần tạo 1 thread thực hiện độc lập bằng SDL_CreateThread)
+SDL_sem*(biến lưu semaphore khi khởi tạo SDL_CreateSemaphore)
+SDL_DisplayMode{w,h,format}=>biến lưu structure của chế độ màn hình
+
+
+
+
+
+Các hàm mà ta cần dùng,biết:
+int SDl_Init(SDL_INIT_VIDEO/SDL_INIT_EVERYTHING/SDL_INIT_AUDIO)=>hàm khởi tạo SDL thực chất chỉ cần SDL_INIT_VIDEO là đủ r,sai thì <0,đúng thì return 0.SDL_INIT_AUDIO buộc có nếu có âm thanh.SDL_INIT_TIMER khi dùng đến các biến SDL_TimerID or SDL_TimerCallback.
+SDL_bool SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1") =>hàm set hint, đối số là loại hint và value, cài chất lượng cho màn hình.Trả về SDL_bool có 2 GT SDL_TRUE và SDL_FALSE
+SDL_SetHIntWithPriority(,,) =>thêm đối số 3 là SDL_HINT_DEFAULT,SDL_HINT_NORMAL,SDL_HINT_OVERRIDE(high priority)
+const char* SDL_GetHint() =>lấy ra giá trị Hint truyền vào đối số 1 của SDL_SetHint,trả về chuỗi or NULL nếu chưa đc set
+SDL_Window* SDL_CreateWindow("title",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,chiều rộng màn hình,chiều cao màn hình,SDL_WINDOW_SHOWN) =>khởi tạo window, đối số cuối đảm bảo window đc show, ta chỉ cần chỉnh đối số 1.Trả về NULL nếu thât bại, trả về 1 SDL_Window nếu thành công.SDL_WINDOW_RESIZABLE thì sẽ thêm tính năng resize cho cửa sổ
+const char* SDL_GetError() =>trả về string lỗi nếu ta gặp
+char* IMG_GetError()=> trả về lỗi khi thao tác với SDL_image
+SDL_Renderer* SDL_CreateRenderer(window cần dùng, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC) =>tạo renderer.2 là index of ổ đĩa khởi tạo=> k qt,dùng -1 là lấy cái đầu tiên phù hợp.đối số 3 là trình render chạy bằng hardware acceleration->cái này nên dùng vì cho nhiều các tính năng khác.Trả về renderer.SDL_RENDERER_PRESENTVSYNC là đồng bộ j j k có kệ nó
+int SDL_SetRenderDrawColor(renderer cần tô lên, 255,255,255,255)=>control màu nào đc dùng cho hàng loạt các operation rendering sau đó chứ bản thân hàm này chưa phải là tô màu mà là set màu.0 là thành công,âm là thất bại
+SDL_Surface* SDL_GetWindowSurface(SDL_Window*)=>tạo ra surface từ cái window có sẵn
+int SDL_MapRGB(const SDL_PixelFormat*,int,int,int)=>nó tạo ra 1 số nguyên đb từ 3 kênh màu sắc và format của surface=>dùng làm đối số cho cái khác
+Uint32 SDL_MapRGBA(const SDL_PixelFormat*,int,int,int,int)=>TT nhưng thêm độ mờ đục, tức bth độ mờ đục luôn max vs SDL_MapRGB
+int SDL_FillRect(SDL_Surface*,const SDL_Rect*,int)=>nó sẽ fill vào cái surface tại hcn có rect với format và màu là số int kia, là số đb tạo từ SDL_MapRGB
+int SDL_UpdateWindowSurface(SDL_Window*)=>đăng cái window surface lên window luôn(ở bản cũ),success thì return 0, error thì return số âm
+SDL_Surface* SDL_LoadBMP(const char*)=>hàm load loại ảnh bitmap nhanh k cần tạo MT ảnh
+int SDL_BlitSurface(SDL_Surface*,const SDL_Rect*,SDL_Surface*,SDL_Rect*)=>hàm copy 1 surface vào 1 surface khác
+SDL_Surface *IMG_Load(const char*)=>load 2 kiểu ảnh PNG và JPG,(TIF) nhưng buộc phải khởi tạo MT từ trc
+SDL_Texture* SDL_CreateTextureFromSurface(SDL_Renderer*,SDL_Surface*)=>tạo texture từ surface chứa thông tin và render mà nó sẽ render lên
+int SDL_RenderCopy(SDL_Renderer*,SDL_Texture*,const SDL_Rect*,const SDL_Rect*)=>copy 1 phần texture vào VT xđ của renderer, texture sẽ bị kéo dãn để fit vs vị trí trên render,NULL toàn ảnh
+void SDL_RenderPresent(SDL_Renderer*)=>đăng cái render kia lên hiện ra màn hình
+int SDL_PollEvent(SDL_Event*)=>hàm chờ bắt sự kiện, cứ có sự kiện j là ngay lập tức biến SDL_Event sẽ lưu sự kiện đó=>nó chỉ đơn giản là lưu sự kiện tiếp theo vào biến. 1 neu thanh cong or 0 neu k co su kien de bat
+int SDL_RenderClear(SDL_Renderer*)->xóa toàn bộ màn hình r gán cái color đã đc set phủ lên màn hình=>muốn xóa màn hình thì setrenderdrawcolor 1 màu nào đó r gọi hàm này thì màn hình mang màu đó=>thg để màu trắng để trông như màn hình trống không
+void SDL_RenderPresent(SDL_Renderer*)=>hiện renderer lên màn hình
+int SDL_SetColorKey(SDL_Surface*,int,int)=>nhìn xuyên màu. Đối số 1 là surface nào nhìn xuyên màu,2 là SDL_bool có nhìn xuyên hay k,3 là từ MapRGB từ format surface này+mã màu cần xuyên
+SDL_Surface* SDL_ConvertSurface(SDL_Surface*,const SDL_PixelFormat*,int)=>copy 1 surface vào surface mới đc tối ưu cho hàm blit(phiên bản cũ rồi)
+int SDL_BlitScaled(SDL_Surface*,const SDL_Rect*,SDL_Surface*,SDL_Rect*)->copy surface vô surface kích thước khác biệt,nó sẽ tự fit màn hình nhât,2 là NULL,3 là của màn hình hiện tại
+int SDL_RenderFillRect(SDL_Renderer*,const SDL_Rect*)=>fill 1 hcn vs 1 màu nào đó.1 là render đã đc set màu, 2 là vị trí kích thước tô màu đc chọn lên render đó
+int SDL_RenderDrawRect(SDL_Renderer*,const SDL_Rect*)=>vẽ 1 hình cnh lên render vs màu chỉ định và vị trí
+int SDL_RenderDrawLine(SDL_Renderer* renderer,int,int,int,int)=>vẽ 1 đth lên, 2 và 3 là vị trí điểm bắt đầu, 4 và 5 là x,y của điểm kết thúc
+int SDL_RenderDrawPoint(SDL_Renderer*,int,int)=>TT trả về 0 nếu thành công và âm ngc lại
+int SDL_RenderSetViewport(SDL_Renderer*,const SDL_Rect*)
+void SDL_DestroyTexture(SDL_Texture*)int SDL_RenderDrawRect(SDL_Renderer*,const SDL_Rect*)
+void SDL_DestroyRenderer(SDL_Renderer*)=>hàm này sẽ hủy renderer và free luôn cả texture trong nó(xóa texture trc r ms xóa renderer)
+int SDL_RenderSetViewport(SDL_Renderer*,const SDL_Rect*)=>hàm set cái render sẽ hiển thị theo viewport là biến SDL_Rect.
+int SDL_SetTextureColorMod(SDL_Texture*,Uint8,Uint8,Uint8)=>cho cái texture mang 1 màu nào đó=> nó là 1 màu phủ kiểu blend chứ k phải che mất ảnh
+int SDL_SetTextureBlendMode(SDL_Texture*,SDL_BlendMode)=>set chế độ blend màu gì cho texture nào. 0 là thành công, số âm là thất bại. KQ sẽ hiện khi rendercopy ảnh như bth
+int SDL_SetTextureAlphaMod(SDL_Texture*,Uint8)=>đối số 2 là alpha, set alpha khi blending cho texture nào
+int SDL_RenderCopyEx(SDL_Renderer*,SDL_Texture*,const SDL_Rect*,const SDL_Rect*,const double,const SDL_Point*,const SDL_RendererFlip)->hàm này render lên nhưng lại còn cho xoay ảnh nx cơ.5 là góc quay theo kim đồng hồ,6 là tâm quay nếu NULL thì lấy tâm màn hình (w/2,h/2),6 là kiểu xoay.(chú ý:Ví dụ khi ta set nút cho nó, ấn 1 phát là nó chuyển sang lật ngang, thì muốn trở về ban đầu t k thể lật ngang tiếp mà là truyền vào SDL_FLIP_NONE nó ms quay trở về.tức là với vị trí của bức ảnh hiện tại, ấn lật ngang lật dọc đc 2 vị trí xog cứ bỏ lật là quay về vị trí ban đầu. Vc ta set góc cho nó sẽ khiến vị trí ban đầu bị thay đổi,ta có thể tìm đc vị trí ban đầu đó bằng cách FLIP_NONE cho nó,dù VT bđ bị đổi,nhưng xoay cx chỉ có 3 cách đúng chiều lật cũ nv)
+(tao hiệu ứng quay lien tục bằng cách tăng góc 1 số nhỏ trong vòng while)
+SDL_Surface* TTF_RenderText_Solid(TTF_Font*,const char*,SDL_Color)=>hàm cho 1 đoạn chữ có font, màu cụ thể lên surface(giống IMG_Load của ảnh,trả về surface để ốp lên texture).2 là c_str() chuyển string thành const char*, làm v vì string ta có thể tha hồ += cho nhanh r chuyển const char* truyền vào
+char* TTF_GetError()=>nó chỉ là marco của SDL_GetError(),viết cho rõ nếu cần xđ lỗi của font cụ thể 
+int TTF_Init()=>khởi tạo font API, có thì mới dùng font đc cx như khởi tạo MT ảnh, trả về 0 là thành công,-1 là lỗi
+TTF_Font *TTF_OpenFont(const char*,int)->trả về 1 biến TTF_Font* vs kiểu font và cỡ chữ xđ, dùng để gán font chữ cho biến TFF_Font*
+int SDL_GetMouseState(int*,int*)=>lấy vị trí hiện tại của con chuột, lưu vào 2 biến,nếu chỉ cần 1 biến thì truyền NULL cho biến k cần. Trả về GT bitmask TT chuột hiện tại k cần qt
+const int* SDL_GetKeyboardState(int*)=>Lấy TT của keyboard thời điểm hiện tại.Nếu truyền NULL vào sẽ nhận đc GT scancode (enum int đó).K truyền NULL thì sẽ nhận đc độ dài mảng returned
+(enum SDL_Scancode:SDL_SCANCODE_0,SDL_SCANCODE_DOWN,SDL_SCANCODE_RETURN,...)(=>tạo biến int gán r KT TT cx đc mà làm như cũ switch case cx đc.Đây là cách k dùng event mà dùng key state)
+int Mix_OpenAudio(int,int,int,int)=>1 là tần số là 44100 phù hợp vs nhiều dòng máy;2 là MIX_DEFAULT_FORMAT dùng mặc định v;3 là hardware channel, ta truyền 2 vì 1 là cho stereo, 2 là mono;4là số lượng byte cho output là kích thước tự chỉnh cho phù hợp, càng nhỏ thì âm càng nhỏ, cho nhỏ quá âm thanh sẽ mất(để tầm 2048 đi)
+Mix_Music *Mix_LoadMUS(const char*)=>trả về kiểu biến Mix_Music gán cái file nhạc vô. Nó load đc MP3,Wave,....Dùng để gán nhạc cho biến
+Mix_Chunk *Mix_LoadWAV(const char*)=>trả về kiểu Mix_Chunk TT,k load đc mp3 nhá, nên dùng cho âm thanh ngắn file wav
+int Mix_PlayChannel(int,Mix_Chunk*,int)=>hàm khởi tạo mixer API.1 là play ở channel nào,nếu k qt ta truyền -1 để lấy channel phù hợp gần nhất.2 là cái chunk muốn chơi.3 là vòng lặp chơi bao nhiêu lần(0 là 1 lần,1 là 2 lần,...còn -1 là chạy vô tận).trả về 0 nếu thành công, -1 là thất bại
+int Mix_PlayMusic(Mix_Music*,int)=>1 là music dài muốn chơi. 2 là số lần lặp TT trên(-1 là vô tận cho đến khi ta set nó dừng)
+int Mix_PlayingMusic()=>trạng thái đang có nhạc hiện tại hay k. Trả về 1 nếu có, 0 là 0.Thg dùng KT nếu k có nhạc thì cho chạy
+int Mix_PausedMusic()=>KT TT nhạc có bị actively dừng k(Kp do hết nhá mà là ta chủ đông pause hay k. Nhạc hết k chạy mà ta k pause j thì vẫn trả về 0 như thg
+void Mix_ResumeMusic()=>chủ động chạy tiếp nhạc nếu bị pause
+void Mix_PauseMusic()=> chỉ có thể pause khi nhạc đang đc bật
+int Mix_HaltMusic()=> chủ động stop music ngay. Các hàm khác music có hiệu ứng nhỏ dẩn tắt nhưng lệnh này tắt ngay. Dừng bất cứ lúc nào
+int SDL_GetTicks()=>trả về GT milisecond kể từ khi thư viện đc khởi tạo.Chỉ dựa vào duy nhất hàm này là ta đã căn đc mọi thời gian r
+SDL_Delay(int)
+void SDL_StartTextInput()->có hàm này sẽ bắt đầu chấp nhận sự kiện text Unicode
+SDL_Keymod SDL_GetModState()=>hàm này trả về trạng thái ấn xuống của vài phím đb.VD cần kiểm trả nút CTRL có đang được ấn xuống hay k=>SDL_GetModState() & KMOD_CTRL==true tức là ctrl đang đc giũ.Bản chất của nó là 1 dãy bit dài 0101 phím nào đc giữ thì 1 bit nào đó trong chuỗi sẽ đc turnon. Hàm SDL_GetModState() quản lí bit của KMOD_NONE, nó sẽ kiểm tra vs & là toán tử và=> nếu như bit của KMOD_NONE và KMOD_CTRL đều bằng 1 thì trả về true và khi đó lệnh đc thực hiện(bản thân KMOD_CTRL=KMOD+LCTRL|KMOD_RCTRL)
+int SDL_SetClipboardText(const char*)=>0 nếu thành công và ấm là thất baị. Lưu vào bộ nhớ đệm clip board
+char* SDL_GetClipboardText()=> lấy từ clip board ra
+Uint32 SDL_GetWindowID(SDL_Window*)=>lấy ra 1 số ID duy nhất cho window(dùng khi có nhiều biến window)
+SDL_Window* SDL_GetWindowFromID(Uint32)
+void SDL_StopTextInput()=>ngừng việc nhận sự kiện nhập VB
+void Mix_FreeChunk(Mix_Chunk*)=>vẫn cần gán NULL nhé
+void Mix_FreeMusic(Mix_Music*)
+SDL_RWops* SDL_RWFromFile(const char*,const char*)=>đối số 1 là địa chỉ file, 2 là chế độ, ví dụ r+b là read file binary còn w+b là write file binary
+size_t SDL_RWwrite(struct SDL_RWops*,const void*,size_t,size_t=>hàm viết vào 1 luồng dữ liệu SDL_RWops.1 là file,2 là dịa chỉ của đối tượng mà chúng ta sẽ lấy ra để viết vào,3 là kích thước mỗi đối tượng chúng ta đang viết,4 là số lượng đối tượng.VD: lấy 10 đối tượng từ 2 và kích thước của mỗi đối tượng là 3, lưu vào 1. Ta thg lưu hết đối tượng vào luôn chứ k lưu kiểu nửa vời
+size_t SDL_RWread(struct SDL_RWops*,void*,size_t,size_t)=>đọc file nào,1 là file đọc,2 là cái ta lưu vào,3 là kích thước 1 đối tượng, 4 là max số lượng đối tượng lưu vào
+(VD:SDL_RWread( file, &gData[ i ], sizeof(Sint32), 1)=>đọc từ biên SDL_WRops là file,đọc 1 phần tử có kích thước sint32 lưu từng cái 1 vào mảng gData=>nó như 1 con trỏ vị trí sẽ lưu lân lươt(cái trên nằm trong vòng for))
+void SDL_SetWindowTitle(SDL_Window*,const char*)=>cho biến SDL_Window đổi tên
+int SDL_SetWindowFullscreen(SDL_Window*,Uint32)=>set trạng thái fullscreen cho window, biến cờ thứ 2 là SDL_WINDOW_FULLSCREEN, SDL_WINDOW_FULLSCREEN_DESKTOP or đơn giản là SDL_TRUE/SDL_FALSE là làm cho mất full màn hình hay làm full màn hình.0 là success, âm là fail
+void SDL_HideWindow(SDL_Window*)
+void SDL_ShowWindow(SDL_Window*)->làm cho nó hiện ra, ấn r hiện thoải mái
+void SDL_RaiseWindow(SDL_Window*)=>cho cái window nhô lên trên các window khác
+SDL_Texture* SDL_CreateTexture(SDL_Renderer*,Uint32,int,int,int)=>hàm tạo ra 1 texture trống.1 là cái renderer mà ta cần tạo texture render lên nó,2 là format của window hiện tại,3 là biến SDL_TextureAccess có 3 GT SDL_TEXTUREACCESS_STATIC,SDL_TEXTUREACCESS_STREAMING,SDL_TEXTUREACCESS_TARGET,w,h.Nó khác SDL_CreateTextureFromSurface ở chỗ, cái cũ thì mặc định biến 3 sẽ là SDL_TEXTUREACCESS_STATIC thì ta k đổi đc sau khi tạo texture, muốn có 1 texture động thì ta phải dùng SDL_TEXTUREACCESS_STREAMING.dù tạo ra textủe trống nhưng mục đích vẫn là từ surface nào đó chỉ khác là có chỉnh sửa đc. ta sẽ lấy ra w,h từ surface để truyền đối số 4,5
+int SDL_LockTexture(SDL_Texture*,const SDL_Rect*,void**,int*)=>hàm khóa pixel và đặt ở chế độ chỉ ghi(khi khóa ms thao tác trên pixel đc,dùng xog thì unlock).1 là texture mà chúng ta dùng và phải có SDL_TEXTUREACCESS_STREAMING r, 2 là vùng mà chúng ta dùng(NULL là access cả texture),3 là biến void** bth, nó là con trỏ trỏ tới vùng locked pixel sẽ dùng,4 là pitch(chiều dài của 1 hàng theo đv bytes).Ý là ta tạo biến void*(truyền vào địa chỉ) và int trống ra k có j hết r cho vào hàm này thì 3 sẽ trỏ tới vùng locked pixel sẽ dùng còn 4 đc gán pitch hiện tại của pixel. Do là con trỏ nên mọi thay đổi trên biến void* về sau sẽ là thay đổi TT lên cái locked pixel ở texture này.
+void SDL_UnlockTexture(SDL_Texture*)=> unlock cái texture, cập nhật sự thay đổi về pixel của cái texture nếu có lúc đằng trc
+void SDL_FreeFormat(SDL_PixelFormat*)=>hàm giải phóng biến SDL_PixelFormat đc chỉ định bởi SDL_AllocFormat
+SDL_PixelFormat* SDL_AllocFormat(Uint32)=> hàm này tạo ra 1 biến SDL_PixelFormat từ int format(SDL_PixelFormat nó lưu nguyên cấu trúc pixel và nó có 1 trường là format trả về format của nó. Ở hàm này nó sẽ tạo ra 1 biến pixel format hoàn chỉnh mang format là GT đã cho, các trương còn lại mang mặc định)(SDL_Surface->format là SDL_PixelFormat chú k phải int)
+Uint32 SDL_GetWindowPixelFormat(SDL_Window*)=>lấy pixel format từ window,đây ms là số int
+SDL_Surface* SDL_ConvertSurfaceFormat(SDL_Surface*,int,int)=>trả về 1 surface copy từ surface truyền vào nhưng đổi format theo ý ta, đối số 3 là biến cờ luôn cho =0
+int SDL_SetRenderTarget(SDL_Renderer*,SDL_Texture*)=>Hàm set cái texture như là 1 renderer,1 là cái renderer thực tế.nếu 2 là NULL thì quay về renderer bth,nếu là SDL_Texture thì phải đc tạo gắn với biến cờ SDL_TEXTUREACCESS_TARGET
+SDL_TimerID SDL_AddTimer(Uint32,SDL_TimerCallback,void*)=>hàm này set callback function như 1 task độc lập được thực hiện sau mỗi bao nhiêu mili giây. 1 là số s lặp, 2 là hàm callback cần dùng(hàm này chỉ gọi tên k truyền đối số vì đối số bắt buộc của nó chính là 1 và 3 của SDL_AddTimer r), 3 là đối số 2 của hàm callback truyền vào mà dùng
+SDL_Thread* SDL_CreateThread(SDL_ThreadFunction,const char*,void*)=>phải có 1 hàm làm nv j đó là thread sẵn r. Hàm này bị ép đối số chỉ có 1 là void*(dùng j thì ép sang kiểu tương ứng) và buộc trả về int(thg là 0),2 là tên hàm(tên j cx đc dùng cho debug), 3 là đối số của 1,tức là 1 chi khai báo tên hàm chứ k truyền(kp ta tạo biến void* để truyền mà có thể là (void*)<số int>)
+void SDL_WaitThread(SDL_Thread*,int*)=> hàm này chờ cho thread finish r làm j tiếp(thg dùng trc khi close để đảm bảo thread xog trc khi đóng Ct)1 là thread cần chờ tạo từ  SDL_CreateThread, 2 là con trỏ số nguyên chính là GT mà hàm thread kia return nếu cần dùng làm j đó, thg là NULL nếu chả cần
+SDL_sem* SDL_CreateSemaphore(Uint32)=> biến tạo ra 1 semaphore, truyền vào số lượng task tối đa truy cập (1 thôi)
+void SDL_SetWindowPosition(SDL_Window*,int,int)
+void SDL_DestroySemaphore(SDL_sem*)=>xóa biến semaphore
+int SDL_SemWait(SDL_sem*)=>hàm chờ semaphore có GT dương(biến đếm số task) thì giảm nó(nhét hàm này vào task, cứ mỗi lần gọi task thì nó sẽ thực hiện giảm đi 1)
+int SDL_SemPost(SDL_sem*)=>ngc lại vs cái trên và còn đánh thức các task chờ thực hiện khi biến đếm chuyển thành số dương
+void SDL_Log(const char* fmt,...)=>xuất ra console cj, dùng thế printf k cần include cái c làm j. Đối số giống kiểu printf
+int SDL_GetCurrentDisplayMode(int,SDL_DisplayMode*)=> hàm lấy cái thông tin về display mode ở máy hiện tại.1 là index của display(để 0 vì ta chỉ dùng 1 màn hình),2 là biến mà ta sẽ lưu vào. 0 là thành công còn âm là thất bại
+SDL_bool SDL_RemoveTimer(SDL_TimerID)=>xóa biến SDL_TimerID đc tạo ra bởi SDL_AddTimer
+int SDL_RWclose(struct SDL_RWops*)=>hàm đóng và giải phóng vùng nhớ cho struture SDL_RWrops
+void TTF_CloseFont(TTF_Font*)=> xóa biến font nha
+SDL_FreeSurface(SDL_Surface*)
+SDL_DestroyWindow(SDL_Window*)
+void Mix_GetError()
+void Mix_Quit()
+void Mix_Quit()
+void TTF_Quit()=>các hàm xóa sau khi dùng xog nên KT r gán NULL cho các biến con trỏ đo
+void IMG_Quit()=>xóa cả MT ảnh nếu đã dùng IMG_Init()
+void SDL_Quit()=>xóa toàn bộ
+(trả về kiểu int k qtr, cứ dùng như void cx ok)
+
+
+Kiểm soát touch điện thoại:
+với 1 chạm: kiểm tra type vào loại nào có 3 type là SDL_FINGERMOTION, SDL_FINGERDOWN, SDL_FINGERUP, sau đó ta dùng .tfinger. hàng loạt thứ nếu muốn lấy dấu tg,tọa độ touch,kc di chuyển trục x,y, lực bấm luôn
+với nhiều chạm: kiểm tra type==SDL_MULTIGESTURE, r dùng .mgesture. có thể lấy tọa độ trung điểm 2 ngón, số lượng ngón,touch ID, timestamp, đặc biệt có cả dDist là lượng di chuyển xa ra hay gần vào của 2 ngón tay(thì dùng thêm fabs(.mgesture.dDist)>0.002 làm điều kiện dịch chuyển) và dTheta là góc xoay hai ngón tay(thg dùng fabs(.mgesture.dTheta)>3.14/180.0 để cho góc xoay tay lớn hơn 1 độ thì mới coi là có dịch chuyển)
+ 
+Kỹ thuật vẽ hình trong SDL(k dùng OpenGL vì phức tạp):
+ta nên tạo ra 2 struct riêng, 1 chứa kích thước top left w h,1 chứa màu r g b-> 1 hàm ta vẽ hình và màu cho hình SDL_SetRenderDrawColor SDL_RenderFillRect, vẽ khung và tô màu cho khung SDL_SetRenderDrawColor SDL_RenderDrawRect
+
+Giả sử TH màn hình của ta k cố định mà là màn hình máy hiện tại:
+Tạo biến SDL_Rect or biến int lưu màn hình=> tạo biến SDL_DisplayMode ngay sau khi Init và SetHint-> rồi SDL_GetCurrentDisplayMode(0,biến đó) để lưu lại-> kiểm tra thành công thì lấy w,h của SDL_DisplayMode lưu vào biến w,h là chiều dài, rộng màn hình của ta
+
+(cơ chế hoạt động semaphore:là 1 biến khóa ngăn chặn multi task tác động đến cùng một biến. nó sẽ đc lưu 1 số nguyên ví dụ 2, thì khi ta thực hiện 1 hàm nào đó hàm đó sẽ đc lưu số nguyên có GT 2 đó, khi hàm đó đc 1 task thực hiện thì số nguyên đó bị giảm, khi giảm =0 thì k hàm nào đc gọi vào nx, chờ thực hiện xog biến sẽ tăng lên và task ms gọi đến nó ms đc thực hiện)
+Cách dùng multitask vs semaphore:(Giả sử có 2 thread ốp vô chung 1 task(void*))
+Khởi tạo ra 1 biến SDL_sem* từ SDL_CreateSemaphore() vs số lượng task truy cập là 1=>trước khi hàm thực hiện (or truy cập đến 1 biến nào đó) thì dùng SDL_SemWait truyền SDL_sem* vừa tạo và sau khi dùng xog thì SDL_SemPost nó là xog (nên khởi tạo 2 thread có delay 1 chút để pb rằng 2 task k tạo đồng thời và biết task nào thực hiện trc)
+
+Cách dùng multithread:(k có lặp)
+#include <SDL_thread.h> đầu tiên nếu muốn dùng->tạo 1 hàm thread với đối số 1 và void*(dùng j thì ép kiểu ra)->Giả sử ta dùng nó ngoài vòng while, ta tạo biến SDL_Thread* từ SDL_CreateThread truyền vào thread cần thực hiện-> kết thúc vòng while trc khi close dùng SDL_WaitThread
+(k nên dùng chỉ dùng khi thực sự cần chứ về tốc độ thì cx như task bth thôi)
+
+Nhiều lúc ta có những hàm nó hoạt động độc lập với cả vòng while luôn và cx lặp lại liên tục sau 1 ktg, chẳng lẽ ta tạo ra 2 vòng while:
+(Ta chỉ có thể làm đc những thứ lặt vặt, nếu muốn thao tác hẳn 1 class thì nhét vô class nha)Trong hàm INIT ta cho SDL_INIT_TIMER->Tạo 1 hàm callback với 2 đối số bắt buộc là int interval là thời gian mong muốn lặp và void* là con trỏ mong muốn bất kì, trả về GT int là chính cái interval truyền vào, bên trong muốn làm j thì lm-> Ngoài vòng while ta tạo 1 biến SDL_TimerID bằng hàm SDL_AddTimer truyền callback cần dùng vào-> sau đó kết thúc vòng while thì ta SDL_RemoveTimer khi k dùng nx
+
+kỹ thuật làm cho framerate tách độc lập:(VD: ta dùng fps để chỉnh đối cho các frame đc load cân bằng nhau nhưng riêng nhân vật ta lại muốn nó load với 1 tốc độ khác độc lập k bị ah)
+ta vẫn có nhân vật như bth di chuyển khi ấn-> hàm move ta truyền thêm đối số timeoneframe và cho tốc độ lên 1 con số cực lớn tùy tốc độ ta muốn(tầm 600), xog ta cho biến vel là biến cộng vào biến pos vị trí đó= tốc độ cực lớn đó* timeoneframe(thì tốc độ thực tế bằng cái số lớn đó chia cho thời gian chạy 1 frame, tầm 60)->xog trong hàm while ta tính timeoneframe kể từ hàm move vòng while này đến hàm move vòng while sau r truyền vào là xog
+(họ khuyến nghị khi dùng PP này thì cái nv đc tách ra khi render phải cho posX,posY thành int tức ép sang (int)posX khi render lên màn hình tránh lỗi)
+
+Nhu cầu render lên 1 texture(dùng texture như 1 renderer), TH ví dụ ta render 1 ảnh cho nó xoay còn đc vì ta cho texture nó xoay chứ  h ta vẽ lên trên renderer r cho cái ảnh vẽ nó quay thì k thể.Do đó ta phải vẽ lên texture r cho render cái texture quay=> thao tác vs texture như 1 renderer:
+ta tạo ra 1 cái texture trống bằng SDL_CreateTexture+ lấy w,h luôn-> truyền vào format cần dùng or(SDL_PIXELFORMAT_RGBA8888 nếu k biết) nhưng qtr là SDL_TEXTUREACCESS_TARGET(mục đích của việc tạo texture trống là đây)->trong vòng while khi nào cần dùng texture như render thì SDL_SetRenderTarget cái texture đó-> dùng xog thì SDL_SetRenderTarget với NULL-> xog present như bth
+
+Thay vì dùng kiểu truyền thống là chia ra từng frame để render cho nhân vật di chuyển ta có thể thử xét 1 TH:(render frame nhân vật ở các ảnh khác chứ k cùng 1 ảnh = PP copy pixel+PPtối ưu)
+Tạo ra mảng có số lượng surface tương ứng số ảnh(để vô 1 class)->các ảnh theo thứ tự ta đặt tên có số cuối là 0,1,2,3,...->Gán surface với ảnh bằng vòng for() với sprintf_s(char*,%d,i) trc tiên để lưu chuỗi kia vào biến char*, giả sử là biến path-> xog gọi IMG_Load để gán cho biến surface tạo ra ngay lúc đó-> sau đó gán cho biến mảng surface cái surface đó có format mong muốn
+bằng SDL_ConvertSurfaceFormat-> Ta tạo ra 1 texture cũ nhưng k phải là create từ surface mà là SDL_CreateTexture để có 1 texture rỗng và nhớ truyền cùng format với surface bên trên-> trong vòng while,lock cái texture-> r ta copy cái pixel của surface vào pixel của texture-> unlocktexure->để làm đc điều này đồng thời cho ảnh đổi lien tục.Ta tạo 1 hàm getPixel cho cái biến class có mảng surface ban đầu-> trong hàm ta sẽ gọi biến frame tăng lên liên tục(biến frame mới trong class) r lấy return pixel của biến frame đó, nhớ chặn đk cho frame khi quá số ảnh thì quay lại
+(có thể chỉnh tốc độ bằng cách tạo biến delay cho class kia.VD: delay=4; trong hàm getPixel ta -- delay và chỉ khi =0 thì ms cho frame tăng. Như v chạy 4 frame nó ms load 1 frame)
+
+Cách kiểm soát texture, bth thì ta k có nhu cầu nhưng cứ biết:(CB: cách load 1 tấm ảnh lên và color key nó bằng cách truy cập đến từng pixel 1 trong texture tạo ra)
+Mặc định là có window và renderer r,ta chưa có hàm load ảnh và color key-> tạo surface từ IMG_Load-> tạo surface từ surface cũ với format của window SDL_ConvertSurfaceFormat->tạo texture trống và set SDL_TEXTUREACCESS_STREAMING với w và h từ surface SDL_CreateTexture -> Để load surface lên texture từng pixel: lock texture lại SDL_LockTexture,copy format của surface vào format của texture bằng memcpy(chú ý biến pitch của surface kp toàn bộ kich thước),unlocktexture SDL_UnlockTexture-> vẫn gán w,h từ surface nếu cần-> xóa cả 2 surface đi->Để color key bằng từng pixel:giả sử ta đang có 1 texture cần colorkey-> lock nó->tạo biến int format từ window hiện tại SDL_GetWindowPixelFormat->tạo biến SDL_PixelFormat từ format đó SDL_AllocFormat-> lấy số lượng pixel của texture int(lấy pitch của texture/4 r * chiều cao)(bởi vì 1 pixel mất 4 byte mà pitch là số lượng pixel theo hàng ngang)->tạo biến color key vs màu vần mất SDL_MapRGB, tạo biến transparency SDL_MapRGBA-> lấy ra biến pixel của texture là 1 con trỏ int*(ép về int* vì ban đầu là void*)->ta đổi từng pixel thành pixel transparency bằng vòng for vs max là số lượng pixel ta đã tạo bên trên và gán cho từng phần tử của mảng bằng biến transparency->unlock->FreeFormat cái biến SDL_PixelFormat đã tạo ra
+(biến pitch thực chất có vai trò là kich thước của đối tượng, nó là kích thước 1 hàng theo đơn vị byte. Nếu muôn có kich thước byte cả surface thì phải lấy surface->pitch*surface->h)
+(Cụ thể cách colorkey với texture manipulation,khi ta convert surface ta k dùng SDL_GetwindowSurface nx mà ta buộc dung SDL_PIXELFORMAT_RGBA8888 là format, sau đó createTexture trống cũng dùng SDL_PIXELFORMAT_RGBA8888; Sau đó trước khi lock thì ta setBlendMode với SDL_BLENDMODE_BLEND để dùng alpha và blend bth(41 lazyfoo))
+
+Kỹ thuật TileMap chuẩn nhất:(mặc định là đã có màn hình tự di chuyển theo nhân vật)
+Xác định số lượng tilemap và tạo biến enum cho mỗi loại TILE có tên trùng vs tên trong file text->Cơ chế: đơn giản là ta tạo ra 1 số lượng texture bằng vs số lượng tile trên map, tạo 1 mảng lưu các số ở trong biến file,r render toàn bộ mảng tile đó lên màn hình(check va chạm với camera)-> Tạo 1 class Tile lưu nội dung 1 ô tile(nếu có 1000 ô tile map thì sẽ có 1000 phần tử), nó gồm biến SDL_Rect lưu vị trí và loại Tile->Mặc định là ta có 1 bức ảnh vs tất cả các loại tile trên đó(thay vì mỗi tile 1 ảnh riêng)->tạo 1 biến fstream lưu nội dung của file đó vào 1 mảng-> tạo 1 hàm để làm điều đó và đồng thời dùng để khởi tạo cho biến class đó luôn, việc lưu nội dung từ file vào mảng kia thì ta dùng luôn biến mảng đó để nhét vào mảng biến class tile khởi tạo ra biến SDL_Rect đồng thời lưu loại tile(hàm khởi tạo nên truyền vị trí + loại tile)->ta tạo ra 1 mảng SDL_Rect có số phần tử là số lượng tile(số phần tử thì lấy luôn biến enum) thì trong hàm đó ta khởi tạo các giá trị cho mảng SDL_Rect(nv mỗi lần render tile nào thì ta chỉ cần render cái ảnh lớn kia ở vị trí phần tử mảng SDL_Rect vs GT enum tương ứng) giả sử mảng SDLFrame->đóng file khi đọc xog->Để render map trong hàm while: ta dùng vòng for kiểm tra toàn bộ tile map nếu có và chạm giữa camera và ô tile map thì render lên ô tile map đó,hàm checkcollision truyền vào vị trí của camera và SDL_Rect của ô tile map đó(sau khi render map r ta ms render nv)->để render đc thì ta chỉ cần dùng SDLFrame và cái ảnh chứa tất cả tile ->KT va chạm nv vs 1 ô tile map chỉ định: ta phải kiểm tra nhân vật vs cả mảng tile map(nhét vào hàm HanleMove của nv chẳng hạn)-> ta sẽ dùng vòng for KT cả tile map nếu gặp ô tile thì tiến hành gọi đến hàm check collision(hàm move của nv truyền vào tile để KT)
+(để nhanh hơn khi KT từng ô xem nv đi qua ô nào, ta cho các ô đó liền nhau r dùng < &&>)
+(về cơ chế chi tiết: từ 1 bức ảnh chứa toàn bộ tile ta phải render các phần của bức ảnh lên vị trí tương ứng trên màn hình, mà vị trí đó ta lấy ra từ 1 file text-> thứ tự:lấy toàn bộ bức ảnh đó và tạo biến SDL_Rect[] để lưu vị trí trên các bức ảnh thế là xong bức ảnh. Còn file thì ta lưu nội dung vào 1 mảng và dùng từng phần tử mảng đó để tạo ra từng phần tử của mảng class chứa nội dung 1 ô tile r render cái mảng đó lên màn hình.Để có thể cho nó lên màn hình thì nó lưu loại tile,và vị trí. Như v là đủ đk của hàm rendercopy(kiểm tra tile,lấy ra tile tương ứng r rendercopy): texture full ảnh có,renderer có, vị trí trên bức ảnh tile lớn là biến mảng với enum đó,ta truyền biến mảng ngoài class vào và thứ tự phần tử là enum lấy từ class,cuối cùng là vị trí trên screen thì class đó có SDL_Rect r)
+(thông thường ta vẫn load 1 cái background nền còn tile map ở có loại 00 là ảnh transparency or k load gì cả khi đó ta phải đặt điều kiện gặp lớn hơn 0 ms load)
+
+Cách tạo ra hiệu ứng di dộng đằng sau:(ví dụ có những hạt nhỏ li ti đằng sau khi di chuyển nhân vật)
+Trc tiên cần có 1 nhân vật ấn nút di chuyển là di chuyển trên màn hình, có các texture lưu những hạt đi đằng sau, tầm 5,6 cái texture lưu 5,6 hạt màu khác nhau bé li ti(VD ở TH này)-> ta tạo ra 1 biến class cho các hạt này chỉ có 1 texture->trong hàm khởi tạo ra dùng biến switch rand()%6 nếu bằng bao nhiêu thì gán texture bằng cái texture có màu nào đó->cần có cả biến lưu vị trí cho các hạt nx và 1 biến lưu thời gian tồn tại frame->khởi tạo cho frame=0->trong cái nhân vật kia ta cho nó chứa 1 mảng gồm các hạt(ví dụ 20 hạt)->khởi tạo các hạt đó truyền vào vị trí của nhân vật, dùng hàm rand trong hàm khởi tạo của hạt để xác định vị trí của hạt random xung quanh nhân vật(chỉ trong giới hạn nhân vật)->trong private của nhân vật thêm 1 mảng 20 phần tử là biến class hạt->trong hàm rendernv, sau khi render nv, ta render cả hạt đè lên-> trong hàm render hạt, ta render lên đúng tại vị trí của hạt luôn(đó là vị trí random gần với nhân vật) và tăng frame lên-> trong hàm render hạt của nhân vật(ý là hàm render nhân vật có hàm render hạt, trong hàm render hạt gọi đến hàm render hạt của hạt(sở dĩ k dùng rendercopy luôn do texture của hạt là biến private nên muốn dùng phải là 1 hàm con trong hạt)),ta đặt điều kiện nếu frame=10 thì xóa hạt đi và tạo 1 hạt mới tại vị trí của nhân vật hiện tại
+(cơ chế rõ ràng: ta chỉ render các hạt xung quanh vị trí nhân vật trong 10 frame=> khi nv di chuyển, các hạt vẫn render xung quanh dẫn đến nó như di chuyển theo, cái hiệu ứng đằng sau là do có những hạt render vị trí cũ chưa hết 10 frame)
+(có thể cải tiến điều chỉnh độ sáng(độ lấp lánh) bằng cách đặt điều kiện cứ frame%2 là ta render 1 hạt màu trắng trong(tạo bằng photoshop chỉnh opacity) đè lên ở vị trí hạt đó, vc chỉnh frane% bao nhiêu chính là điều chỉnh mức độ đậm nhạt của hạt)
+(có thể thêm điều kiện khi di chuyển thì mới hiện hạt bằng 4 biến bool,di chuyển và nhả ra thì gán,r đặt khi cả 4 biến thỏa mãn k phím nào đc bấm thì ms render hạt(frame vẫn phải tự tăng))
+
+Cách làm vc vs multiple window:(nếu muốn resizable multiple window thì chỉ cần kết hợp thêm cái dưới là đc)
+Vẫn phải tạo 1 class quản lí riêng window,do mỗi window có 1 cái renderer nên thuộc tính gồm: SDL_Window và SDL_Renderer và mWindowID vì mỗi window có 1 id riêng(TT những cái gì thao tác riêng của window thì ta nhét hết vào thuộc tính r dùng get cho nó)-> Vẫn như bth ta cho nó 1 hàm init và tạo window+renderer+draw+clear cho chính nó bên trong(1 hàm thuộc class)(chú ý phải gán biến id SDL_GetWindowID thì về sau ms làm đc sự kiện multi window)->cả hàm renderpresent+draw+clear trong vòng while cx nhét vào hàm render trong class luôn->gọi hàm đó trong vòng while là đã có 3 cửa sổ trên màn hình r->Cách xử lí các sự kiện liên quan đến các cửa sổ với nhau: tạo 1 hàm handleeventwindow bên trong hàm while->kiểm tra type==SDL_WINDOWEVENT && .window.windowID == SDL_GetWindowID(SDL_Window*) của window nêu có nhiều window và vòng for->(nếu nó true thì KT xem là sự kiện j) window.event== loại biến SDL_WindowEventID tức là window đang ở TT nào thì làm gì: VD min,max size,đang bị ẩn,đang hiện, đang có chuột trỏ,đang exposed(buộc present lại, buộc có), đang bị đổi kích thước,... thì ta gán cho các biến ĐK j đó-> trong vòng while lớn sau đó,ta tạo các hàm sẽ làm gì để rendercopy lên tương ứng vs câc biến điều kiện đó(quanh đi quẩn lại cx chỉ đổi kích thước,... chứ có cj, kiểu thay đổi các biến của hàm rendercop,căng lắm ms render ảnh khác thì IMG_Load r tạo texture... thôi)-> chú ý là khi có nhiều cửa sổ thì phải thêm biến bool kiểm tra khi mọi cửa sổ đều đóng thì ms đóng CT-> để làm đc điều này thì buộc có thêm 2 điều kiện trong kiểm tra sự kiện là SDL_WINDOWEVENT_SHOWN và SDL_WINDOWEVENT_HIDDEN và gán biến bool từng window tương ứng.Tức là khi ta close thì sẽ hide, mà hide thì biến bool từng window sẽ bằng false.Kiểm tra nếu biến bool đó false hết tức là các cửa sổ đều đóng thì biến bool kiểm tra mọi cửa sổ sẽ đc set và CT bị đóng
+
+Cách tạo ra cửa sổ có thể resize đc và nhận các window event:
+Ta tạo ra 1 class chỉ để quan lí window, thay vì khai báo SDL_Window*=NULL như trc,ta cho biến đó vào private của class,bh thêm 2 thuộc tính chiều dài và rộng cho window-> Do hàm createrenderer cần biến SDL_WIndow nên ta cho hàm khởi tạo đó vào public của window luôn-> Sau đó khởi tạo window như bth->khi khởi tạo window SDL_CreateWindow, truyền thêm đối số SDL_WINDOW_RESIZABLE vào cuối-> tạo 1 hàm xử lí event chỉnh cửa sổ SDL_WINDOWEVENT kiểm tra type->Để tối thiểu chỉnh đc cửa sổ phải KT window.event: SDL_WINDOWEVENT_SIZE_CHANGED(xoay ngang màn hình ĐT cx coi là chỉnh kích thước nên lúc nào cx phải render theo kích thước màn hình chứ k truyền số cố định) thì lưu cr,ch bằng window.data1/data2 và SDL_WINDOWEVENT_EXPOSED(luôn có) thì SDL_RenderPresent lên màn hình-> phải có cả SDL_WINDOWEVENT_MAXIMIZED và SDL_WINDOWEVENT_MINIMIZED SDL_WINDOWEVENT_RESTORED là ba TT của window thì ta tạo 1 biến bool KT xem window có trong TT minimized hay k->(có thể thêm event bấm nút thì SDL_SetWindowFullscreen và truyền true or fall để có chế độ full màn hình nếu muôn)-> trong hàm while lớn ngoài while nhỏ, nếu biến bool đó mà là minimized thật thì k render j hết(bởi vì TH cửa sổ cực nhỏ chỉ còn mỗi thanh bên trên thì ta k render j hết tránh lỗi) và ngc lại ta cho rendercopy và renderpresent-> Giả sử ta có 1 texture chứa ảnh thì khi rendercopy ở đây ta k render vị trí cố định mà dùng hàm getwidth và height để lấy ra cr,ch của window mà render vị trí tương đối(vì window resize mà)
+(trong hàm event còn có rất nhiều loại biến ta có thể dùng ví dụ như kiểm tra con chuột có đang ở trong window hay k,..)
+(với Đt chỉ cần KT ss w,h là biết đang quay dọc hay ngang)
+
+Cách lưu tiến trình hiện tại vào 1 file:(giả sử ta có 1 chuỗi số 10 dòng ta tùy ý đổi nội dung, mỗi lần mở lên ta sẽ nhận đc kết quả của lần đổi trc và ta k phải đổi lại từ đầu)
+Các dữ liệu mà ta có trong game đều là các biến mà thôi-> cơ chế: khi cần lưu 1 tiến trình, thì các biến nào thay đổi ta sẽ lưu vào 1 file, tức là ở hàm khởi tạo môi trường ban đầu ta sẽ mở file đó lên và lấy các dữ liệu bên trong nó gán cho biến, khi close file thì lưu lại các GT đó vào file kia, thêm điều đó vào 2 hàm khởi tạo và kết thúc là đc->xác định kiểu dữ liệu cần lưu, khai báo biến cho nó->tạo biến SDL_RWops* từ hàm SDL_RWFromFile vs file cần lưu->KT nếu file k có(==NULL) thì tự tạo ra SDL_RWFromFile r gán GT cho biến và truyền vào file GT mặc định SDL_RWwrite-> đóng lại SDL_RWclose-> còn nếu mà file tồn tại thì ta lấy dữ liệu từ nó lưu vô biến SDL_RWread và đóng SDL_RWclose->trong hàm while xử lí thế nào biến đó đổi ra sao kệ nó-> kết thúc ra ngoài vòng while lớn, trc khi xóa, ta lưu bằng cách: tạo ra biến SDL_RWrops* từ SDL_RWFromFile trỏ đến file ta muốn lưu(trùng địa chỉ ta mở ban đầu)->SDL_RWwrite để lưu cái biến của ta vào trong file-> SDL_RWclose đóng biến đó
+(có thể đặt điều kiện khi bấm nút lưu thì thực hiện vc đó)
+
+Cách dùng sự kiện nhập văn bản(có chế độ copy, paste,...):
+Mặc định là có MT font chữ r->ta tạo 1 biến lưu văn bản kiểu string->(vẫn như cũ) trong vòng while ta đặt điều kiện SDL_StartTextInput để khởi tạo chế dộ nhập vB, ví dụ ấn nút j đó->TT trong vòng while nhận event,ta đặt dieu kiện ấn nút j thì sẽ copy,paste,... bằng key.keysym.sym va SDL_GetModState() & KMOD_ -> nếu muốn xóa thì pop_back cái string, nếu muốn thêm thì cái string+=<biến event>.text.text(nhớ phải xét ĐK khác các nút copy paste kia),nếu muốn copy thì SDL_SetClipboardText or paste SDL_GetClipboardText->ngoài vòng while đó, ta render text đó lên màn hình(dùng getwidth lấy width của đoạn text để render nếu k muốn dùng VT cố định)->khi k nhập text nx có thể đặt điều kiện để SDL_StopTextInput->Vc qtr nhất ở đây đó là hàm tạo surface và nhét chữ vào texture TTF_RenderText_Solid, SDL_CreateTextureFromSurface đặt 1 cái ngoài vòng while vs String là chữ mặc định-> trong vòng while thì chỉ khi nào text có sự chỉnh sửa thì hàm này ms đc dùng=> tạo 1 biến bool đầu vòng while =false, và khi nào chỉnh sửa thì ms cho nó bằng true, và nếu bằng true và string khác rỗng thì ta sẽ thực hiện hàm tạo surface và texture đó
+(Nhớ các ĐK đặt thật hợp lí, làm cj cx phải KT ví dụ xóa thì phải KT xem string có ký tự k qua hàm .length()>0)
+(chú ý pb event.type =SDL_KEYDOWN và =SDL_TEXTINPUT nó giống nhau nhưng ta dùng vào TH khác nhau, 1 cái dùng khi cần nhập chữ còn 1 cái thực hiện chức năng j đó)
+
+Cách tạo background luôn di động theo 1 hướng:
+Trc tiên là ta cứ có 1 cái background bth render lên vị trí 0,0 bth đã->Để tạo background di động: tạo 1 biến offset int=0->Sau mỗi vòng while ta trừ biến offset đi x đơn vị(x là tốc độ background còn gì) VD -=1->ta chặn cả dk cho biến đó luôn, nếu trừ đi mà < -SCREENWIDTH thì set lại bằng 0(tức là render hết tấm ảnh đó 2 lần r đấy)->ta render tấm ảnh đó 2 lần trong 1 vòng while-> lần 1 là render theo vị trí offset,lần 2 là render theo vị trí SCREEN_WIDTH-offset tức là bù lại
+(bản chất khi ảnh nó chạy là ta render bức ảnh đó 2 lần, cho vị trí nó tự động trừ đi sau mỗi vòng while)
+
+Cách di chuyển background theo nhân vật:
+Trc tiên ta có nhân vật di chuyển đc trên màn hình và 1 background dài or rộng hơn màn hình->ngoài chiều dài và chiều rộng màn hình ta cx cần có dài rộng của background->Đầu tiên là đặt điều kiện cho nv dừng lại là phải ra ngoài chiều dài và chiều rộng của background chứ k còn là màn hình nx với biến pos->Để làm cho màn hình di chuyển theo ta:(lúc này để ý là nhân vật có 2 loại biến: vs biến pos là vị trí so với bg chính còn biến rect là trên màn hình hiện tại)Đơn giản ta chỉ cần k render cả ảnh như bth mà ta render vị trí cho nó bị thay đổi, tức truyền vào hàm rendercopy vị trí SDL_Rect của camera là vị trí trên tấm ảnh lớn ban đầu->ta tạo ra 1 biến  SDL_Rect lưu VT của camera-> trong vòng while ta cho biến đó thay đổi theo vị trí pos của nhân vật và chặn điều kiện giới hạn->render cái bg lên theo biến SDL_Rect đó-> Chỉ còn 1 thay đổi cuối cùng là hàm rendercopy nhân vật thì vị trí ta truyền vào là vị trí của nhân vật rect trên màn hình =vị trí pos - vị trí camera là vị trí đúng của nhân vật trên màn hình là xog
+(Do camera khi set VT cần dùng đến chiều dài chiều rộng của dot nên nhét mẹ vào hàm class dot=> dùng biến class nào thì nhét vào class đó)
+
+Cách kiểm tra va chạm nhanh nhất vs hình tròn và và hộp:
+hình tròn va hình tròn=> lấy kc 2 tâm ss vs bán kính
+hình tròn và hình hộp=> lấy điểm gần nhất trên hình hộp thông qua điều kiện if r ss kc điểm đó đến tâm hình tròn vs bk
+
+Kiểm tra đến từng pixel:(chỉ dùng vs 1 vài TH vì có thể làm chậm CT)
+Class cho 2 đối tượng cần set va chạm đến từng pixel phải có: 1 vector<SDL_Rect> sao cho mỗi phần tử của vector chứa 1 dòng pixel hàng ngang của đối tượng, chỉ tính các pixel có của đối tượng cần so sánh(ví dụ 1 nhân vật ta sẽ chỉ lấy tóc trở xuống hết gót giày), 1 hàm set vị trí cho các biến của vector đó(private cx đc)->trong hàm này thì ta set vị trí x,y cho biến vector theo vị trí của nhân vật,ta phải set từng dòng 1, nếu có quy luật ví dụ hình tròn perfect thì dùng vòng for cx đc-> hàm khởi tạo của class phải khai báo w,h cho từng phần tử vector đó, nó là cố định->trong hàm move nhân vật, cứ có vị trí nhân vật thay đổi là ta chèn vào sau hàm set vị trí x,y vừa tạo->VD: bh ta cần check collision vật cản trong hàm while đối tượng với 1 đối tượng khác sau khi move-> ta tạo hàm get cái vector đó r truyền nó vào hàm move, trong move ta KT checkcollision vs 2 biến là 2 vector<SDL_Rect> của 2 đối tượng r tương tự nếu va chạm thì set ngc lại vị trí->hàm checkcollision đó cần 2 vòng for chạy hết 2 cái vector đó, ss từng phần tử mảng này vs từng phần tử mảng kia xem có không va chạm hay k(dùng || cho nhanh)
+(ta nên check cho cái hình to có va chạm k trc, nếu có va chạm thì ta ms dùng hàm check sẽ đỡ vc KT điều kiện thừa)
+
+Cách chặn đk va chạm vs các ô:(có thể là kẻ địch,có thể là tileMap,có thể là ô màu nào đó ta tạo ra)
+tạo 1 hàm checkcollision chung-> hàm này truyền vào 2 biến Rect, thay vì KT va chạm, ta KT TT k va chạm->Tùy TH nếu va chạm vs các vật cản hay tilemap trên màn hình thì ta đặt ngay trong hàm điều kiện di chuyển, cứ chạm thì set ngc lại giống như chặn đk giới hạn màn hình-> nếu va chạm vs địch và chết thì đương nhiên phải đặt 1 hàm mới trong vòng while để KT từng quân địch và vào quân nào r và ĐK chết cx khác nx
+(hàm move nhân vật nên viết trc cả khi renderdrawcolor)
+
+Cách di chuyển đối tượng trên màn hình:
+Tạo 1 biến class có đối tượng bao gồm vị trí hiện tại và vị trí di chuyển, và tốc độ->khởi tạo cho vị trí di chuyển bằng 0 còn vị trí hiện tại là vị trí ban đầu muốn nhân vật xh->tạo đối tượng class bên ngoài vòng while+tạo handleEvent cho nó và đặt trong vòng while->trong hàm ta đặt điều kiện khi ấn phím+repeat thì biến vị trí di chuyển sẽ cộng thêm tốc độ hay trừ đi tốc độ,nhả phím thì nó trở về ban đ->chặn điều kiện giới hạn màn hình+chặn đk va chạm vs các ô->ta gọi hàm rendercopy đối tượng ngay sau đó với vị trí trên màn hình là vị trí hiện tại
+
+(?:tại sao ấn giữ mà tốc độ k tăng liên tục vì đáng lẽ phải cộng dồn lên=>hàm repeat ta dùng sẽ thêm 1 Đk kiểm tra, khi ta ấn giữ thì TT đó sẽ đc duy trì. Theo đúng lí thì mỗi khi ta ấn nút lần đầu tiên thì velo sẽ += như ta đặt điều kiện, nhưng hàm repeat sẽ kiểm tra xem nếu đó là ấn giữ thì chỉ đc coi là ấn một lần đầu tiên mà thôi dẫn đến giá trị chỉ đc += có 1 lần=>Nếu k có repeat thì ta ấn giữ khiến lần nào cx là lần đầu tiên và tốc độ sẽ nhanh dần, khi chạm tới mép màn hình nhả ra thì k quay lại đc vì giá trị đó vẫn đang rất lớn)
+(?ta đặt điều kiện if else và vòng while liệu ấn giữ có ảnh hưởng đến vc render ảnh lên k KT đc đk khác=> thật ra có 2 vòng while thì c++ sẽ chạy vs 1 tốc độ kinh khủng vs số frame trong 1s, mỗi frame nó sẽ chạy cả hai vòng, trong lúc chạy vòng event thì cái vòng ngoài đồng thời đc chạy nên k sợ.và vòng event đc chạy liên tục sau mỗi frame nên ấn nhiều event 1 lúc cx ok hết.Nó sẽ bắt hết event dù event kia đang thực hiện nên ifelse hay if if đều ok=> nên là if if)
+
+Cách chỉnh cân bằng thời gian fps:
+đầu vòng while đặt 1 biến time1 bằng tg hiện tại SDL_GetTicks()-> cuối vòng sau khi present lên màn hình đặt biến time2 cx lưu SDL_GetTicks()-> đặt 1 biến là FPS là con số mà ta mong muốn cho độ mượt của game(ví dụ 32)->tính số lượng frame 1 s thực tế và lưu vào biến int 1/((time2-time1)/1000)-> so sánh vs fps nếu nhỏ hơn tức nhanh hơn thì SDL_Delay(fps-khoảng tg đó);
+
+Quy tắc thao tác với thời gian:
+Có 2 TT là stop và start, trong start thì có 2 TT là pause và unpaused. Ví dụ khi ta tạm dừng game thì thời gian sẽ pause, khi ta thua game over thì thời gian sẽ stop(TT stop sẽ đưa TG về 0) r lại ấn play again thì thời gian gian lại start. Dẫn đến vc ta nên tạo 1 class riêng cho thời gian với 4 hàm pause, unpause, start và stop với 2 biến TT là ispaused và isstarted
+
+Cách thao tác với nhạc cho chạy ở 1 nơi bất kì:
+tạo ra biến lưu nhạc Mix_Chunk(am thanh) Mix_Music(nhạc)-> khởi tạo MT nhạc Mix_OpenAudio-> gán nhạc cho biến Mix_LoadMUS or Mix_LoadWAV-> với chunk thì Mix_PlayChannel để chạy nó còn music thì Mix_PlayMusic->Cách KT TT:đầu tiên là KT Mix_PlayingMusic xem nó có chạy k, hàm này chỉ ==0 khi nhạc chạy hết vòng lặp, nếu ta ấn pause thì hàm này vẫn đúng ==1,nên để nó làm ĐK lớn->(else)KT TT chủ động:Mix_PausedMusic nhạc có đang dừng k->Phối hợp cho chạy,dừng,stop chủ động Mix_ResumeMusic,Mix_PauseMusic,Mix_HaltMusic->kết thúc CT vs Mix_FreeChunk,Mix_FreeMusic,Mix_Quit
+(Mix_HaltMusic nó cx chỉ là dừng ngay lập tức chứ chẳng có j cao siêu, resume tiếp bằng Mix_ResumeMusic cx đc)
+
+Cách làm đặt điều kiện cho event:(giả sử có 1 bức ảnh trên màn hình, ta rê chuột, ấn phím or click 1 cj đó thì cái ảnh sẽ làm gì đó)
+Trc tiên là ta có 1 bức ảnh nhỏ render lên trên màn hình thông qua texture và rendercopy->ta tạo 1 hàm xử lí event(VD:HandleEvent) truyền vào biến event:bên trong đặt ra các đk nếu event j thì sao(có thể set trạng thái, đổi vị trí,dùng SDL_GetMouseState để lấy VT con chuột và đặt Đk tùy)->cái hàm HandleEvent điều khiển đối tượng nào thì cho là hàm con hay 1 phương thức của đối tượng đó vì bên trong ta đặt Đk để xử lí các thuộc tính của chính đối tượng
+(ta có thể nhét hàm handleevent hay bất kì hàm nào khác vào lớp cha lớn đều đc vì thuộc tính nào dùng thì gọi, k dùng thì k gọi nhưng như v sẽ gây loạn cho hàm) 
+
+Cách render 1 chữ lên màn hình:
+khởi tạo MT font chữ TTF_Init->Tạo 1 biến TTF_Font->gán font cho biến đó TTF_OpenFont->Tạo biến SDL_Color vs màu xđ->Render lên màn hình như làm vs các đối tg khác:tạo biến surface chứa font đó(font+cỡ chữ), nội dung và màu đó TTF_RenderText_Solid->TT tạo texture từ surface đó+trong vòng while rendercopy lên màn hình-> khi thoát thì xóa biến,font,r xóa môi trường chữ
+
+Cách load ảnh động: 
+xác định số FRAME->tạo mảng SDL_Rect[FRAME]->load cho cái texture chứa toàn bộ ảnh->set từng GT cho các phần tử trong biến SDL_Rect đó bằng vòng for->tạo 1 biến int frame->trong vòng while: rendercopy cái ảnh texture chứa ảnh vs cái biến SDL_Rect tại vị trí [frame]->tăng frame++-> chặn ĐK lớn hơn FRAME thì quay lại=0(ta có thể load bth r dùng fps kiểm soắt tốc độ or dùng rect[frame/4] r cho frame++ đk chặn là frame/FRAME>=4, tăng cái số 4 kia lên là kiểm soát tốc độ)(nếu muốn k lm j thì nx đứng yên thì set đk cho frame mặc định=0 là đc,ấn thì frame tăng)
+
+Cách Blending màu hay 1 ảnh nên 1 ảnh khác sử dụng chỉ số alpha:
+Blending màu: ta tạo 1 cái texture từ trc-> set màu cho texture đó SDL_SetTextureColorMod-> rendercopy cái texture lên màn hình trong vòng while là xog(nếu muốn đổi màu nhờ nút bấm thì cho hàm SDL_SetTextureColorMod vô vòng while r ấn nút j thì đổi tham số truyền liên tục là đc)
+Blending 1 ảnh hòa trộn:tạo 1 biến texture và gán cho nó 1 cái ảnh như bth-> set chế độ blending là bằng alpha cho cái texure đó SDL_SetTextureBlendMode(,SDL_BLENDMODE_BLEND)-> set cho cái texture đó hệ số alpha SDL_SetTextureAlphaMod-> rendercopy cái texture đó lên màn hình trong while(nếu muốn ấn nút đổi alpha thì TT SDL_SetTextureAlphaMod trong vòng while)
+(cái hay là ta k quan tâm đến surface, chỉ cần làm vc vs texture,làm cách nào để texture nó có thứ ta cần và render nó lên)
+(mấy cái này cứ cho render ảnh xog là set luôn trong hàm khởi tạo, cj muốn đổi trong vòng while thì nhét vô thôi)
+
+Cách hiển thị theo viewport:
+(Hiển thị theo viewport tức là chia màn hình render thành các phần và mỗi phần đc coi là 1 màn hình render mới.)Tạo biến SDL_rect cho viewport trên render->SDL_RenderSetViewport cho render theo viewport->dùng thôi SDL_RenderCopy(Xog cứ muốn hiện lên trên viewport nào thì lại gọi SDL_RenderSetViewport với SDL_Rect truyền vào là viewport đó)(tất nhiên là dùng trong hàm while)
+(Lưu ý là SDL_RenderCopy nó ép ảnh vào vị trí đó nên cẩn thận k méo ảnh)
+
+Cách fil 1 màu lên 1 vị trí màn hình chỉ định:
+tạo biến SDL_Rect có vị trí và phạm vi cần tô-> set màu cần tô cho cái render cần tô SDL_SetRenderDrawColor-> thực hiện tô lên thông qua các hàm SDL_RenderFillRect,SDL_RenderDrawRect hay SDL_RenderDrawLine,SDL_RenderDrawPoint(muốn vẽ kiểu j cx đc). Mỗi lần muốn tô màu khác thì phải SDL_SetRenderDrawColor lại màu khác r tô lên
+
+Cách optimize 1 image với khả năng kéo dãn sao cho kích thước ảnh fit màn hình(bản cũ)
+load ảnh như bth lên surface bth->tạo 1 surface từ cái cũ nhưng mang format của surface chính của window(bản cũ có 1 surface chính tạo từ window) SDL_ConvertSurface với (surface đích-> format)->Blit lên màn hình vs hàm SDL_BlitScaled(đối số 1 là source surface,2 là NULL(cả cái source),3 là đích,4 là kích thước surface đích)
+
+Bản cũ để fill 1 màu vào màn hình, ta làm:
+C1(làm TT trên surface chínhs):(mặc định) là INIT và tạo window->SDL_GetWindowSurface để tạo ra surface từ window hiện có->SDL_FillRect để cho màu lên surface->SDL_UpdateWindowSurface để cho nó lên window và hiện ra
+C2(Load nhiều thứ lên):mặc định->SDL_GetWindowSurface->tạo 1 surface nx->load ảnh lên surface thứ 2(LoadBMP)->SDL_BlitSurface nhét vào surface 1->SDL_UpdateWindowSurface hiện lên
+(tuy nhiên ở bản mới có renderer dẫn đến cách này k còn đc dùng)
+
+Cách chuẩn nhất để tạo ra 1 màn hình để dùng đó là:
+SDL_Init cái SDL ->(SDL_SetHint)->Tạo SDL_CreateWindow->Tạo SDL_CreateRenderer->SetRenderDrawColor 1 màu gì đó vào render ->dùng thôi
+(Như v là đã khởi tạo xog hết, muốn dùng để hiện lên màn hình cái gì đó thì với mỗi một cái hiện ra ta phải dùng thêm texture và surface)
+Cách dùng:
+Khởi tạo môi trường ảnh: 
+IMG_Init(IMG_INIT_JPG)&IMG_INIT_PNG
+Tải 1 ảnh lên:
+Tạo ra biến surface(load ảnh)IMG_Load->Set colorkey tiếp ->Tạo texture từ surface đó và render sẽ đăng lên SDL_CreateTextureFromSurface->(xóa surface cũ đi SDL_FreeSurface)->CopySurface vào render SDL_RenderCopy->Present cái render đó lên màn hình liên tục SDL_RenderPresent
+(nếu có nh ảnh chung đđ,ta có thể nhét vào 1 mảng r render tất cả lên bằng vòng for or Đk j khác,ví dụ muốn render ảnh khác thì đặt điều kiện cho biến phần tử mảng là số thứ mấy là đc)
+(bản mới thực chất la thao tác vs render và texture, ta chỉ tạo ra window làm MT,Tạo surface để load các thứ, cái chính là lấy texture và nhét vào render để cho lên màn hình thôi)
+
+Cách tạo ra màn hình nhận event trong vòng while và render ảnh sau mỗi vòng:
+tạo biến bool->nhét vào Đk vòng while->đặt tiếp vòng while đk chờ event SDL_PollEvent-> đặt đk ấn quit(SDL_QUIT) thì đảo biến bool và kèm theo các hàm xử lí sự kiện trong vòng while nhỏ luôn->xóa render trc khi đăng bất cứ cj ở vòng ms SDL_RenderClear->Load cái texture chứa ảnh lên render SDL_RenderCopy->Cho cái render đã có ảnh đó lên màn hình SDL_RenderPresent
+(Ở bản này,khi dùng xog surface ta xóa ngay,nhưng còn texture ta chưa xóa.Giả sử ta có 1 hàm riêng để load ảnh như v thì texture sẽ tạo liên tục, mà 1 đối tượng chẳng may phải gọi hàm load ảnh đó liên tục trong vòng while thì dẫn đến texture tạo ra rất nhiều trong khi texture cũ k dùng nx vì hình ảnh nó khác r=> để cho cái hàm load ảnh chung hoàn hảo hơn ta kiểm tra xem cái texture của biến đó nó có chưa nếu có r thì xóa đi r ms dùng texture mới)
+(Tuy nhiên,vc load ảnh trong vòng while quá nhiều sẽ khiến Ct bị chậm=> vs các đối tượng có điều kiện đổi ảnh thì ta mới buộc load ảnh vòng while. Còn với các đối tượng chỉ có 1 bức ảnh duy nhất or ảnh động chia nhiều frame nhưng vẫn chỉ từ 1 bức ảnh to thì ta nên load ảnh ngoài vòng while, trong vòng chỉ cần SDL_RenderCopy và SDL_RenderPresent thôi)
+
+
+
+Bỏ bài 19,20,34,37,41,48,49
+

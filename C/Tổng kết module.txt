@@ -1,0 +1,256 @@
+C:
+
+
+# Basic
+Được phép gán x=y=z=0;
+
+#define NYEARS 5
+#define NMONTHS 12
+int table[NYEARS][NMONTHS] ={
+{30,40,75,95,130,220,210,185,135,80,40,45},
+{25,25,80,75,115,270,200,165, 85, 5,10, 0},
+{35,45,90,80,100,205,135,140,170,75,60,95},
+{30,40,70,70, 90,180,180,210,145,35,85,80},
+{30,35,30,90,150,230,305,295, 60,95,80,30}
+}; có thể khai báo ít phần tử hơn hoặc khai toàn bộ theo kiểu mỗi hàng 1 ngoặc nv
+
+ta có thể dùng try{throw<>; throw<>;}catch(){}catch(){} nhiều catch lồng nhau đến khi catch đúng nó sẽ dừng, throw bắt xong phát end luôn chứ k đi tiếp trong try
+
+-> Thư viện có sẵn
+include <unistd.h> => sleep(<số giây>);  
+include<stdlib.h>;  => system("clear"); và FILE, rand(). 
+include time.h or ctime là cho time()
+in ra kiểu dữ liệu: typeid(hieu).name(); trong lib typeinfo
+memset(con trỏ vị trí muốn set, kí tự gì ' ', bao nhiêu*sizeof(char)); trong string.h
+INT_MAX,INT_MIN trong limits.h
+
+memset có thể gán string thành bất cứ kiểu gì nhưng int array thì nó chỉ gán được bằng -1 or 0 thôi, vd gán memset là 1 là sai. Nếu dùng STL như vector sẽ có cac hàm như fill. Nếu muốn gán tất cả int array thành 1 thì buộc dùng vòng for thôi
+Bản chất là nó fill n bytes đầu tiên là giá trị nào theo đơn vị bytes: VD ta gán memset(arr, 1, sizeof(int)*6); thì là 0x01010101 = 16843009
+
+Trong C muốn in theo toán tử dịch bit thì dùng printf như bth. Nếu dùng cout trong C++ thì phải nhét nó vào trong ngoặc ()
+In binary: dùng #include <bitset> thì in binary của số a bằng cout << bitset<8>(a); tức in số a dưới hệ nhị phân bằng 8 bit in hexa thì có sẵn cout << hex << a;
+
+-> for
+lệnh for dùng được kép hai biến:
+for(int i=0,j=0; i+j<=10 ; i+=2,j--){}
+
+for(;;) là infinitive loop, mặc định là true. bth cách nhau dấu ; còn nếu dùng nhiều biến or nh điều kiện thì cach nhau ,
+
+-> switch case
+case 1 ... 8: => case thuoc khoang
+dùng case để so sánh 2 số: ví dụ có int b=3 có sẵn và cần so sánh với a từ 1-5 nhập từ bàn phím. switch(a-b) case 0: là bằng case 1 .. 2: là lớn hơn case -2 ... -1: nhỏ hơn
+
+dùng switch case mà có nhiều case có lệnh như nhau:
+switch()
+{case 'a':
+case 'b': break;//=> rơi vào a,b đều làm như câu lệnh trong b vì a k có break và kể cả b k đúng
+} 
+
+-> typedef
+Chú ý typedef:
+typedef int Eltype;
+typedef Eltype StackType[MAX];
+=>Lúc này, StackType chính là 1 kiểu dữ liệu trỏ tới mảng Eltype[MAX]=> hay ta dùng StackType stack; tức là ta tạo ra: int stack[MAX]=> tức là Eltype[MAX] ~ StackType
+hay chỉ cần nhớ đơn giản dùng typedef thế kia thì StackType là 1 con trỏ
+Tương tự:typedef int *abc; thì khi dùng: abc var; cx như int* var;=>cái biến sau khi đặt typedef nó k bh có ký tự khác đi kèm,các ký tự đi kèm coi của kiểu dữ liệu bđ
+=> thế tên biến vào tên đặt trong typedef
+
+
+
+# Bộ đếm
+Bộ đếm trong C: sẽ chạy từ lúc CT bắt đầu liên tục 1 dãy số nguyên đo thời gian. Ta lấy số nguyên đó ra bằng hàm clock() trong thư viện <time.h> trả về kiểu clock_t thực chất giống số long int-> dùng CLOCKS_PER_SEC để lấy thời gian chạy cj cx đc(dùng double khi thao tác vs giây vì quá nhanh k quá 0s đâu)
+Nhưng nếu double a = int/int thì k ra double-> bản thân phép chia thực hiện trc r mới gán cho double thì thực hiện xong nó ra số int thì gán vẫn là int-> ta phải cast ở ngay phép toán ms đc(double)int/int thì lưu đc vào double=>khi lấy floating point phải cast ngay phép toán->thứ tự thực hiện: phép toán chia(đã cast kq sang int),gán với dấu =(thực hiện cast sang double nhưng cast và lấy int từ trước r nên vẫn thế). Khi ta fix như thế thì hàm cast double sẽ thực hiện ngay trước khi phép / bắt đầu
+
+
+
+# Input output:
+stdout: bộ nhớ đệm lưu các ký tự đầu ra, k nhập từ bàn phím(ví dụ nội dung của printf)
+stdin: bộ nhớ đệm lưu các ký tự đầu vào nhập từ bàn phím
+stdin stdout là kieu file
+
+The default is keyboard for stdin, screen for stdout and stderr; scanf() and printf() are functions that read/write in stdin and stdout; perror() prints the errors to stderr
+
+-> Input
+%3[^uio]s sẽ loại bỏ từ kí tự xuát hiện u or i or o trở đi or lớn hơn 3 kí tự thì xóa từ kí tự thứ 3 trở đi
+bỏ ^ thì chỉ lấy các kí tự bên trong
+%*c là nhập 1 ký tự bất kì từ bàn phím
+%[^\n]s là nhập và tính cả dấu cách
+=gets() cách dùng ben trên tương tự cx cho ta dấu cách, là thao tác với file và file ở đây là stdin
+(Cái % của scanf là thao tác với stdin đó, tức là bỏ từ kí tự nào trở đi, mạc định là space nhưng h ta dùng enter, thì nó k còn bỏ space nx)
+%.2f là lấy bao nhiêu phần thập phân kết hợp thành %2.2f
+%lf long float
+%lld long long
+scanf("%2d%d",x,y); nó k tự động xóa bộ nhớ đệm, nên nếu điền số lớn hơn 2 digit sẽ tự lưu số kế tiêp
+double là %lf  sizeof() trả về kiểu li
+%i như %d
+%s sẽ không lấy space vì đó là ký tự kết thúc mặc định của nó, %c sẽ lấy space
+nên là %d%c%s và %d %c%s khác nhau khi nhập "1 ab"
+
+-> Output
+printf("\033[22;34m<text>"); => đổi màu
+\033: thao tác với terminal của UNIX
+printf("\033c"); = system("clear"); = printf("\033[2J"); 
+nếu muốn di chuyển theo vị trí tương đối so với so với vị trí hiện tại: 
+printf("\033[XA"); // Move up X lines;
+printf("\033[XB"); // Move down X lines;
+printf("\033[XC"); // Move right X column;
+printf("\033[XD"); // Move left X column;
+hàm move cursor: printf("\033[%d;%df");
+usleep(<số giayx10-6>);
+
+\t và space là như nhau ở trong C
+\r lùi về đầu dòng, \b lùi lại 1 ký tự trong stdout-> or printf("\033[XA"); để tiến lên bao nhiêu(X) dòng
+
+
+
+# Thao tác với text
+# Thao tác với file
+# Phân vùng bộ nhớ
+# Thao tác trong Linux
+# GDB
+# Kích thước biến
+# Calling convention
+
+
+# Bộ nhớ đệm:
+-> Flush:
+fflush() => hàm flush có vai trò là xóa bộ nhớ đêm=> ép xuất ra màn hình để làm trống bộ nhớ đêm
+khi thực hiện CT, printf chỉ xuất ra màn hình bằng cách tự động gọi hàm fflush
+bản chất thứ tự thực hiện: compiler chạy từ trên xuống dưới 1 lần để lấy marco, linker, include thư viện, chạy assembly,kiểm lỗi=> thực hiện chương trình từ trên xuống dưới. Với 1 số hàm yêu cầu có signal phát ra là "in" chẳng hạn thì lúc đó ta mới nhìn thấy được. Ví dụ hàm pritnf chỉ xuất khi gặp signal phát ra bởi return or khi CT kết thúc, or gặp các hàm khác ví dụ yêu cầu nhập từ bàn phím cũng phát ra signal 'in'. 
+giải thích hàm sleep: nó ngắt CT theo số giây và không phát signal 'in' do đó cho nó xen giữa printf sẽ không in được printf theo thứ tự thời gian như mong muốn=> chủ động dùng fflush(stdout) sau printf để in ra màn hình
+Có sự khác biệt compiler ví dụ trong codeblock hàm printf được in ra ngay lập tức khi chạy đến(phát signal ngay lập tức)
+fflush(stdin) trước scanf và fflush(stdout) sau sleep nhé
+
+-> Cách flush đệm
+include <stdio_ext.h> hàm fpurge(stdin):dùng với linux  
+hàm fseek(stdin,0,SEEK_END)  rewind(stdin)  k dùng fflush(stdin)
+
+Trên window ở 1 số ide thì lệnh xóa bộ nhớ đệm trong C k hđ: kể cả rewind, fflush(hàm flushall k bh dùng vì bị lỗi)),fseek(stdin,0,SEEK_END). Nếu k dùng đc thì với C ta dùng 1 lệnh luôn luôn dùng đc là getchar() để lấy ký tự enter từ bộ nhớ đệm ra. Nhưng do có thể có nhiều phím space và enter liền nhau nên dùng while(getchar()!='\n'); là ổn nhất sau mỗi hàm nhập. Còn trong C++ thì với 1 số ide cx bị thì dùng mạnh nhất là cin.ignore(32767,'\n');=>test xem có bị k nếu bị thì dùng
+Trong C++ thì dùng cin ta hoàn toàn có thể nhập enter ổn cả nhưng scanf của C thì buộc phải giải phóng đệm. K chỉ scanf mà các phương thức nhập khác trong C như getchar, getc cx phải giải phóng đệm khi lấy từ bàn phím.
+phân biệt hàm getc và getchar, cả hai hàm ta chỉ dùng đối số trả về chứ kp truyền vào. getchar() là nếu lấy từ bàn phím VD: c=getchar() còn getc(stream) dùng khi lấy từ file nào đó. VD: c=getc(stream), và c=getc(stdin) thì là lấy từ bàn phím r giống getchar()
+Tương tự putchar(c) sẽ mặc định là xuất ra màn hình còn putc(c,stream) thì phải specific cái stream là gì, nếu stream là stdout thì lại giống hệt putchar-> đó là lý do k nên dùng putc và getc vì chỉ có stdin/out và thao tác vs file thì dùng fputc và fgetc mất r.->hay
+Vs string thì chỉ có 1 hàm là puts và gets giống putchar/getchar mặc định là stdin/out. Còn vs file thì fgets và fputs, string thì k cần specific stream đối số bh.Ta luôn phải sepecific từ trc muốn viết vào đâu mà dùng hàm tương ưng.Thứ tự luôn là ký tự trc stream sau. Chỉ có mỗi cái getc,putc đb là cần specific stream éo nên dùng
+chú ý là get là lấy từ file thì return cái thứ đc lấy chứ put thì k
+Trong Linux có thể dùng __fpurge(stdin) để xóa đệm include thư viện <stdio_ext.h>
+Trong C, hàm rewind(stream) có thể reset con trỏ về đầu file, đỡ phải viết fseek dài
+Hàm fseek trả về 0 nếu thành công->if fseek.. == 0 vì đầu đít k lùi, tiến đc nx
+
+
+
+# Lỗi:
+Các lỗi mắc muôn đời: so sánh == mà cứ nhầm =; Khi tạo nhiều biến con trỏ thì nhớ đi kèm *. Vd: FILE *a,*b; chứ kp int *a,b;
+Nên tạo phong cách với các bài dài là làm thì cout thử giá trị ra cho chắc, r chạy thử ok mới xóa debug đó đi;dùng fscanf,scanf mà quên &
+
+-> Nắm vững quy tắc truyền đối số vào hàm. Truyền con trỏ root của linked list vào thì sẽ k đổi nó, truyền ** thì đổi, k truyền mà dùng global thì cx đổi. Tuy nhiên trap hàm deleteNode(Node*)->rắc rối bắt đầu xuất hiện khi k truyền ElementType mà truyền Node, giả sử ta cần xóa đúng cái Node* root nên truyền root vào=> vô tình truyền root 1 sao vào hàm mặc dù muốn nó đổi. Có thể fix bằng cách thêm con trỏ **root vào là xong
+Trap: dùng (*root)->next chứ k đc *root->next khi truyền vào **
+Lỗi căng: while(strcmp(temp->data.name,name) != 0 && temp != NULL)=>lỗi chết ng trong dòng này nhưng     
+while(temp != NULL && strcmp(temp->data.name,name) != 0) lại k có lỗi :)). Thật ra 2 cái này k hề như nhau vì nó sẽ thực hiện theo thứ tự từ trái qua phải do có 1 thread-> ta cần quan tâm là điều kiện bên trái thực hiện trc nhưng liệu có khi nào điều kiện đó bị lỗi nên cần thực hiện điều kiện bên phải trc để tránh lỗi k. Đặt tình huống ta nhập vào name và muốn chạy linked list tất cả để tìm xem cái nào trùng thì lấy. Bên trong { temp = temp->next; } Giả sử ta nhập vào 1 cái tên sai thì ở TH 1 nó chạy đến phần tử cuối cùng của linked list là r chạy đến NULL, ở phần tử NULL ta desired là nó sẽ thoát vòng while an toàn nhưng nó sẽ gọi strcmp(temp...) mà rõ ràng temp bằng NULL thì strcmp sẽ bị lỗi truy cập vào vùng nhớ chưa cấp phát-> segment fault core dump. Còn ở Th2: nó chạy đến cuối gặp NULL thoát luôn an toàn.
+Khi làm ta cần chú ý điều kiện nào cần kiểm tra chuẩn đầu tiên, điều kiện nào sẽ gây lỗi khi KT k đung
+
+-> Trap: chú ý vùng nhớ cấp phát bởi hđh thì ta k thể dùng đc, nhưng ta vẫn có thể gán NULL cho nó(VD con trỏ lơ lửng sau khi delete ta có thể gán NULL); Bên cạnh đó ta có thể so sánh nó với NULL.
+Con trỏ cấp bởi hệ điều hành có thể null or k null tùy compiler
+Trap: vc ta dùng struct hoặc class thì k đc động đến các con trỏ bên trong ở cấp độ 2 nếu cấp độ 1 chưa cấp vùng nhớ. Cấp độ 1 phải tồn tại ô nhớ tĩnh hoặc động thì mới đc, vì nếu chưa tồn tại thì cấp độ 2 thậm chí còn chưa có gì cả nên k thể ss or gán NULL hay gì tương tự, nếu dùng sẽ báo lỗi=> do đó vai trò của hàm makeNULL k phải là để 1 con trỏ chưa có gì cả sử dụng mà là makeNULL tức là khai báo vùng nhớ cho biến đó rồi, sau đó cho các thành phần bên trong nó là NULL để k mang giá trị rác. Còn nếu occho định nghĩa con trỏ mà k dùng ngay thì có thể gán NULL cho con trỏ đó tại thời điểm đó chứ klq j đến hàm makeNULL
+Trap: con trỏ null là con trỏ luôn luôn thuộc quản lý của hệ điều hành, khi ta cấp phát động thì bộ nhớ luôn cố tránh k cấp phát vào ô 0x0 của con trỏ null; Do đó nếu ta cấp phát new int xong gán NULL cho nó sẽ gây memory leak vì cái vùng nhớ new vừa cấp phát k còn con trỏ nào refer tới nó. Nó refer sang con trỏ NULL.
+=>Ta nên đảm bảo rằng con trỏ khi thuộc quyền của hệ điều hành thì nên gán nó refer tới null, khi nào cần dùng mới cho nó refer đến ô nhớ cấp phát.
+Cấp phát int a; cx chỉ là cấp phát vùng nhớ nhưng k điều khiển đc như cấp phát động thôi
+=>Trap: hàm peek của stack là lấy data bên trong ra, sẽ thế nào nếu data là 1 con trỏ-> chính là cái trap bên trên. Nếu stack đó đc cấp phát rồi thì ta nên gán cho các thành phần bên trong giá trị or gán NULL thì peek sẽ lấy ra giá trị rác or null. Nếu stack chưa cấp phát mà ta return element thì error ngay kp vì nó trả ra null hay rác mà là nó k thể tác động đc vì nó thậm chí k tồn tại vì cấp độ 1 chưa khai báo.
+Đó là bản chất của vc kt điều kiện khác null hay bằng null vì null tức là chưa cấp phát và các phần tử bên trong k thể động tới chứ kp là null thì các thứ bên trong trống và vẫn động tới đc=>qtr nhớ luôn kiểm tra là NULL với con trỏ vì lý do trên.
+Đa phần các compiler khi int*a; thì k null nên luôn chú ý là nó k null
+
+=> Điều này đặt ra vấn đề là bh làm thế nào để biết 1 vùng nhớ đã được cấp phát thành công hay chưa=> đó là kiểm tra nó khác NULL thì đã được cấp phát. Nhưng 1 số compiler như Qt thì ta int*a; thì a thuộc quyền của hệ điều hành và nó khác NULL=> thế nên ta mới có quy tắc khi 1 con trỏ quản lý bởi hệ điều hành thì luôn đảm bảo rằng nó là NULL, ta chủ động gán NULL khi int*a = NULL; sẽ chuẩn, xong kiểm tra thoải mái->VD: singleton qt ta gán NULL cho biến static xong ta gọi hàm kt NULL thây.
+Khi ta thao tác với struct hay class thì có qt là kbh đc gán giá trị con trỏ ngay mà phải dùng ở hàm khởi tạo(với class) or makeNULL(với struct)
+=> Áp dụng vào stack: Stack* stack = NULL; xong mỗi khi push vào thì makeNULL các thành phần bên trong=>cứ khai báo hay tạo mới cj là cần chú ý
+
+
+
+# Mảng
+-> Cơ chế cấp phát mảng => khi khai báo int[100] thì nó sẽ tạo ra một mảng 100 phần tử với các giá trị rác, cho nên ta phải ={} vào để nó tạo ra các giá trị đều là \0, kể cả int thì cx coi như là bộ nhớ trống k lưu số gì(chứ kp lưu số 0);
+Khi thực hiện dùng các phần tử của mảng(sau khi khởi tạo ={}), giả sử ta gán giá trị cho nó thì cơ chế là dùng đến giá trị n thì mảng sẽ tự động khai báo giá trị n+1 là trống k có gì cả '\0'(nếu như n+1 chưa vượt quá max số lượng phần tử mảng)
+=> lưu ý điều này có thể dẫn đến sai lầm khi kiểm tra mảng có bnh phần tử thì ta khai báo 100, ta dùng 50 thì đếm sẽ ra 51
+
+mảng 2 chiều [][] or có thể dùng int **Po; thì **Po là giá trị [] thứ 2, *Po là giá trị [] đầu tiên
+
+khai báo mảng cũng là khai báo hàng loạt con trỏ, k thể khai báo con trỏ dùng như mảng vì bộ nhớ chưa cấp phát sẽ core dump
+
+
+
+# Dynamic
+-> malloc(memory allocation) trong stdlib.h-> allocate cụ thể bao nhiêu byte cho biến void; các hàm cấp phát động cấp phát vùng nhớ vào runtime(lúc run thấy bộ nhớ nào trống thì lấy đó); calloc(c allocation) khác là khai báo các phần tử là 0; realloc(re-allocation) ví dụ cần mở rộng vùng nhớ đã cấp phát trc đó, các ô nhớ cũ vẫn giữ nguyên, trả về null là thất bại, truyền size 0 = free;
+(bth ta khai báo int p và dùng trong C thì nó là static phân bổ vùng nhớ và ta k biết nó cấp bnh, điều này là k tốt và bị lỗi trong C++, do đó C cung cấp hàm cấp phát động)
+Ví dụ dùng con trỏ char: ví dụ ta dùng char* và char[10] và char*+malloc(10*sizeof(char));=>TH1 là tối kỵ, kbh đc cấp phát * mà k dùng cấp phát động;TH2:dùng char[10]->cấp phát tĩnh cho nó 1 số lượng phần tử kiểu char trong ô nhớ nhc điểm so với cấp phát động là có thể ta chỉ dùng có 1 phần tử nhưng lại phải khai báo 10 phần tử(nhưng rõ ràng nếu biết số lượng phần tử từ trc thì ta vẫn cấp phát tĩnh vs đủ phần tử đc chả sao cả nên ta nghĩ nhc điểm này nó chỉ là vấn đề viết k chuẩn do họ yêu cầu phần tử mảng phải là 1 const từ đầu Ct k đc hỏi ng dùng r ms khai báo)-> cái nhc điểm ở đây là nó tĩnh ta k kiểm soát đc ms đúng, cấp phát động ta sẽ dùng or xóa toàn quyền kiểm soát, còn cái này ra khỏi hàm ms bị xóa=> dùng sizeof() ra kích thước cấp phát tổng bao nhiêu phần tử*kích thước kiểu dữ liệu(phân biệt sizeof(biến,dữ liệu/kiểu dữ liệu)), còn strlen thì ra số lượng phần tử đc khai báo trong mảng(kp rỗng);TH3: theo code chuẩn nó yêu cầu phải nhập từ phía ng dùng kích thước bnh r ms khai báo(khác mảng tĩnh phải DEFINE phần tử), sizeof() ra kích thước fix con trỏ phụ thuộc vào hệ điều hành ví dụ 8byte vs hệ điều hành win10 64 bit hiện tại(đã biết) dù có malloc bnh thì 1 con tro vẫn v, còn strlen tương tự char*;
+=>như v vc ta khai báo mảng hay cấp phát động thì bản chất k khác là mấy thôi nhưng tùy vào vc ta có muốn kiểm soát tối đa vùng nhớ hay k. Ví dụ cần thay đổi kích thước chẳng hạn, static allocation sẽ cấp phát lúc compile time và kích thước luôn fix. Dùng cấp phát động luôn phải kiểm tra xem đã cấp phát thành công chưa nhé, ví dụ tràn bộ nhớ thì malloc sẽ cấp phát thành NULL
+=>khi k rõ phần tử là bnh thì dùng static vẫn tốt hơn
+
+
+
+# Pointer
+2 con trỏ cùng kiểu trừ nhau ra số nguyên
+
+-> Basic
+%p là in địa chỉ pointer
+trong c++ để in địa chỉ 1 con trỏ char=> ez &cha
+dấu cách trong scanf k đc thừa vì nó là space/enter khi nhập
+con trỏ:
+*(p+1)=> giá trị tiếp theo cùng kiểu dữ liệu
+khi dùng con trỏ tức là ta cấp phát một địa chỉ, không có giá trị. Nếu ta dùng toán tử new(với C++) thì nó sẽ tự động gán giá trị rác cho nó or gán =0(với 1 vài compiler). Như v thì vc dùng new có thể trở nên thừa thãi, ta vẫn delete đc, nếu gán bằng NULL(null mà dùng là sai vì phải đc cấp vùng nhớ) or  int*a; không có new, sau đó ta dùng bth. Nếu k có new và k gán giá trị mà cố tình dùng giá trị thì sẽ core dump.
+con trỏ nhiều sao:
+con trỏ nhiều sao cũng tương tự vì giá trị của con trỏ là 1 địa chỉ, nếu ta coi cái địa chỉ đó là một giá trị thì nó lại có 1 địa chỉ khác trỏ tới. Ta có thể truy xuất từ từ bằng cách dùng ** liên tục sẽ đi từ ngoài vào trong(địa chỉ 1-địa chỉ 2(giá trị)-giá trị)
+
+const char* là ""(hằng con trỏ k đổi giá trị) còn char* là 1 loại biến k có const(các hàm nhận đối số const char* trong thực tế cx nhận char* ta dùng như bth). 
+Trong GDB, ta tắt unikey tiêng việt vì compile bị ảnh hưởng, kể cả nhìn thấy đúng thì vẫn lỗi
+
+-> Lỗi về con trỏ: hàm malloc trong C giống hàm new trong c++-> nhưng nên nhớ vai trò của nó là cấp phát 1 vùng nhớ mới cho biến-> điều đó đồng nghĩa ta dùng malloc với 1 biến đã trỏ đến 1 vùng nhớ sẵn r thì vùng nhớ cũ k còn biến nào trỏ tới. Tệ hơn, ta muốn gán cho 1 vùng nhớ mới chỉ định
+khai báo vùng nhớ đó->điều này là vô lý vì ta k thể khai báo 1 vùng nhớ chỉ định đc mà cứ malloc là 1 vùng nhớ mới hoàn toàn đc cấp 1 cách ngẫu nhiên do máy
+Vd: ta gán a=b rồi mới khai báo new a và mục đích ta nghĩ b cũng đc khai báo->sai thay vì v hãy khai báo b trước r gán a cho b là đc or b sẽ k đc cấp phát,chỉ thao tác với gia trị thì nó ms lưu cả a và b là 1 ô nhớ cùng địa chỉ.
+Cách dùng vòng for: giả sử ta muốn in printf trong 3 vùng của for->vùng 1: buộc là câu lệnh khai báo, là ta dùng gán cj với cj nên nếu dùng printf là sai vì kp câu lệnh gán(ngăn cách nhau dấu ,)->vùng 2: là câu lệnh trả về bool ta có thể chèn bất cứ điều kiện gì, nếu ta dùng dấu phẩy thì mặc định đó là ||, nếu ta dùng phẩy printf thì máy lấy return value của printf và kết hợp || để xác định true hay false->vùng 3: là câu lệnh thực hiện sau mỗi vòng lặp, ta printf ở đây cũng đc,câu lệnh sau mỗi vòng lặp này nhét vào vòng chả khác gì
+Phân biệt câu lệnh gán, thực chất ta k thể gán 1 chuỗi này cho 1 chuỗi khác(k xét string vì nó định nghĩa r) như char* với char* or bất cứ kiểu gì khác, nhưng nếu gán từng phần tử thì muốn thế nào cx đc. Cũng cần phân biệt char gán con trỏ và gán giá trị-> nếu gán con trỏ cho con trỏ thì vc thay đổi giá trị của con trỏ này sẽ đổi con trỏ kia nx-> đó là ! và bắt buộc khi đổi giá trị->Lỗi giả sử có 2 con trỏ p1,p2 và ta gán p1=p2 rồi lại gán p2=p3 thì đổi p2 chả ảnh hưởng gì đến p1 nx, p2 ta trỏ sang vùng nhớ p3 khác r, vì đây là thao tác với con trỏ chứ kp giá trị.
+khai báo ** thì new int* hay (int**)malloc nhé. Khi in ra (p) và (p+1) là in ra 2 vùng nhớ liên tiếp nhau cách nhau sizeof(*p) là quy ước ô nhớ tiếp theo chứ kp là in ra cái địa chỉ như là in giá trị bằng cách cộng vào
+
+-> Tại sao con trỏ mọi kiểu dữ liệu đều có cùng kích thước? Cơ chế hoạt động của con trỏ?
+Ta có trong bộ nhớ 32bits thì con trỏ có kích thước 4bytes, còn 64bits thì 8bytes. Ngày xưa ta dùng hệ điều hành 32 bit và ta có các vùng nhớ đc chia ra và đánh số địa chỉ từ 0-2^32-1. Nhớ rằng 1 bit chỉ biểu diễn được từ 0 đến 2^1-1 tức là biểu diễn đúng 2 số 0 1. Bây giờ nhu cầu tăng cao, nên ta sử dụng hệ điều hành 64 bits tức là ta có đến 2^64 ô nhớ để dùng. Và để có thể quản lý đc toàn bộ, hay là gọi đến được tất cả địa chỉ ô nhớ để dùng nó thì cần đến 1 biến con trỏ có thể gọi đến tất cả. Con trỏ đó trong hệ điều hành 64 bits là 8bytes kích thước. 8 bytes=2^64 số có thể biểu diễn được và do đó nó biểu diễn đc toàn bộ đến số 2^64-1 và truy xuất toàn bộ địa chỉ tưng đó ô nhớ để dùng.
+
+Như v kích thước của con trỏ chỉ là kiểu giá trị lưu được số lượng max địa chỉ có thể truy xuát đc mà thôi. Vì con trỏ lưu địa chỉ: chẳng hạn con trỏ p* cần truy xuất đến ô nhớ có địa chỉ là 2^64-1 là ô nhớ cuối cùng luôn thì giá trị của nó phải biểu diễn đc đến tận 2^64-1 lận(giá trị con trỏ là địa chỉ). Kích thước của nó cx phải tương ứng để biểu diễn đc nên là 8bytes. Mỗi khi khai báo 1 phát là biến con trỏ có 8bytes để lưu địa chỉ vùng nhớ.
+Nếu ta k gán gì cả thì con trỏ sẽ lưu giá trị rác cấp phát ở 1 vùng nhớ nào đó.
+Bây giờ để biểu diễn 1 ký tự hay một số cần một loạt các bit nhất định biểu diễn ra số(ký tự cx chỉ là số trong ASCII). Và cứ 8 bit thì ta có 1 byte và định nghĩa đó là 1 ô nhớ. Ví dụ kiểu int cần 8 bytes để biểu diễn đc số đó. Như v thì con trỏ 8 bytes sẽ có 8 ô nhớ. 
+Giả sử ta lưu con trỏ bằng địa chỉ 1 biến nào đó thì con trỏ sẽ trỏ đến địa chỉ biến đó, or phần tử đầu tiên nếu là mảng. Như vậy kể cả nếu biến int có kích thước 16 bytes đi nx thì con trỏ gán cho biến đó cx chỉ có 8bytes trên 64bits vì con trỏ đó lưu địa chỉ biến int đó cần 8 bytes thôi chứ kp lưu giá trị. Bây giờ ta cho p+1 thì tức là nó trỏ đến 16 bytes tiếp theo= kích thước của kiểu int đang giả sử ở đây. Khi đó *p lưu trên heap có mỗi duy nhất 8bytes đó thôi. Khi dịch hay gọi p++ thì nó chỉ đơn giản là thế địa chỉ đó vào p mà thôi, tức cái p lưu địa chỉ mới vào ô đó chứ bản chất p chỉ có ! 1 vùng trên heap đó k đổi suốt qtr
+
+Hệ điều hành 32 bits chỉ quản lý đc tối đa RAM 4G tức là nó có 4GB bộ nhớ tính ra là 2^32 bytes dữ liệu và cũng là tưng đó ô nhớ có tưng đó số lượng địa chỉ. Nếu nhét nhiều hơn cx đc nhưng nó cx chỉ dùng đc đến 2^32 ô nhớ mà thôi vì k dùng địa chỉ các ô nhớ lớn hơn đc. Win 64 quản lý bộ nhớ, phân phối bộ nhớ tốt hơn nhưng lại không tương thích với nhiều phần mềm cũ
+
+
+
+# struct
+Khi khai báo biến struct thì có chữ struct ở đầu nhé; nếu k muốn có struct ở đầu thì thêm typedef trc struct vào và điền tên đằng sau=> dùng tên đằng sau thì k tt k cần struct nx. Tên đằng trc thì có struct đằng sau thi k có(nếu dùng typedef mà k có tên đằng sau thì chả để làm j). K thể ss 2 struct == nhau hay k
+
+Dùng struct lồng nhau như đệ quy thì phải khai báo có struct vì typedef chưa có tác dụng
+biến global nếu muôn gán giá trị ban đầu thì phải gán vs rval const
+Vd: biến global: int a = 10->ok; int * a = NULL->ok; int*a=b->éo ok;
+
+ví dụ dùng struct có rất nhiều dữ liệu làm tổng lớn hơn 8byte nhưng khai báo con trỏ struct đó cx chỉ 8 byte vì cái địa chỉ đó trỏ tới cái địa chỉ biến đầu tiên khai báo trong struct, khi ta gọi tới biến khác thì con trỏ lại trỏ dến địa chỉ biến đó. 
+
+
+
+# Other:
+-> Trong linux, emoji là mảng char
+C++: system('pause'); dừng ct cả sleep or di chuyển con trỏ cho c++ cx đc, chỉ dùng nó cho c++
+
+-> Dùng lệnh trong hàm main và trong hàm riêng khác nhau:
+với hàm riêng: nếu muốn đổi vị trí 2 biến cho nhau thì thứ ta truyền vào là địa chỉ của nó. Ví dụ đổi giá trị 2 con trỏ(int*) thì truyền vào int**(C k truyền đc tham chiếu)
+Trong hàm riêng, vc đổi địa chỉ không diễn ra nhưng trong hàm main đổi thoải mái(muốn đổi địa chỉ trong hàm riêng, ta truyền địa chỉ của địa chỉ r đổi giá trị thực là đc)
+Trap là con trỏ nhiều sao nó khác khi dùng toán tử *,& nên khi dùng cần xác định rõ,k đc nghĩ con trỏ 1 sao như nào thì 2 sao sử dụng toán tử * tương tự
+Các con trỏ có cùng size là 8 bytes, in địa chỉ thì liên tiếp +4(với int), in giá trị thì chỉ cộng con trỏ +1
+
+trong c k có bool nhé
+
+-> Cách khác không dùng strlen trong vòng while=> for(int i=0;str[i]!='\0';++i)
+
+Khi chạy Ct trong linux thì ta dùng commandline để đặt lệnh-> đó chính là cái mà ta có thể dùng argc, argv để làm đối số truyền vào. argv đối số đầu tiên luôn luôn là tên của application nên đối số thực ta truyền vào bắt đầu lấy từ argv[1](thg dùng vs atof vs nó)
+Còn có ctype.h giúp kiểm tra ký tự gì là loại gì
+
+abs là dùng vs int rồi, nhưng quy chung lại ta chỉ nên dùng fabs(f là floating point)
+
+Các điều kiện vòng while đôi khi sẽ khó ghi: ta có thể cứ viết các bước ra theo thứ tự r gom các điều kiện trùng nhau vào vòng while, r thêm các lệnh đầu cuối là ra
+
+Nếu ta muốn dùng 1 biến chung trong hàm kiểu đệ quy mà k phải là global và cx k truyền con trỏ vào vì ta k cần dùng nó ở ngoài thì có thể dùng static ngay trong hàm=> khi dùng static sau mỗi lần gọi đệ quy nó sẽ k tạo lại mà kiểm tra biến static đó đã từng đc khởi tạo rồi và chưa bị xóa vẫn sẽ dùng tiếp. static ở đây chỉ bị xóa khi kết thúc Ct
+
+-> Để KT lỗi: nếu bth ta bị dừng Ct trc khi kết thuc -> kt bằng perror(); nếu sai lỗi logic kết quả khác-> kt bằng printf; printf k ra ms dùng debug=> éo phải occho debug lâu vl. Kinh nghiệm:chỉ printf những cái ảnh hưởng đén kết quả(khi kết quả bị sai). VD: printf những thứ lưu trực tiếp vào KQ khi ta thấy KQ bị thừa ra đoạn nào chẳng hạn
+

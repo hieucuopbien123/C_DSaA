@@ -1,0 +1,208 @@
+-> All code basic for C++:
+include ".h"
+include <chrono> <iostream> <istream> <ostream> <sstream> <fstream> <ifstream> <ofstream> <string> <cstring> <conio.h> <map> <list> <stack> <queue> <math.h> <iomanip> <ctime> <cstdlib> <random> <functional> <vector> <iterator> <fcntl.h> <io.h> <windows.h> <typeinfo> <utility> <exception> <array> <algorithm> <windows.h> <uinstd.h> <limits.h> <bitset.h> <dequeue> <set> <bits/stdc++.h>
+using namespace std;
+namespace <> {}
+_NODISCARD [[nodiscard]]
+using =  typedef 
+#define PI 2 * acos(0)
+#define NDEBUG
+#include <cassert>
+#define UNICODE 
+#define _UNICODE
+#define ()
+#ifdef
+#undef
+#endif
+#if
+#elif
+#else
+#pragma once
+#pragma warning(disable:4996)
+#define _CRT_NONSTDC_NO_DEPRECATE 
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+#line ""
+## # \
+inline void(=)
+unsigned int long bool  long long  short double float char string  long double
+int64_t int8_t int32_t int16_t size_t
+wchar_t wstring
+wcout wcin wcerr
+int main() wmain()
+cout cin endl cerr
+(float) .f f L e E-
++ - * / %
+++ -- 
++= -= *= /= %= =
+<< >> ~ & | |= &=
+== != >= <=  > < 
+&& || 
+. -> :: '' "" \" \'
+\t \r \n flush
+pow(,) abs() log10() fabs()
+cin.get() getchar() getline(cin,,) .getline(,,)
+cin.ignore(std::numeric_limits<std::streamsize>::max(),) fflush(stdin) rewind(stdin) 
+numeric_limits<>::max() min() epsilon() lowest() infinity() signaling_NaN() quiet_NaN() denorm_min()
+if()else{} while(){} do{}while(); ()?: 
+for(;;){}
+{goto:}
+swtich()case 1 ... 8:default:
+break continue
+// /**/
+int[] int[][]
+sizeof()
+srand(time(NULL)) rand() 
+RAND_MAX __LINE__ __FILE__ __cplusplus __FUNCTION__ __func__ EXIT_FAILURE EXIT_SUCCESS
+mt19937 random_engine(time(NULL));
+uniform_int_distribution<int> distribution(0,100);
+cout << distribution(random_engine);
+random_device default_random_device
+#include <chrono>  using namespace chrono
+time_t= system_clock::to_time_t(system_clock::now());
+& ** * *** *&
+int=new int[]{} int=new int{} int**=new int*[]
+nullptr NULL
+delete free()
+const int*  int const*(int *const)  const int const*
+void*
+void(*)()=&;
+function<bool()>=;
+auto
+noboolalpha boolalpha
+vector<int><>
+array<int,10>{}
+.reserve() .resize()
+.size() .capacity()
+.push_back() .pop_back() 
+.back() .empty() .begin() .end() .at() .rbegin() .rend()
+.swap() advance(,) .insert(,) sort(,,)
+.next() .prev()
+copy(,,inserter(,))
+for(auto const & :){}
+array<int,10>::iterator array<int,10>::const_iterator array<int,10>reverse_iterator array<int,10>const_reverse_iterator
+vector<int>::iterator 
+static const extern
+.eof() .good() .fail() .bad() EOF
+system("cls")
+assert(); static_assert(,"")
+_getch() system("pause")
+exit() return 
+__interface{};
+struct{}; class:public{private:protected:public:};
+template<typename,class>
+enum enum class __asm
+explicit operator (float) operator[] 
+dynamic_cast<>() static_cast<>() reinterpret_cast<>() const_cast<> 
+typeid().name*=()
+friend void
+virtual =0
+() ~()
+override
+ifstream ofstream fstream streamoff
+istream ostream
+ios::in ios::out ios::binary ios::ate ios::app ios::trunc
+is_open
+ios::goodbit ios::badbit ios::eofbit ios::failbit 
+ios::state 
+.rdstate() .bad() .fail() .eof() .good() 
+.clear() .setstate(|)
+open(,) .close()
+seekp(,) seekg(,) tellp() tellg()
+perror("")
+.get() .put()
+.read(,) .write(,)
+FILE
+fopen(,"r+t/r+b") fclose()
+a+ r+ w+ a r w
+fputs(,) fputc(,) fprintf(,) fgets(,,) fgetws(,,) scanf(,) fgetc() feof(FILE*)
+fwrite(,,,) fread(,,,)
+fseek(,,) ftell()
+SEEK_SET SEEK_CUR SEEK_END
+_setmode(_fileno(stdout), _O_U16TEXT)
+_setmode(_fileno(stdin),  _O_U16TEXT)
+_wfopen(L"", L"w+,ccs=UTF-16LE")
+wprintf(L"")
+fwprintf(,)
+SetConsoleOutputCP(65001)
+ghi log
+try{}catch(){}catch(...)
+exception logic_error bad_typeid bad_cast bad_function_call bad_weak_pointer runtime_error domain_error range_error
+system_error overflow_error underflow_error bad_array_new_length invalid_argument out_of_range length_error 
+ios_base::failure
+.what()
+throw abort();
+int*=(int*)malloc() char*=(char*)calloc(,) int*=(int*)realloc(,)
+ios::skipws ios::left ios::right ios::internal ios::dec ios::hex ios::showbase ios::showpos ios::showpoint ios::scientific 
+ios::fixed ios::adjustfield ios::basefield ios::oct
+cout.basefield
+cout.setf(,)  cout.flags() cout.unsetf()
+setprecision() setw() setfill()
+.precision() .width() .fill()
+skipws left right internal dec hex oct showbase showpos showpoint scientific fixed adjustfield basefield adjustfield uppercase
+noskipws noshowbase noshowpoint noshowpos setbase(<cơ số>)
+basefield floatfield adjustified
+ios::fmtflags
+setiosflags() resetiosflags()
+istringstream stringstream
+.str()
+_strlwr_s() _strupr_s() 
+strcpy_s(,,) strdup
+strcmp(,)
+strstr(,)
+errno_t{ENOMEM}
+decltype()
+[=] [&] [](){} []{}()
+constexpr
+thread 
+.join() .detach()
+unique_ptr<int> <> = make_unique<int>(<>) move(<unique pointer khác>)
+shared_ptr<int> <sharedPointer> = make_shared<int>(<>)
+shared_ptr<int[]> <sharePointer>(new int[10]{}, default_delete<int[]>());
+sharedPointer.reset()/release()
+weak_ptr<int> <weakPointer>  weakPointer.expired()/lock()
+noexcept
+for_each
+greater/less<int>
+lower_bound(,,) upper_bound(,,) binary_search(,,)
+pair<,> <pairVar>(,)  pairVar.first/second
+map<,> <mapVar>  mapVar.insert(,) .clear .erase(,,)
+list<> <listVar>  listVar.assign(,)  listVar.remove() listVar.remove_if(<>) .emplace_front(<>)
+stack<> <stackVar>  stackVar.emplace(<>) stackVar.swap(<>)
+MessageBox(NULL,(LPCWSTR)L"<>",(LPCWSTR)L"<>", MB_ICONWARNING | MB_CANCELTRYCONTINUE | MB_DEFBUTTON3);
+IDCANCEL, IDTRYAGAIN, IDCONTINUE, MB_OK, MB_OKCANCEL, MB_ABORTRETRYIGNORE, MB_YESNOCANCEL, MB_YESNO, MB_RETRYCANCEL
+IDOK, IDCANCEL, IDABORT, IDRETRY, IDIGNORE, IDYES, IDNO, IDCLOSE, IDHELP
+MB_INFORMATION(MB_ICONASTERISK), MB_ICONSTOP(MB_ICONHAND, MB_ICONERROR),
+MB_ICONQUESTION, MB_ICONEXCLAMATION(MB_ICONWARNING), MB_USERICON
+register int <>;
+volatile int <>;
+union <>{};
+%% \\ 0x LL ULL 0
+memset(,,) memcpy(,,)
+to_string(<>) <string>.data() <string>.c_str() <stringstream>.str()
+int __cdecl/__stdcall/__fastcall <>(){}
+"%ld %lf %lld %2.2f %[^\n]s %p %c %u %i"  
+printf("\033[%d;%df") 
+printf("\033[XA")
+usleep(<>) sleep() 
+fflush(stdin)
+strlen() strcat(,) strncat(,,) atof() atoi() atol() isalpha() isdigit() isspace() tolower()
+INT_MAX INT_MIN
+fgetpos fsetpos ftell fpos_t
+cout << bitset<8>(<>)
+dequeue<int> <dequeueVar>(<>)  dequeue.assign(,) dequeue.shrink_to_fit()
+priority_queue<> pQueueVar
+set<int, greater<int>/equal_to/not_equal_to/greater_equal> <setVar>  setVar.insert(<>) setVar.erase(<>) setVar.find(<>,,) setVar.clear()\
+string::npos
+make_heap(,) sort-heap(,) pop_heap(,) push_heap(,) 
+reverse(,)
+fill_n(,,)
+freopen(,,)
+distance(,)
+ios_base::sync_with_stdio(false)
+cin.tie(0) cout.tie(0)
+next_permutation(,,); prev_permutation
+modf(,)
+std::for_each(,,) std::find(,,) count(,,) min_element(,) max_element(,)
+mutable

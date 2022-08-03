@@ -1,0 +1,50 @@
+# Greedy Algorithm:
+Có 4 main algs: greedy, exhaustive(branch and bound), divide and conquer, dynamic programming
+Graph kp là 1 algs mà là 1 data structure
+
+Nhiều bài toán tối ưu dùng được dynamic nhưng nó overkill vì không cần thiết. Trong 1 số TH có thể áp dụng greedy algs với implement đơn giản hơn. Cơ chế: dùng thuật tham lam cho local optimization và hy vọng rằng nó dẫn tới global optimal solution. Dù kp là tất cả nhưng trong Vd bài toán hiện tại thì nó hoạt động đúng là được.
+=> Cách làm viết ra các feasible solution cho local, 1 trong số đó có thể là optimal solution. Đa phần greedy là không đúng.
+
+Greedy có thể implement bằng đệ quy nhưng vì tính đơn giản của nó nên cx có thể dùng được iterative loop. Vd: thuật Kruskal, PRIM,..
+
+-> Quy trình: tìm optimal structure -> tìm các feasible solution để tìm ra structure đó(recursive) -> chọn 1 trong số đó là thuật toán greedy chuẩn bằng cách tìm TH sai cho các case còn lại -> xây dựng thuật toán
+
+coin changes: 
+dimes, quater, nickle, pennies(cent), dollar
+dollar = 10 dimes; 1 dimes = 0.1 dollar;
+dollar = 4 quater; 1 quater = 0.25 dollar;
+dollar = 100 pennies; 1 pennies = 0.01 dollar;
+dollar = 20 nickles; 1 nickles = 0.05 dollar;
+
+Chứng minh bài toán coin mỹ là tối ưu với greedy:
+1 5 10 25 100: gọi là A, B, C, D, E
+=> số đồng A kbh quá 4
+=> số đồng B kbh quá 1
+=> số đồng C kbh quá 2
+  => vì nếu cần đến 3 đồng C luôn thay được bằng 1 số lượng ít hơn các đồng khác chứa đồng lớn nhất thấp hơn nó là D => là B + D
+=> số đồng D kbh quá 3 
+=> số đồng E là vô tận
+Điều kiện trên chặt hoàn toàn VD tạo giá trị 49 thì = 25 + 10 + 10 + 1*4
+=> nên nhớ số đồng 10 không vượt quá 2 nên k thể có cách khác được
+
+VD: 1 5 11 thì 15 = 5*3 hơn là = 11 + 1*4
+vì số đồng B có thể là vô tận vì nếu cần đến 3 đồng B, ta không thể thay được bằng 1 số lượng ít hơn các đồng khác chứa đồng lớn nhất kề nó là 11
+or có thể dùng đến quá 2 đồng 5 là 3 đồng 5 = 15 > 11 => vì đồng 11 > 5 nên k tối ưu
+
+Đk: khi dùng nhiều đồng nhỏ hơn thì ta luôn thay được bằng 1 số lượng ít hơn các đồng trong đó chứa đồng lớn hơn nó
+
+Khoảng val:
+1 -> 4: max 4 đồng A tạo được max value là 4
+5 -> 9: max thêm 1 đồng B tạo được max value là 9
+10 -> 24: max thêm B + C là 2 chỉ tạo được max 24 vì nếu 2B, 1C sẽ lấy 2C; nếu 1B, 2C sẽ lấy 1D; nếu 3C sẽ lấy 1D, 1B; 
+25 -> 99: max thêm D là 3 
+100 -> vô cực: no limit E
+
+Chứng minh: trong khoảng Ck < x < Ck+1 thì ta chắc chắn greedy phải take coin k -> vì nếu ko take coin k thì phải lấy 1 lượng coin nhỏ hơn mà cộng vào đủ bằng x và TH này không tồn tại theo chứng minh trên
+
+=> Đây là special case của Knapsack problems
+
+Kinh nghiệm bài schedule job theo thời gian start và finish thì để tìm được số lượng job nhiều nhất mà không conflict compatible là lấy theo earliest finish time.
+=> chứng minh ez: giả sử ở 1 đoạn ta lấy cái earliest time finish nhưng thực chất có 1 cái finish sau mới là cái cần lấy tạo optimal cơ-> thế thì vô lý vì ta nên lấy cái trước hơn vì lấy cái trước mở ra nhiều sự lựa chọn hơn khi mà tất cả các job của cái sau thì cái trước vẫn đều có thể lấy được. Cái khoảng trống giữa finish time của cái trước và cái sau bị thừa ra thì nên sử dụng
+
+Bài C.ATM kinh nghiệm, thay vì dùng switch case từ 1 đến 9 ta có thể nhét nó vào 1 mảng r lấy ra ok

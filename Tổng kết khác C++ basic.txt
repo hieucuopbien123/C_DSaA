@@ -1,0 +1,191 @@
+Những thứ cơ bản nhất thg dùng của C++:
+- include file khác vào file hiện tại để dùng
+- hàm inline
+- sinh số ngẫu nhiên
+- Dùng con trỏ, con trỏ truyền vào hàm, bản chất địa chỉ-giá trị, xóa con trỏ
+- Các type mapping, vector,...
+- Các biến đặc biệt extern, static
+- Các hàm utils trong các thư viện như log10, sqrt,..
+- template
+- toàn tập về class: pragma, protected và private, các kiểu initialize constructor và thứ tự khi kế thừa, từ khóa friend, interface, virtual override, static trong class, operator, enum class, cast lên và xuống của class, explicit, constructor() = delete
+- lvalue, rvalue
+- các global function
+- các hàm có sẵn phục vụ giải thuật như trong thư viện algorithm or utility, các kiểu cấu trúc dữ liệu
+- các hàm chuyển đổi qua lại các kiểu string
+- thêm thư viện ngoài tĩnh or dll
+- command line argument
+- MessageBox
+
+Những thứ kỳ quặc của C++
+#define NDEBUG
+int* p1 = new int[10]{10, 2}; => p1 là 1 mảng cấp phát động có giá trị [10, 2, ...toàn số 0...] => in *(p1+1) ra 2
+
+Nhưng lưu ý có thể k qtr:
+- marco có thể định nghĩa trong hàm, nó k hiểu code C++
+- nếu 2 con trỏ cùng trỏ vào 1 ô mà delete 1 cái thì con trỏ kia vẫn hoạt động
+- hằng con trỏ hằng, con trỏ nhiều sao, tham chiếu, con trỏ mảng, con trỏ void
+- con trỏ hàm, con trỏ hàm class
+- xâu luôn kết thúc bằng \0 bỏ 1 ô nhớ cuối
+- các manipulator: setprecision, noboolalpha,..
+- ios flag
+- các global marco
+- Log, viết tiếng việt
+- truyền mảng 2 chiều vào hàm
+- tạo và dùng namespace riêng
+- try catch thow
+- decltype, noexcept, constexpr
+- lambdafunction
+- stringstream
+- assert
+- lớp dựng sẵn array
+- đa nhiệm, atomic
+- smart pointer
+- freopen
+- Các hàm của C, suffix prefix
+- biến global muốn gán giá trị ban đầu phải là rval const
+- Con trỏ struct hay class lưu ý k đưuọc đụng đến cấp độ 2 nếu k rõ cấp độ 1 chưa khai báo
+- Dùng taylor tính các biểu thức toán học
+- Nếu lưu gom ghép 2 mảng vào thành 1 mảng: tạo 1 mảng chung kích thước bằng 2 mảng cộng lại -> ghi mảng 1 vào mảng chung, ghi mảng 2 vào (mảng chung + size(mảng 1))
+- Cách truy cập nhanh str[strlen[str]] để truy cập vào phần tử cuối cần điền vào của char[] nhưng bộ nhớ str phải nhiều hơn strlen[str] nhiều
+- Convert chữ <-> số từ 0->9
+- int a = b; thì a và b cùng 1 biến thì đổi 1 cái k đổi cái còn lại. Nhưng nếu a và b trỏ vào cùng 1 địa chỉ và địa chỉ đó trỏ vào 1 giá trị thì đổi giá trị là cùng đổi
+- Infix, postFix, preFix
+- union, register, volatile
+
+Kiến thức quan trọng:
+- Nắm vững input output string, ký tự, mọi thứ, flush đệm
+- Phân biệt char*, string, char[], const char*
+- Cấp phát động các kiểu
+- Thao tác với file
+- casting
+- Tính đa hình, tính trừu tượng
+
+
+Các vùng kiến thức code C++ chi tiết hơn
+- Nắm vững input output string, ký tự, mọi thứ, flush đệm:
+Cơ chế mấy cái đọc là như nhau:
+getchar() đọc 1 ký tự, còn lại lưu vào đệm, chỉ dừng khi ấn enter. Nó trả ra int ASCII ký tự đó or int của EOF nếu lỗi. Tính cả space
+cin >> đọc 1 cục bất kỳ k tính space kết thúc bằng enter, nếu k sẽ lưu đệm.
+cin.get() y hệt getchar()
+getline(cin,<str>,'<char>'); lấy string tính cả space, dừng khi gặp ký tự 3 mặc định là enter, k có đệm gì ở đây, chỉ dùng với kiểu string
+cin.getline(char*, <số phần tử max>); lấy xâu lưu vào chỉ kiểu char*, tương tự cái trên
+cin.clear() xóa lỗi trước đó gặp phải, cin.ignore() xóa 1 ký tư khỏi đệm
+=> Chốt: getline khi đọc 1 dòng, cin.get khi đọc 1 ký tự, cin.clear khi cần xóa lỗi
+
+- Nắm về char*, const char*, string, char[]:
+char* là 1 kiểu xâu. Khi in kiểu xâu thì luôn ra 1 string đã gán. VD: char*a thì in *a chỉ ra giá trị là 1 ký tự, còn in a thì ra cả string dài. Kiểu xâu có thể ghi và đọc ra trực tiếp
+char*a=new char; thì chỉ có 1 phần tử, k được dùng quá. 
+char*a=new char[11]{"Hello"}; thì chỉ dùng đủ 11 phần tử k được dùng quá. Mấy cái dùng quá là do hđh chưa có gì nên may mắn dùng được. Gặp \0 là dừng, [0]=\0, gán [1]='a'-> k in gì cả. Muốn gán phải dùng strcpy_s. Khi gán 2 biến xâu cho nhau thì nó chung địa chỉ
+char a[11]{"12345"}; thì như TH trên. 
+string a=""; thì vô hạn, gán dễ dàng với dấu "=". Khi gán 2 xâu cho nhau thì là copy
+const char*a=""; fix
+=> Chốt: dùng string với xâu, char với 1 ký tự, char[] với mảng ký tự, const char* với hso
+
+- Nắm về xóa đệm:
+cin.ignore(32767,'\n'); là xóa 32767 ký tự đầu hoặc đến khi gặp '\n'
+rewind(stdin); xóa đệm của window
+cin.ignore(); 
+-> Chốt: rewind(stdin);
+
+- Nắm về type casting:
+//C_style cast: tự động, chỉ dùng basic vì các kiểu hơi phức tạp 1 tí có thể ra kq k mong muốn
+float v1 = 1.2;
+int v2 = int(v1) + 1;
+//static_cast: có chủ đích, cast kiểu này sang kiểu khác mà k vi phạm kiểu. K thể dùng đó để cast vô lý như bỏ const hay cast kế thừa từ cha sang con. Những gì C_style cast k làm được thì kiểu này cx k làm đc
+char v3 = 'a';
+int v4 = static_cast<int>(v3);
+//const_cast: khi thêm hay loại bỏ const thì dùng
+const char* v5 = "Hello";
+char* v6 = const_cast<char*>(v5);
+//dynamic_cast: chuyển đổi mạnh hơn 1 chút miễn là tương thích, có thể lên or xuống class. Nếu sau khi cast mà máy thấy giá trị không hợp lệ so với kiểu của đối tượng sẽ trả ra null or error bad_cast. Chi phí cao nên thg dùng kiểu không biết dữ liệu cần chuyển đổi thành là gì nên cast thử và bắt lỗi, nếu cast thành công thì làm gì, k thành công thì làm gì. Nó chỉ dùng với con trỏ void* or con trỏ class.
+Nhiều TH bắt buộc phải dùng dynamic_cast
+//reinterpret_cast: nó cũng như dynamic_cast nhưng mạnh hơn bằng cách nếu dữ liệu k tương thích thì nó sẽ k báo lỗi mà chấp nhận bừa luôn nên nó kbh báo lỗi. Dev cần phải biết rõ ta đang làm gì mới dùng. Ít dùng. Nó k thể cast const nhưng có thể cast class
+=> Chốt: static_cast với type cơ bản, const_cast khi cần thêm bớt const, dynamic_cast khi cần cast con trỏ class
+
+- Thao tác với file:
+fprintf ghi ra file string điền vào các biến gì
+fscanf đọc từ file ra lưu các phần nào vào các biến gì
+fopen cũ k dùng nx
+fopen_s các mode a, r, w, a+, r+, w+, create new nếu k tồn tại, trả error nếu k đúng, rb, ab, wb
+fgetc = getc đọc từng ký tự của file và trả ra ký tự đó, k lưu vào string mà buộc lưu vào mảng char, k đọc được nx sẽ trả EOF
+feof check con trỏ đến cuối file chưa
+fclose đóng file
+fputc = putc ghi 1 ký tự vào file
+ftell trả ra vị trí của con trỏ trên stream đến đâu rồi
+fseek trả ra 0 nếu thành công, SEEK_CUR, SEEK_SET, SEEK_END
+<fstream>.open("<link file>",<flags>); mở file bản chuẩn của C++, ios::app, ios::in, ios::trunc, ios::ate, ios::binary
+<fstream>.is_open(); check file mở hay không
+<fstream>.fail(); check mở file bị lỗi
+<fstream>.clear(); reset bit cơ lỗi
+<fstream>.tellg(); vị trí của ký tự hiện tại của input stream
+<fstream>.tellp(); vị trí của ký tự hiện tại của output stream
+<fstream>.put('<ký tự>'); chuẩn ghi 1 ký tự vào file
+<fstream>.get(); trả ra 1 ký tự 
+operator >> của fstream đọc từng ký tự vào char
+<fstream>.eof(); check đến cuối file chưa
+<fstream>.getline(char[],100,EOF); đọc 100 ký tự lưu vào char cho trừ khi gặp EOF
+<fstream>.seekp(0, ios:beg); dịch con trỏ output đến vị trí nào
+<fstream>.seekg(0, ios:end); dịch con trỏ input đến vị trí nào
+fputs ghi 1 dòng vào FILE*
+fgets lấy 1 dòng ra khỏi file, đọc từng dòng
+<fstream>.read(const char*, size); đọc file binary và file thường
+<fstream>.write(const char, size); ghi file binary
+fread, fwrite đọc ghi file binary
+<< ghi vào file
+>> đọc từ file ra
+fstream.close()
+=> Chốt: read đọc cả file binary toàn bộ 1 lúc, >> khi đọc từng dòng file thường, write ghi file binary, put ghi 1 ký tự vào file, << khi ghi toàn bộ char* vào file. Dùng fprintf, fscanf khi chỉ lấy lưu vào các biến gì của string đọc or ghi file. Ngoài ra: fstream, eof, open, is_open, seekp, seekg, tellp, tellg, close, open
+
+- Nắm về các kiểu cấp phát động:
+malloc cấp phát bao nhiêu vùng nhớ void* phải cast về type*, giá trị rác, cấp phát lúc runtime(cấp phát tĩnh thì cấp phát lúc compile time)
+calloc tương tự trên nhưng nó gán giá trị default 0 cho mỗi vùng nhớ nên thời gian lâu hơn
+realloc thay đổi kích thước cấp phát vùng nhớ nào, nếu truyền vùng nhớ null thì là cấp phát bình thường
+new cấp phát động của C++, bản chất nó gọi vào hàm khởi tạo của kiểu dữ liệu
+new nó là 1 toán tử còn malloc là 1 hàm nên malloc nhiều thủ tục phức tạp hơn, có địa chỉ hàm riêng trên vùng nhớ. new trả lại đúng kiểu còn malloc gốc trả ra void. new sử dụng các vùng nhớ "free store" còn malloc dùng heap. thất bại malloc trả null còn new trả ra exception. new tự động tính toán kích thước bộ nhớ khi cấp phát còn malloc ta phải tự tính
+delete và free đều trả lại vùng nhớ
+=> dùng new và delete trong hầu hết các TH. 1 số ít dùng malloc và realloc nếu cần thiết
+
+- Nắm về lib:
+Static lib trở thành 1 phần của app luôn mà không cần cài thêm file khác bên ngoài: https://docs.microsoft.com/en-us/cpp/build/walkthrough-creating-and-using-a-static-library-cpp?view=msvc-170
+-> sinh file.lib
+Dynamic Lib giúp share code, shrink size of app, thêm các dll giúp app mở rộng tính năng: https://docs.microsoft.com/en-us/cpp/build/walkthrough-creating-and-using-a-dynamic-link-library-cpp?view=msvc-170
+-> sinh file.dll
+Hướng dẫn cũng chỉ là include cái folder chưa file .h và file.lib và file .dll vào là xong. Thay vì copy chay thì nó sẽ k cập nhập khi sửa file dll ở thư mục cũ nên nó include vào đường link gốc để luôn có lib update mới nhất thôi
+=> Chốt: static dùng khi nhẹ, dll dùng khi import từ ngoài vào or các TH khác
+
+- Nắm về các kiểu biến phạm vi:
+biến cục bộ quá dễ
+const/marco buộc khai báo giá trị fix ngay, dùng xuyên file mọi lúc miễn là include hết rồi
+global dùng phạm vi global xuyên file nhưng hạn chế vì bị lỗi redefinition khi nhiều file cùng include file chứa biến global nó sẽ khởi tạo lại và bị lỗi(biến const và marco k có lỗi này)
+extern dùng xuyên file miễn include và phải khai báo lại ở file include, 1 instance duy nhất. extern dùng trong toàn bộ CT nhưng cx chỉ khai báo 1 lần mà thôi. Chỉ các file nào chưa khai báo ms cần khai báo lại nó ở đầu file và khi include đến nó thì sẽ coi là hàm gán giá trị cho biến extern
+static giống global nhưng k báo lỗi redefinition mà tạo ra nhiều biến global trùng tên, mỗi file 1 biến khi file đó include file gốc chứa biến static
+=> const marco dùng mọi lúc khi cần const, biến cục bộ dùng trong phạm vi {}, biến global nhưng mỗi lần include là 1 instance thì dùng static, global trong 1 file thì dùng biến global bình thường, 1 instance var duy nhất trong toàn bộ chương trình thì dùng extern. Ta thương dùng các biến global ở riêng 1 file kiểu CommonParams và định nghĩa các biến static, extern, const cho toàn bộ dự án include nó. 
+
+
+Tính đa hình:
+Tính đa hình(polymorphism) trong lập trình hướng đối tượng:
+1 con trỏ có kiểu lớp cơ sở luôn có thể trỏ đến địa chỉ của 1 đối tượng lớp dẫn xuất. Tuy nhiên thông thường chuẩn chỉ thì trình biên dịch sẽ gọi đúng con trỏ của nó. VD:
+class Mayvitinh{  
+	public: 	 	 	
+	void show(){
+	    cout << "mayvitinh" << endl;
+	}
+}; 
+class mayAcer: public Mayvitinh{  	
+    public: 	 	 	
+    void show(){
+        cout << "mayAcer" << endl;
+    }
+}; 
+=> Nếu ta chơi:
+mayAcer may1; 
+Mayvitinh *tenmay = &may1;
+tenmay->show(); 
+thì sẽ in ra Mayvitinh vì nó gọi đến phương thức show của Mayvitinh. Để giải quyết vấn dề này ta dùng tính đa hình. Ta gọi là tính đa hình là bởi vì Maytitinh có thể là nhiều thứ như MyAcer, MyLaptop,..
+Polymorphism -> Run time polymorphism     -> Virtual function
+             -> Compile time polymorphism -> Function overloading
+                                          -> Operator Overloading
+Compile time polymorphism, nạp chồng hàm là khai báo nhiều hàm cùng tên cùng chức năng nhưng khác nhau về vài chi tiết tạo ra tình đa hình của hàm số
+Compile time polymorphism, nạp chồng toán tử chính là việc ta dùng operator các phép toán trong class
+Runtime Polymorphism: khai báo hàm ảo trong class với từ khóa virtual trong class cha. Trình biên dịch sẽ thêm vào đối tượng lớp cơ sở và các dẫn xuất của nó mỗi con trỏ chỉ đến bảng phương thức ảo(virtual function table). Con trỏ đó tên là virtual pointer. Mỗi lớp có 1 bảng phương thức ảo. Đại khái là nó giúp gọi lớp con nếu có chứ k gọi cha khi có phương thức ảo bị trùng ở con
+

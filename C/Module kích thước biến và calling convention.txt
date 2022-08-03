@@ -1,0 +1,71 @@
+# Kích thước biến
+Nguyên lý về kích thước biến đã cho ta thấy các Ct 32 bit chạy được trên hđh win64(phổ biến hiện h) nhưng ngược lại thì k vì số byte của biến k refer tới đủ các vùng nhớ của 64 bit đc
+
+Kích thước của biến là xác định và bất biến ở mỗi hệ điều hành nhất định, tức là ở các hđh khác nhau thì kích thước biến khác nhau. VD char luôn ngốn 1 byte ở mọi hệ điều hành nhưng int sẽ ngốn 2 byte ở hệ 16 bit và 4 byte ở hệ 32 bit và 8 byte ở hệ 64 bit(đã biết) tức win càng lớn thì có thể lưu giá trị số int lưu càng lớn
+
+Kích thước của biến là có giới hạn và nếu bị tràn số thì tùy mỗi TH sẽ cho kết quả khác nhau. Có Th tràn số thì nó quay ngược trở lại giá trị đầu, có TH nó tự cắt bỏ bit thừa để ép lưu vào, có TH nó lưu tràn sang ô bên cạnh và gây lỗi, có TH nó chỉ báo lỗi k thôi bằng cách ném ra 1 ngoại lệ. Tùy TH và nhu cầu mà ta phải tự xử lý khác nhau. Có TH overflow quay vòng nó k báo lỗi như trong solidity, điều này là không tốt và bản mới đã khắc phục
+
+VD: char i;
+for(i = 0; i < 128; i++){}
+return 0;
+=> tưởng là ok nhưng thực ra vòng for sẽ chạy vô hạn-> đầu tiên tạo 1 biến char kích thước 1 byte-> vào vòng for bị cast sang int nhưng kích thước đã khai báo vẫn là 1 byte-> v là ta có biến 1 byte int. Mà 1 byte thì là 8 bit nhưng do nó k có unsinged nên tính cả âm và 1 bit đầu tiên sẽ biểu diễn dấu và 7 bit còn lại biểu diễn giá trị nên sẽ chạy từ -2^7 đến 2^7-1(128 số mỗi bên), tức từ -128 đến 127-> vòng for chạy đến 127 vẫn ok và i là 01111111 xong i++ làm nó thành 10000000 tức số
+-128 quay lại ban đầu vẫn nhỏ hơn 128 và lại tăng -> i=-1 thì sẽ là 11111111 và lại tăng thêm 1 đơn vị sẽ thành 100000000 vì ô nhớ chỉ có 8 bit nên ở TH này sẽ rơi vào TH hđh tự động loại bỏ 1 bit ở vị trí cao nhất sẽ thành 00000000 và biểu diễn số 0 ->vòng lặp mới lại bắt đầu
+=> chú ý là bit dấu cũng tính là giá trị
+
+VD:char i;
+int* p = (int*) &i;
+i = 100;
+printf("%d %d", *p, i);
+p = NULL; //gán p sang ô nhớ khác, k ảnh hưởng đến i
+return 0;
+=> dùng như này sẽ k có lỗi và sẽ in ra: <rác> 100
+=> đầu tiên cấp 1 byte char xong p được gán vùng nhớ đó nhưng lại là 4 byte int. 
+i: <1 byte>
+p: <1 byte> <3 byte> với 1 byte đầu là i tức-> p: <i> <3 byte>
+=> sau đó gán i bằng 100 thì giá trị i đổi nhưng p là i cộng thêm 3 byte rác nx nên ra giá trị rác. Do trong suốt quá trình ta k gán gì với 3 byte kia chưa cấp phát nên k bị lỗi, gán là null k tính vì coi như đổi vùng nhớ ấy chứ kp là giá trị chưa khai báo
+
+VD: char i;
+int* p = (int*) &i;
+*p = 100;
+printf("%d %d", *p, i);
+p = NULL;
+return 0;
+=>Th này cũng tương tự vùng nhớ như bên trên nhưng ta gán *p:
+p: 00.(24 số 0).00 01000101 -> là số 100 đó
+nhưng khi lưu trong ô nhớ sẽ lưu là: <01000101> <3 byte toàn bit 0> => vì cơ chế nó lưu từ byte thấp đến cao dần tức từ trái qua nên:
+p: <01000101> <3 bytes toàn bit 0>
+i: <01000101>
+=> in ra: 100 100 và báo lỗi vì truy cập vào 3 bytes chưa cấp phát và gán toàn 0 cho nó trong khi ban đầu là giá trị rác.
+=> cái mấu chốt ở đây là việc gán *p=100 là nó gán tất cả 4*8=32 bit đó thành giá trị 100 chứ kp nó chỉ gán và xử lý mỗi ô nhớ bytes cuối
+
+
+
+# Calling convention
+8 Thanh ghi đa năng 32 bit: EAX, EBX, ECX, EDX, ESI, EDI, DBP, ESP dùng để lưu trữ tham số của các phép tính, tham số của các phép tính địa chỉ, và con trỏ bộ nhớ (bên ngoài), thanh ghi ESP đặc biệt chỉ dùng làm con trỏ ngăn xếp.
+Calling Convention: khi trình biên dịch thực hiện 1 hàm, thường sẽ call địa chỉ chứa hàm và nhảy đến đầu hàm thực hiện tuần tự, thì calling convention quy ước 1 hàm thực hiện như thế nào, phổ biến nhất là cdecl, stdcall, fastcall, thiscall.
+- cdecl là kiểu C Declaration Syntax, nó sẽ đưa các đối số của hàm vào trong 1 stack theo thứ tự ngược lại, đối số đầu tiên sẽ được đưa vào stack cuối cùng. Nghĩa là tham số hàm lưu từ phải sang trái và trả về kết quả ở thanh ghi eax, nó k giới hạn số lượng tham số đầu vào thuận tiện cho việc tạo hàm với số lượng đối số k xđ vd như hàm printf. 2 compiler Visual và GCC mặc định dùng kiểu này dù k khai báo
+- stdcall là standard call syntax, nó đưa đối số vào hàm theo thứ tự ngược lại nhưng khác là khi hàm được gọi thì stack được điều chỉnh lại trước khi return, nó không cho phép các đối số có chiều dài thay đổi.
+- fastcall là kiểu syntax giống stdcall nhưng 2 đối số đầu tiên của hàm sẽ đưa thẳng vào thanh ghi thay vì đưa vào stack nên hàm sẽ truy cập trực tiếp 2 cái đó từ registers nên ct sẽ chạy nhanh hơn=> chủ yếu dùng với hàm tính toán nhanh với 2,3 dữ liệu nhỏ
+Vd: #include <stdio.h>
+int __cdecl foo(int i,int j){
+    printf("hello world\n");
+    return i+j;
+}
+int __stdcall foo1(int a, int b){
+    printf("hello world 1\n");
+    return a + b;
+}
+
+int __fastcall foo2(int a, int b){
+    printf("hello world 2\n");
+    return a + b;
+}
+//ta k thấy được sự khác nhau về thao tác bên trong stack nhưng hiểu có các kiểu khác nhau như v khi compiler
+//biên dịch ct, ta có thể điều khiển đc
+int main(){
+    int bar = foo(1,2);
+    foo1(3,4);
+    foo2(5,6);
+    return 0;
+}
+

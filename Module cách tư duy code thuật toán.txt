@@ -1,0 +1,59 @@
+# Cách tư duy code thuật toán:
+-> Tư duy
+--> 4 PP tư duy hướng làm: đơn giản hóa; lấy ví dụ ra giấy nhanh cho mỗi TH để tính các số; tư duy theo thứ tự và giải quyết vấn đề gặp phải quay ngược nếu cần; tư duy nhanh đào sâu vào vấn đề và giải quyết luôn nhưng chỉ dùng khi bài toán dễ
+Tư duy code: viết pseudo code cho từng bước và giải cụ thể từng case ra, khi làm xong có thể clean lại, K code khi chưa hiểu tường tận cách giải quyết bằng pseudo; giả định các hàm cần có đã có r và viết ra trước sau đó mới định nghĩa hàm; Khi code bài dài thì debug luôn theo thứ tự luồng, k phải có lỗi r mới debug-> skill debug ngay là skill qtr nhất
+Tư duy thuật toán: áp dụng các thuật toán thường dùng để có hướng giải các bài đặc thù
+
+Muốn giải quyết vấn đề phải hiểu tường tận vấn đề, mọi ví dụ và mọi TH đặc biệt, sau đó mới đưa ra cách giải quyết. Kp là nghĩ ngay phải dùng PP gì thì sẽ loạn về sau
+Khi giải quyết 1 bài toán, phải có ý tưởng để giải bài toán, sau đó đi vào cặn kẽ xem giải được k. Bước cuối mới là code. Nh bài ta code ngay lập tức và bị sai là điều hiển nhiên. Những ý tưởng dù chỉ le lói cx có thể hiện thực hóa đc
+
+--> Có cái pseudo code là chuẩn r, phần còn lại là code phải chuẩn từng điều kiện. Thà làm chậm 1 phát ăn ngay còn hơn sai r debug lại lâu lắm. BH còn sai cái <= với cả == nhầm = nx thì chịu r. Code chậm thôi. Logic lấy vd cụ thể ra.
+
+Cách code: Để có thể viết được code mà ít sai và nhanh thì trc hết t phải tập trung, viết sơ đồ kỹ càng ra, code-> nếu ta code sai trong quá trình đó thì phải tìm ra lỗi sai, nếu lỗi sai quá lằng nhằng thi nên viết lại từ đầu hơn là sửa code đã có, lấy 1 ví dụ cụ thể ra giấy và viết code, so với ví dụ đó liên tục sẽ đúng hơn-> khi làm xong 1 bài phức tạp, ta viết cout debug luôn từng bước chi tiết, như trên chứ đừng compile thấy sai xong cout từng dòng thì đm lâu lắm-> đó chính là lần occho thì gk lần trc, khi chạy thử thì bắt theo cái luồng đó debug từng bước để xác định điểm bất thg, viết code chi tiết xong từng bước nhỏ cx viết mục đích rõ ra
+
+--> Tư duy thuật toán để giải cơ bản: hướng tư duy của ta nên là đi từ những thứ theo thứ tự lần lượt sẽ hay hơn là giải solution cho cả cục. VD trap: in so le dòng trong 2 file. Khi thao tác với các dòng trong file có 1 lỗi là dòng nào cx kết thúc bằng \n nhưng riêng dòng cuối file lại kết thúc bằng EOF nên nếu thao tác với dòng cần chú ý dòng cuối ví dụ dạng bài đếm ky tự trong 1 dòng(dùng feof). Ở TH này nếu ta tư duy là nhét hết vào 1 vòng for thì in đến dòng cuối nó k tự in ký tự xuống dòng dẫn đến lỗi ở điểm giao 2 file, cái này fix thì nghĩ tí là ra nhưng ta k nên nghĩ theo hướng như v. đặt vị trí là thao tác theo luồng như 1 con trỏ đi đến đâu thì làm gì sẽ ez hơn(cx như khi qhđ hay đệ quy hay các Ct trong qt ta toàn phải ví dụ 1 luồng cái gì thì làm gì thì code sẽ dễ hơn)=>luồng:in lần lượt 2 file ra khi 1 trong 2 file kết thúc thì dừng-> kiểm tra con trỏ file nào còn thì in tiếp=>tư duy vs các thuật toán cơ bản
+
+PP vô thức: Ta có pp trong toán hay trong code mà ta thường vô thức sử dụng đó là làm tuần tự và chia tất cả các TH nhanh và liên tục. Khi ta làm 1 cái gì đó đương nhiên là ta chạy tuần tự, khi xao lãng ta sẽ occho hơn đó là bỏ qua các bước làm tuần tự. Đương nhiên là khi đọc code or xây dựng ý tưởng thì phải bỏ qua những thứ lặt vặt nhưng khi thực sự động chân tay vào để giải thì pp vô thức mới là đỉnh cao. Nó thể hiện cho vc ta tập trung vào vấn đề, làm đến đâu xong đến đấy kể cả những chi tiết nhỏ. Cụ thể, VD khi ta đã có 1 ý tưởng để làm 1 cái gì đó và bắt tay vào thực hiện thì ta sẽ bắt đầu làm tuần tự từ khi bắt đầu cho đến khi kết thúc là hoàn thành công việc-> khi làm tuần tự VD gặp 1 ngã rẽ để ta chia TH, if a>b thì ta phân vân liệu a>b hay a!=b hay a>=b, ta ngay lập tức xét TH a=b thì chuyện gì xảy ra và đào sâu vào TH đó với tốc độ cao và đưa ra quyết định luôn tại thời điểm đó. Code đã viết là phải chắc, k đc viết bừa a>b rồi về sau mới fix lại. Thông thường ta đôi khi phải chia nhiều TH hơn thế, a=b xong lại từ đó chia ra thêm vài TH con trong TH con thì phải nhanh chóng đi sâu vào ngay. Nếu lúc đó ta k thể giải đc a=b hay k thì có thể viết ra giấy a>b hay a=b và "cần <phải làm gì> tiếp theo" r đi vào và giải=> bởi vì nếu như t k biết ngay lúc đó thì là do ta chưa hiểu vấn đề or do ta k tỉnh táo->nếu chày cối làm tiếp thì chỉ khiến cho code bị loạn và ta bị lạc, cái cần làm tiếp là tập trung tinh thần để hiểu toàn bộ chứ kp là viết tiếp vào cái đó. Or cách khác là ta quay lại 1 bước trước đó và nghĩ lại từ bc trước nhưng cách này k hiệu quả nếu như ta bị lạc thật sự k thể giải đc vì sự phức tạp của thuật toán. Or thuật toán khó thì chia ra rõ ràng chứ k gộp sẽ chắc hơn.
+
+--> Vấn đề éo phải thuật toán k đúng mà vấn đề là sai nhưng sửa lâu và giải thuật bị loạn->cần 1 phương hướng giải thuật tốt hơn và nâng cấp cách sửa lỗi. Ta cứ nghĩ vc sửa lỗi nó là nhất thời và printf 1 cách vô tổ chức, đó là sai lầm.
+Trước khi debug hay printf, ta nên kiểm tra tổng quát lại code 1 lần, thg có những cái lỗi cơ bản nhầm biến ở đâu đó dễ thấy
+PP debug: ta nên printf còn cẩn thận hơn là code và bám sát vào kết quả nhất theo thứ tự lùi dần or tăng dần xem bắt đầu từ bước nào xuất hiện unexpected. VD cần xác định giá trị mảng=> in chuẩn cả a[%d] = %d mới ra đc chuẩn.
+Vc gộp các Th giúp cho vc code trở nên ngắn gọn nhưng k dễ hiểu=> với các thuật toán phức tạp lần đầu làm thì nên chia TH ra if liên tục chứ gộp vào luôn cẩn thận ăn cứt. Sau khi test ổn r mới gộp lại
+=> Cần nghĩ kỹ hơn khi làm các vòng lặp: chú ý điều kiện dừng vòng lặp với câu hỏi: nếu nó cứ chạy mãi thì sao, phải đảm bảo điều kiện dừng chắc chắn xảy ra-> hay hiểu là luôn có 1 ĐK chặn lớn bao bên ngoài để đảm bảo luôn kết thúc
+
+-> Các dạng cơ bản thường gặp nhất:
+--> Lấy ra phần tử lớn nhất nhỏ nhất:
+=> giả sử ta có 1 mảng, ta đặt biến max,min bằng giá trị dầu tiên của mảng và so sánh từng phần tử như bth, đặt thêm index nếu cần lấy số thứ tự của phần tử max min của mảng
+
+--> sắp xếp mảng theo thứ tự:
+=> giả sử có một mảng cần sắp xếp. Có rất nhiều thuật toán và mỗi thuật toán sắp xếp sẽ có lợi riêng trong TH khác nhau. Ta k cần quá quan tâm mà sẽ làm với cơ bản trc là thuật toán selection sort chạy 2 vòng for. Chú ý với char* thì strcmp vào để sắp xếp theo chuỗi, về mặt ý nghĩa sắp xếp chuỗi như v k có giá trị về mặt so sánh tên nào lớn hơn tên nào như sẽ sắp xếp mảng của ta theo kiểu gom các tên giống nhau vào cùng một vị trí trong mảng. Từ đó mở ra nhiều bài toán về tính các giá trị liên quan đến các đại lượng mà có cùng kiểu char*=> ta sẽ chạy vòng for->tạo biến char và gán char bằng những cái cục đầu tiên, if(char[i]==char[i-1]) thì làm gì với int[i] nhét vào biến int temp và so sánh với int max; chú ý có thể lấy 1 biến đếm để biết đi đến vị trí nào đỡ phải duyệt for lần nx để làm(k muốn tạo mảng int[] thì dùng 3 biến index, temp(lưu tổng mỗi lần),max(tổng lớn nhất))
+
+--> swap hai biến:
+tạo biến temp ez; chú ý swap trong main thì tạo biến giá trị cx ok, swap trong hàm khác thì phải truyền vào địa chỉ và thao tác với giá trị
+
+--> random số: 
+đúng 2 ý: srand(time(NULL)); và dùng rand(); chú ý #include<stdlib> => nch là dùng theo tg
+
+--> Các bài toán thao tác với số:
+chú ý có hai cách: tạo biến long long để lưu số và dùng thuật toán phép tính math cơ bản để giải=> cx ok nhưng nó lại k lưu đc số quá lớn và đôi khi thuật toán rất phức tạp=>dùng nếu về sau cần tính toán or phép toán dễ 
+tạo biến char[] để lưu từng chữ số, ta sẽ đặt điều kiện để số gì xuất hiện=> ez hơn nhưng sẽ k dùng đc các phép toán, nếu đề bài bảo làm gì với kết quả ví dụ cộng hai số lại thì k dùng đc=> nếu thấy thao tác dễ hơn, k cần tính toán về sau
+
+--> quy hoạch động:
+cũng chả có gì phức tạp, ví dụ phép toán fibonacii khi đệ quy f(n)=f(n-1)+f(n-2) thế thì mỗi khi tính như v cái giá trị f(1), f(0),... sẽ được tính đi tính lại dẫn đến chậm-> ta có thể lưu các giá trị đó vào một mảng để tính duy nhất nó một lần tạo ra hiệu suất cực nhanh.
+tính f(0)=0;f(1)=1;for(int i=2;i<=10;i++){f(i)=f(i-1)+f(i-2);} như v là tính được 10 số đầu dãy fibonacii đơn giản và nhanh hơn rất nhiều so với đệ quy(thuật toán thường dùng)=>CL:thực chất nó chỉ tính từ các giá trị đầu tiên r từ từ tính đến giá trị cần tìm còn đệ quy ta tính từ cuối lên với f là thuật toán giống nhau với mọi thứ và cái f(kết quả) có quan hệ gì với f đằng trước thì biểu diễn bằng return
+điều kiện nên dùng: khi thuật toán bị trùng ví dụ như ở trên vc tính f(1), f(0) bị trùng nên dùng sẽ mang hiệu suất cao
+khi ta có thể tách ra thành những bài toán sơ cấp hơn bắt buộc phải tính=> ví dụ tính f(10) thì buộc tính f(9) mới làm đc->f(9) là bài toán con của f(10);
+ở trên ta dùng vòng for vì các bài toán con giống nhau mà thôi
+
+tư duy khi làm bài toán phức tạp:
+vấn đề ta gặp phải, ta chưa đào sâu vấn đề nhanh, và còn thiếu kinh nghiệm. 
+Để giải 1 bài toán thì ta cần chia nó ra thành các bài toán con độc lập và đào sâu giải từng bài toán con-> tất cả chỉ có v, nếu làm đc như v thì ta có thể cần hầu hết các bài toán đòi hỏi sự phức tạp
+ví dụ: có 1 mảng struct, trong struct có char[] và int=>yêu cầu tính tổng tất cả các int của char trùng nhau và so sánh ô char nào có tổng int lớn nhất thì in char có tổng int đó ra
+Lúc đầu thì tưởng là ghê gớm nhưng thực chất chỉ là nhiều bài toán con lồng nhau, ta tách ra và đào sâu từng cái là ok. Trước đây ta có cái tư duy là muốn so sánh 1 tập hợp gì thì nhét nó vào một mảng r so sánh các phần tử trong mảng(dù hơi ngu nhưng thử làm).Tư duy: như v muốn so sánh tổng điểm các tên trùng nhau thì nhét tổng các int đó vào 1 mảng int(1 bài toán con, ta lại chia nhỏ tiếp),để tính tổng thì ta cần có mảng chỉ chứa các tên ko trùng nhau và mảng đó có cùng thứ tự y hệt mảng int.
+(bài toán 1:) tạo ra một mảng chỉ có các tên không trùng nhau(bài toán này đã đơn giản hơn nhiều r, đào sâu vào là giải đc thôi)=> for các phần tử struct, for phát nữa từ đầu nếu không trùng tên thì lưu vào mảng char[i][100], trùng thì thôi ez=> có biến đếm để kiểm soát có bnh phần tử
+bài toán 2: tạo mảng int->tạo mảng int i phần tử và for r thấy trùng tên thì int[]+=struct.int=> ss lấy max r in là xong
+(từng vấn đề nhỏ ta lại nghĩ làm sao để làm đc từng ý trong vấn đề đó)
+
+=>Thật ra như thế là giải đc mọi bài r, nhưng vấn đề là cần thay đổi tư duy một chút-> ta làm như v nó quá lâu và kém hiệu suất-> do tư duy muốn so sánh cj thì nhét nó vào một mảng-> hậu quả là bh ta so sánh int phải đi kèm với char nx nên phải tạo thêm 2 mảng int và char[][]=>fix: trc khi nghĩ tạo mảng mới, ta hãy xem xem có thể tận dụng mảng cũ đc k.
+Ví dụ: ở bài toán trên, k xảy ra vấn đè j đòi hỏi các phần tử của struct phải ở nguyên vị trí-> ta tận dụng nó luôn đỡ tạo mảng mới-> tận dụng để tính int của char giống nhau->gom các char giống nhau lại thành từng nhóm kề nhau->cần sắp xếp các char* đó. Thế là xong, ta tạo biến max gán cho int if(strcmp(char[i],char[i-1])==0), tạo biến đếm nx nếu cần truy cập vào cái gì khác of struct có tổng điểm cao nhất.
+

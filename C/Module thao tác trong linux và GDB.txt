@@ -1,0 +1,70 @@
+# Thao tác trong linux
+-> Basic
+Save the file using CTRL-X CTRL-S
+Exit the editor using CTRL-X CTRL-C
+open file C-x C-f
+setmark=C-Space
+del=C-w
+copy=M-W
+paste=C-y
+undo=C-x u
+với C=CTRL  M=SHIFT+ALT
+
+compile bằng lệnh gcc src -o des => chỉ cân tên k cần dg dẫn với ALT+SHIFT+!
+k có exe file, chỉ tạo .o r dùng
+khi dùng trong command prompt thì phải khai báo đường dẫn trong file
+nếu trong emacs mở lên thì k cần vì nó trỏ file hien tại r
+
+gcc -c <tên file c> => tự tạo
+gcc -o <tên file .o> <tên file .c>
+
+nếu gcc <tên file luôn>=> tạo file a.out mặc định tên
+muốn chạy file thì ./<tên file>.o nếu đã trỏ đến thư mục file đó, còn nếu dùng đường dẫn tuyệt đối thì không cần
+muốn tao .out bất kì=> gcc -o <tên file>.out <tên file>.c
+
+lưu xog r ms compile r ms chạy. 3 bước
+
+chuyển huong file <link to file src>  >  <link to file des>  (vd lưu kq file .o vào file.c)
+
+gedit-> trinh editor mặc định ubuntu
+
+gcc -o <> <> -lm => dung mathlibrary
+
+ubuntu trên window 10:
+copy từ window bằng ctrl+C và doublerightclick để paste trong ubuntu
+bôi đen trong ubuntu và doublerightclick để paste
+
+
+
+# GDB(GNU Debugger)
+-> Basic
+Trong IDE k nói làm gì nhưng debugger cũng có thể chạy bằng lệnh cmd.
+Pb các thuật ngữ:
+GNU(đã biết): GNU's Not Unix/tập hợp các phần mềm có GPL(General Public License)
+GCC(GNU Compiler Collection): Bộ trình dịch GNU là tập hợp các trình biên dịch dùng cho nh ngôn ngữ lập trình khác nhau. Nó tạo bởi GNU Project đương nhiên bằng GPL. Tên gốc của nó là hiểu là (GNU C Compiler) vì ban đầu nó chỉ hỗ trợ C.(Mỗi ngôn ngữ có lệnh khác, ví dụ GNU có compiler GCJ cho java).
+Nhiều nơi dùng g++: cũng chỉ là tên compiler for C++
+GDB(GNU Debugger): trình gỡ lỗi cx là 1 phần của GNU có GPL. Tải bộ GNU về là có hết. IDE có nó thì debug bằng giao diện đc, nhưng ta vẫn có thể dùng commandline để debug, nó thg dùng với linux vì k thao tác với giao diện.
+MinGW là phần mềm của GNU (Minimalist GNU for Windows), nó là 1 bộ GNU dùng cho window nhưng tối giản đi những thứ không cần thiết, bên trong nó có gcc rồi.
+
+MSVC++(Visual Studio C++ sử dụng microsoft C++ compiler).
+Cygwin là môi trường chạy linux trên window bằng cách tạo 1 lớp tương thích. Ví dụ muốn chạy 1 ứng dụng phổ biên của unix lên window, cần chuyển nó qua cygwin. Nó cũng có compiler như mingw nhưng mingw là thuần túy cho window của GNU r.
+Clang cũng chỉ là 1 compiler mà thôi, bh có rất nhiều loại compiler chỉ có compiler của GNU là lâu đời nhất
+Tùy hệ điều hành mà ta cần dùng các trình biên dịch và gỡ lỗi chuẩn.
+
+-> Các lệnh GDB trong commandline:
+Compile chương trình bằng lệnh: gcc -g -o file.o file.c =>cái option -g sẽ gắn 1 debugging symbol vào cái symbol table có trong object file. Nó có tác dụng gắn thêm thông tin, thông tin này cho phép debugger truy cập vào thông tin trong source code. Nếu k có thì chỉ dùng để run, k debug đc.
+gdb <tên file> =>mở interpreter với file đó
+backtrace/where =>ta biết rằng các thứ trong Ct chạy sẽ được lưu vào 1 stack và thể hiện dưới dạng frame là khung. Cứ 1 hàm mới gọi thì nó lại thêm vào 1 frame mới(trong frame có các biến cũng được lưu theo thứ tự stack). Vc dùng where/backtrace sẽ in ra cái stack đó, hàm hiện tại đang xử lý chắc chắn ở trên cùng của stack, còn hàm cuối cùng chắc chắn là hàm main.
+up->in ra cái frame bên trên frame đang xét
+run <tên program>
+list
+break <dòng đặt breakpoint or tên hàm ta đặt breakpoint ở đầu>
+continue
+step->là step into đi vào func đó
+display <biến>=>giá trị biến nào sẽ tự động in ra trong quá trình
+print <biến>=>in giá trị biến nào trong stack ở thời điểm hiện tại=>k in mảng kiểu: print arr sẽ ra địa chỉ vô dụng=> dùng: print *arr@<số phần tử> mới ok
+quit
+clear=>xóa toàn bộ break point hiện tại
+delete <dòng có breakpoint>=>xóa break point ở dòng nào
+break <tên file.c>: <dòng bao nhiêu> if <điều kiện> =>ví dụ có vòng for ta đặt điều kiện dừng khi điều kiện if thỏa mãn
+

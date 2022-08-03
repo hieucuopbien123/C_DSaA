@@ -1,0 +1,50 @@
+Các phương pháp và các bài toán đã giải:
+hash table, BST: search tốc độ cao
+singly linked list/doubly linked list: bài nối linked list
+stack: check paranthesis
+queue: khách hàng đứng đợi ở quầy phục vụ sân bay
+quick/linear/heap sort: check 2 dãy số trùng nhau những số nào
+binary search
+priority_queue
+dequeue
+set
+map
+linear sentinel search
+self-organizing search
+dynamic programing: max sub array, xếp đồ vào túi giới hạn khối lượng nhưng có giá trị lớn nhất
+backtracking: đưa ra hoán vị thứ k theo thứ tự từ điển(cực lớn đến k = 10^9), sinh tổ hợp chập k từ n phần tử(kp là tìm tổ hợp tiếp theo của tổ hợp cho trước), binary string thứ mấy chứa bao nhiêu số 0 liên tiếp
+recursion: tính C(n,k) lớn
+segment tree: tìm min, max, sum tốc độ cao
+brute force
+recursion with memorization
+branch and bound: bài xuất phát từ 1 city, thăm n - 1 city khác và quay lại city ban đầu với chi phí min, 1 xe trở khách từ vị trí i đến vị trí i + n chỉ 1 lần r quay về(có giới hạn khách trên xe), bài điền ngoặc vào ? và giới hạn level.
+PP use bit để check existence of element in small integer set
+PP cây mọi trường hợp + breadth first search: đổ nước từ cốc sang cốc, thoát khỏi mê cung
+PP duplicate stack/mảng để đánh dấu, 1 stack để check, 1 stack lưu full data: bracket sequence tìm biểu thức ngoặc đúng dài nhất trong 1 mớ ngoặc hỗn độn, 
+PP duyệt tuyến tính xử lý O(n) đi từ đầu đến 1 đầu đảo chiều linh hoạt(PP đơn giản hóa vấn đề cho kích thước vấn đề cực nhỏ r tăng dần lên + PP xóa bỏ phần tử làm k tăng độ phức tạp): bài tìm max area của histogram, bài tìm độ đo cắt tín hiệu, bài KQueue nổi tiếng
+PP tạo mảng mọi kết quả và update từ từ, chỉ lấy 1 kết quả trong tập: tìm số điểm max trên map di chuyển cùng 1 hướng
+divide and conquer: bài tìm max area historgram, tìm tích 2 số cực lớn chia mod(cũng áp dụng với tổng or mũ được), tính maxDiff 2 số trên mảng, tính số mũ a^b với b cực lớn
+PP tối ưu càng xa đặt càng gần, càng nhiều đặt càng ít: chuyển hàng từ 1 điểm đến các điểm khác trên 1 line
+PP chặn 2 đầu tính gần đúng giá trị: tính căn bậc bất kỳ của 1 số, bài chia bánh cho người cùng 1 lượng max thể tích
+
+Tool: 
+Multidimensional array stored matrix/map
+Rút gọn mảng chỉ lưu các giá trị cần dùng luôn, bỏ qua các giá trị k cần dùng: tìm số điểm max trên map di chuyển 1 hướng
+Chỉ lưu các dữ liệu cần dung ra 1 mảng riêng, mảng riêng khi đó có thể duyệt dễ hơn or tùy ý sắp xếp chỉnh sửa cho dễ hơn: bài KQueue nổi tiếng, bài nối linkedlist lưu riêng các cục bắt đầu bằng null ra 1 mảng để xử lý
+
+Kết hợp:
+PP kết hợp recursion, divide and conquer, segmentree: bài tìm max area của histogram chia nửa liên tục bằng giá trị min
+
+Các dạng khác:
+Xử lý số cực lớn: cộng 2 số lớn max 9*10^18, 
+Thao tác số lớn với mod 1 số cực lớn: cộng 2 or rất nhiều số cực lớn, mũ số cực lớn, C(n,k), sum of sum cực cực lớn, tích 3 số liên tiếp cực lớn/6
+PP cây nhị phân huffman code(chỉ dùng khi tương tự bài toán gốc)
+
+Adhoc:
+Gõ phím bàn phím ngày xưa thành chữ gì ấy: switch case
+Bài rút gọn chữ cực dài
+sửa đường, chèn 1 cái vào giữa và tính sự thay đổi so với các ô bên cạnh
+cd and pwd commands
+phân chia 1 tập hợp số thành các nhóm có tích dương, âm, bằng 0
+bài gỡ rối dây điện
+

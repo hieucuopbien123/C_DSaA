@@ -1,0 +1,332 @@
+//Tăng tốc nhập C++
+ios_base::sync_with_stdio(false);
+cin.tie(0); cout.tie(0);
+
+//handle file in C
+#include <stdio.h>
+int main()
+{
+    FILE* file = NULL;
+    if(!(file = fopen("<filename>.txt","r+")) != NULL){
+        perror("Cannot open filetest.txt");
+        return -1;
+    }
+    //todo
+    fclose(file);
+    return 0;
+}
+
+//for_each in C++
+for (const auto& item : arr){
+    cout << item << ' ';
+}
+
+//try catch in C++
+try {
+    //todo
+}catch(...){
+    cerr << "Error from try catch\n"; 
+}
+
+//redefinition istream and ostream in C++
+ostream& operator<<(ostream& os, const <DataType>& data)
+{
+    os << data.x << " " << data.y;
+    return os;
+}
+
+//use MessageBox
+#include <windows.h>
+int msgboxID = MessageBox(
+		    NULL,
+		    (LPCWSTR)L"<Content>\n<Content>",
+		    (LPCWSTR)L"<Title>",
+		    MB_ICONWARNING | MB_YESNOCANCEL | MB_DEFBUTTON3
+		);
+switch (msgboxID)
+{
+    case IDCANCEL:
+        // TODO: add code
+        break;
+    case IDYES:
+	// TODO: add code
+	break;
+    case IDNO:
+        // TODO: add code
+        break;
+}
+
+//random number in C++
+#include <iomanip>
+#include <random>
+mt19937 random_engine(time(NULL));
+uniform_int_distribution<int> distribution(0, 100);
+for(int i = 0; i <= 100; i++)
+    cout << distribution(random_engine) << "\t";
+
+uniform_real_distribution<float> float_distribution(1,100);
+for(int i = 0; i < 100; i++)
+    cout << setprecision(4) << float_distribution(random_engine) << "\t";
+
+//max heap handler in C++
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+int main(){
+    //build heap
+    int arr[5] = {1, 2, 3, 4, 5};
+    vector<int> v(arr, arr + 4);
+    make_heap(v.begin(), v.end(), less<int>());
+    //push heap
+    v.push_back(6);
+    push_heap(v.begin(), v.end());//cần reset lại iterator khi push_heap
+    //pop heap
+    pop_heap(v.begin(), v.end()); v.pop_back();
+    //nếu pop khỏi heap như giá trị 6 bên trên k còn nằm trong heap nhưng vẫn trong mảng-> ta phải xóa đi
+    //để tránh các thao tác lỗi với heap về sau
+    //sort heap 
+    sort_heap(v.begin(), v.end());
+    return 0;
+}
+
+//dùng map in C++
+#include <map>
+//build map
+map<int, int> m;
+m.insert(pair<int, int>(0,1));
+m.insert(pair<int, int>(1,2));
+m.insert(pair<int, int>(2,3));
+m.insert(pair<int, int>(3,4));
+//duyệt map + xóa phần tử
+map<int, int>::iterator ite = m.begin();
+while(ite != m.end()){
+    cout << ite->first << " " << ite->second << endl;
+    int a = -1;
+    if(ite->first == 2)
+        a = ite->first;
+    ite++;
+    if(a != -1)
+        m.erase(a);
+}
+
+//đọc nhiều dòng C++
+string str = "";
+cin >> str;
+cin.ignore(32767, '\n');
+getline(cin, str, "\n");
+
+//số PI in C++
+#define PI 2 * acos(0)
+
+//đọc file trong C++
+#include <fstream>
+void MethodToReadFile(const string& name)
+{
+    fstream file(name, ios::in);
+    int begin = static_cast<int>(file.tellp());
+    file.seekp(0, ios::end);
+    streamoff end = file.tellp();
+    file.seekp(0, ios::beg);
+    //khởi tạo 1 lượng input đủ để lưu
+    char* input = new char[end - begin]{};
+    int i = 0;
+    if (!file.is_open())
+    {
+	perror("Cannot read file!");
+    }else{
+        //đọc file 
+	while (!file.eof()){
+	    file.get(input[i]);
+            i++;
+	}
+        //dữ liệu đã được lưu vào input
+	cout << input;
+    }
+    delete[] input;
+    file.close();
+}
+
+//Write to file in C++
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main () {
+    ofstream myfile;
+    myfile.open ("example.txt");
+    myfile << "Data\n";
+    myfile.close();
+    return 0;
+}
+
+//Backtracking template in C++
+#include <iostream>
+using namespace std;
+#define MAX <num>
+int a[MAX];
+int n = <max>;
+int P[n] = {<phần tử>};
+//count lưu số lượng kết quả khả dĩ
+int count = 0;
+bool candidate(int j, int k) 
+{
+    //phần tử hiện tại có được tính là 1 candidate không
+}
+void handleSol()
+{
+    count ++;
+    for(int i = 0; i < 5; i++)
+    {
+        cout << a[i] << " ";
+    }
+    cout << endl;
+}
+void Try(int k)
+{
+    //khởi tạo tập P chứa các phần tử sử dụng và for từng phần tử của P
+    for(int i = 0; i < n; i++)
+    {
+        //nếu phần tử hiện tại là 1 candidate
+        if(candidate(i, k)){
+            //xử lý 1 phần nhánh
+            a[k] = P[i];
+            //nếu hoàn thành điều kiện
+            if(k == n - 1){
+                //xử lý kết quả
+                handleSol();
+            }else
+                Try(k + 1);
+        }
+    }
+}
+int main(){
+    Try(0);
+    return 0;
+}
+
+//Segment tree in C++: ở mục DSaA
+
+//BST in C self-make in GDB
+
+//Hash Table in C self-make in GDB
+
+//Linked list double in C self-make in GDB
+
+//stack in C self-make in GDB
+
+//queue in C self-make in GDB
+
+//quick/linear/heap sort in C self-make in GDB
+
+//binary search in C self-make in GDB
+
+//Template for menu, read write file in C
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX 50
+#define NAME 50
+typedef struct Student
+{
+    char name[NAME];
+    int id;
+}Student;
+int getDataFromTextFile(Student students[])
+{
+    FILE* file;
+    if(!(file = fopen("data.txt", "r")))
+    {
+        printf("Cannot open file to read!\n");
+        return -1;
+    }
+    int number = 0;
+    while(fscanf(file, "%[^;];%d\n", students[number].name, &students[number].id) != EOF)
+    {
+        number++;
+    }
+    fclose(file);
+    return number;
+}
+void writeToFile(Student students[], int numberOfElement)
+{
+    FILE* file;
+    if(!(file = fopen("result.txt", "w+")))
+    {
+        printf("Cannot open file to write!\n");
+        return;
+    }
+    for(int i = 0; i < numberOfElement; i++)
+    {
+        fprintf(file, "%s\t%d\n", students[i].name, students[i].id);
+    }
+    fclose(file);
+}
+int main()
+{
+    Student students[MAX];
+    int choice = 0;
+    int isQuit = 0;
+    while(!isQuit)
+    {
+        printf("\n1) Get data from file\n");
+        printf("2) \n");
+        printf("3) \n");
+        printf("4) \n");
+        printf("5) \n");
+        printf("Input your choice: ");
+        scanf("%d", &choice);
+        while(getchar() != '\n');
+        switch(choice)
+        {
+            case 1: 
+                getDataFromTextFile(students);
+                break;
+            case 2:
+                
+                break;
+            case 3:
+                
+                break;
+            case 4:
+                
+                break;
+            case 5:
+                
+                break;
+            default:
+                isQuit = 1;
+                break;
+        }
+    }
+    return 0;
+}
+
+//in ra double như int in C++
+cout << fixed << setprecision(0) << <số double>;
+
+//Branch and bound in C++
+int res = <đk mặc định luôn k thỏa mãn>;
+int curRes = <đk ban đầu bắt đầu tính>;
+int check[n];
+void Try(int k)
+{ 
+    //khởi tạo tập S chứa các phần tử có thể cho vào vị trí k
+    for(từng phần tử của S)
+    {
+        if(phần tử đó thỏa mãn check[k])
+	{
+        	//xử lý curRes
+		//xử lý check[k]
+        	if(<đã tính toán đến cuối>)
+        	{
+        	     //xử lý res từ curRes
+        	}
+        	else if(<curRes vẫn thỏa mãn so với res>)
+        		Try(k+1);
+		//lùi curRes lại
+		//lùi check[k] lại
+	}
+    }
+}
+
