@@ -1,0 +1,55 @@
+# Move Senmatics:
+
+-> Basic
+Overhead chỉ việc làm thừa thời gian, tài nguyên, memory để làm cái gì đó or thao tác ko trực tiếp gây hao phí. Ta nên giới hạn nó ít nhất có thể để tiết kiệm tài nguyên
+
+Move Senmatics là một kỹ thuật giúp tối ưu việc copy, hàm trả về đối tượng, giảm chi phí,...
+
+Temporary Object xuất hiện khi có giá trị trung gian của biểu thức(nó có xuất hiện nhưng ta hoàn toàn k thể nhìn thấy), kết quả hàm trả về, biến khởi tạo ko đặt tên
+
+phân biệt lvalue,rvalue(lefthand value, righthand value):
+Đặt lvalue bên trái dấu bằng và gán k lỗi nhưng rvalue thì sẽ lỗi;
+lvalue thg là những biến có tên; rvalue thg là ko tên và là đối tượng tạm ví dụ kết quả hàm trả về;
+
+lvalue reference:
+Lvalue reference chỉ dùng để tham chiếu đến lvalue, k dùng với rvalue. Ví dụ: int a=2;int &b=a;
+Đặc biệt trong C++: const lvalue reference có thể dùng để tham chiếu đến rvalue
+Ví dụ: const int &c=2 nhưng hiển nhiên là const nên k đổi được giá trị.
+
+rvalue reference:
+chỉ dùng để tham chiếu đến rvalue, bắt đầu từ c++11 mới xuất hiện &&. Phục vụ cho việc dùng Move Senmatics
+
+Giải quyết vấn đề:
+Ta gặp lỗi khi tạo ra một hàm trả về giá trị, rồi lại gán hàm đó thành đối số của một hàm khác hoặc đơn giản là ta gán một số trong khi hàm đó dùng đối số truyền vào là int&(vì ta nghĩ dùng tham chiếu & sẽ tối ưu)=> lỗi vì giá trị trả về của hàm là rvalue. Như v để truyền đc rvalue vào thì hàm phải dùng đến reference mà cho phép reference đến rvalue-> dùng const int&(với c++) k đc đổi giá trị hoặc int&&(rvalue reference). Hiển nhiên ta dùng int& là lỗi r, tương tự 1 số bth cũng là 1 rvalue nên k đc truyền nv
+
+Hiểu lại vector: vector bản thân nó k phải 1 địa chỉ.VD:vector<int> v1={1,2,3} thì cái v1 nó kp là một địa chỉ và k có << operator để cout ra luôn, nó là một giá trị k thể cout lưu các giá trị khác. Chính vì kp là địa chỉ nên vector<int> v2=v1 thì đổi v2, v1 vẫn giữ nguyên. Nếu muốn gán cho nó đổi chỉ cần dùng lvalue reference(dùng chung) vector<int> &v2=v1 là xong(vì v1 là lvalue)
+Nếu dùng vector<int> *v1 thì kết quả là v1 là 1 địa chỉ có giá trị là *v1 là một kiểu vector<int> tức cái GT *v1 đó là mảng các vector chứa các GT khác
+
+Về vấn đề xóa bộ nhớ, cần phân biệt delete(xoá) và free memory(giải phóng bộ nhớ):
+Với vector thì lệnh clear sẽ xoá các đối tượng bên trong vector(giảm size về 0), nhưng capacity thì vẫn thế, capacity là số lượng vector có thể chứa(k cố định). Để giảm capacity về 0 có thể dùng vector<tempObject>().swap(v1). Ở đây, ta tạo ra 1 vector trống k tên(rvalue), r swap nó với v1 làm cho v1 capacity giảm về 0, còn temp tự bị xoá ngay sau đó. Trong c++11 có hàm shrink_to_fit() sẽ giảm capacity của vector về bằng với size gọi sau hàm clear cx ok. Nhưng như v là ta đã xoá các phần tử trong vector mà chưa giải phóng bộ nhớ nên vẫn reuse đc. Bản chất dùng vector cx như dùng 1 giá trị, k cần giải phóng vì khi ra khỏi phạm vi {} chứa nó thì nó sẽ tự bị xoá.
+(Cần phân biệt biến là lvalue, con trỏ cũng là lvalue, giá trị số 9 là rvalue. Các lvalue sẽ giải phóng sau khi ra khỏi phạm vi; các rvalue sẽ giải phóng ngay lúc dùng xong nó)
+Còn về con trỏ bth,ta thường gặp lỗi khi xóa:
++>Hàm delete thực chất là giải phóng vùng nhớ luôn, hiển nhiên khi giải phóng thì các GT bên trong cũng sẽ tự xóa. Khi bị giải phóng thì cái vùng nhớ cũng bị trao quyền cho hệ điều hành và ta k thể can thiệp(ngc với new)=> Đúng hơn là giải phóng biến. Nhưng sau khi gọi hàm delete ta cout thử thì con trỏ vẫn trỏ tới vùng nhớ đã giải phóng đó, và ta vẫn gán giá trị cho nó lưu vào cái vùng nhớ đã giải phóng=> khi ta build ở debug thì k thấy lỗi vì vùng nhớ kia vô tình máy đang k sử dụng, nhưng khi build ở release sẽ gây crash chương trình->Vì khi chạy CT bth thì vùng nhớ đó bị sử dụng dẫn đến lỗi truy cập vào vùng nhớ k đc ủy quyền và crash. Đó chính là lý do ng ta gán NULL cho con trỏ sau khi xóa để con trỏ đó k trỏ đến vùng nhớ đã xóa nx.Cái lỗi nó xuất hiện có thể kp là error ví dụ đó là 1 dòng text thì khi in ra cái dòng text trong con trỏ đã xóa đó sẽ k in như mong muốn mà in ra ký tự lạ vì đó là có cái khác dùng ô nhớ đó và chèn vào đó ký tự lạ, ta kb mà cứ gán r cout ra kq k mong muốn
++>khi con trỏ 1 trỏ đến ô nhớ khác, con trỏ 2 trỏ đến con trỏ 1 thì xóa 1 con trỏ sẽ tương đương xóa vùng nhớ, tức xóa cả 2 con trỏ => sai. Vì khi khai báo 2 con trỏ nó sẽ cấp 2 ô nhớ lưu địa chỉ 2 con trỏ khác nhau. Và 2 ô nhớ đó trỏ đến cùng 1 ô nhớ khác chứa cùng 1 giá trị. Khi xóa 1 ô nhớ lưu địa chỉ thì ô nhớ còn lại vẫn lưu địa chỉ đến ô nhớ khác chứa giá trị nào đó mà.
++>ví dụ hàm khi return &n; với n là biến cục bộ của hàm sẽ gây lỗi vì biến cục bộ tự động FREE MEMORY tức xóa sạch cả GT lẫn địa chỉ nên return r cx bị xóa hết. return n là copy thì k sao nhưng &n tức là địa chỉ (lvalue refernce) bị xóa nên lỗi. Trong JS nó k có lỗi này gọi là closure function
++>Do mỗi ô nhớ cấp phát động luôn có 1 biến lưu địa chỉ của nó là biến con trỏ, cho nên nếu ta cấp phát động cho cj thì trc khi gán cho con trỏ đó sang vùng nhớ khác thì cái vùng nhớ cũ nên có 1 biến khác lưu nó hoặc bị giải phóng đi chứ k đc để vùng nhớ nào thuộc quyền kiểm soát của ta nhưng lại k có biến nào trỏ đến nó để thao tác với nó thì k đc
+Smartpointer sẽ fix hết những điều đó
+
+Move Senmatics giải quyết vấn đề:
+Đối tượng tạm phần lớn là do chương trình tạo ra, ta thường khai báo biến để dùng nh hơn. Đối tượng tạm sẽ tự bị xoá sau khi ra khỏi biểu thức(dường như là dùng có 1 tí r xoá luôn). Như v, nh lúc vc copy dữ liệu từ đối tượng tạm sang đối tượng khác để dùng, sau đó đối tượng tạm bị xoá đi sẽ gây lãng phí=> ta nên để đối tượng đích lấy luôn tài nguyên đối tượng tam sẽ tốt hơn. Đặc biệt là khi đối tượng tạm chứa quá nh phần tử. TH khác là smartpointer cần dùng move senmatics vì nó chỉ cho 1 thứ reference đến 1 tài nguyên mà thôi(vc copy sẽ sai về logic)
+Cách dùng Move Senmatics(vai trò rvalue reference):
+Phân biệt copy senmatics và move senmatics. Copy Senmatics là việc truyền tham số gán là lvalue và nó sẽ thực hiện copy. Kể cả vc truyền vào giá trị và cả vc truyền vào địa chỉ, miễn là lvalue thì nó là copy senmatics. Ta cứ tưởng truyền địa chỉ và dùng trực tiếp địa chỉ đã là tối ưu nhất, là tốt nhất nhưng thực tế kp vì dù j nó cũng là copy senmatics và trong nhiều TH thì move senmatics sẽ tốt hơn.
+Bth khi thao tác với đối tượng tạm thì giá trị của nó bị copy sang một biến khác hay đc dùng vào vc j đó và đối tượng tạm bị hủy bỏ ngay sau đó. Như v, để tránh lãng phí thì đối tượng đích nên lấy luôn tài nguyên của đối tượng tạm mà dùng, khỏi cần copy=> move Senmatics
+Vc dùng move senmatics thực ra là dùng rvalue reference &&, tức là ta tạo ra 1 rvalue và truyền vào trong đối số hàm &&, chứ đừng khởi tạo biến có tên r truyền vào hoặc k dùng && trong các ct cực lớn sẽ phung phí.(ví dụ truyền tt số)
+Như v chi phí của rvalue bth nó copy liên tục nhưng ta k nhìn thấy, cả vc dùng lvalue reference cx là copy->sai ví dụ con trỏ thì là dùng địa chỉ k copy nhé, vc dùng move senmatics ms là chuẩn. Nếu có thể dùng đc rvalue ref thay cho lvalue ref thì nên dùng. => move senmatic và copy senmatic dùng cho 2 TH khác nhau chứ
+=>khi làm ng ta thg có hai hàm cả rvalue và lvalue vì mặc dù mạnh nhưng move senmatics cx k thể thay thế cho copy senmatics trong nh TH. Và khi truyền rvalue hay lvalue nó sẽ tự động dùng hàm tương ứng.
+Tương tự ta cũng có thể dùng cho move constructor,...
+
+Hàm std::move(). Dùng hàm khi cần truyền vào như 1 tham số, ví dụ: Function(std::move(p1)) => truyền p1 vào Function(...) bằng move senmatics. Như v p1 sẽ bị xóa ngay lập tức(khi đối tượng nguồn k còn được sử dụng nx), và tài nguyên nó chứa đc dùng bởi hàm luôn như kiểu truyền 1 số hay 1 chuỗi "" trực tiếp vào ấy(giống kiểu đổi tên, tên cũ k dùng nx). Và đương nhiên Function() cx phải dùng rvalue reference r =>nên dùng như v khi k cần dùng đối tượng nguồn nx. Với biến và con trỏ bth là đối tượng nguồn dùng move có thể k xóa nó nhưng vẫn k nên dùng khi đã hiểu bản chất hàm move r. Tức là hàm move biến 1 lvalue or bất cứ loại value gì thành rvalue để truyền vào hàm nhận rvalue reference được. Nếu dùng lvalue reference thì thà như v cũng y hệt dùng move(<lvalue>) truyền vào hàm rvalue reference thôi. Chỉ dùng mấy cái move senmatic này cho rvalue reference thôi
+Việc dùng smart pointer còn bắt buộc phải dùng hàm move vì nó k cho phép hai con trỏ p1,p2 trỏ đến cùng 1 vị trí nên có thể unique_ptr<int>p2(std::move(p1)).
+Hàm std::move() bản chất cx chỉ tương đương với hàm static_cast<int&&>p1 tức là cast p1 sang một rvalue mà thôi(dùng cái này cx đc)
+
+Giả sử ta có 1 biên rvalue và ta gán địa chỉ của nó cho 1 con trỏ, v thì con trỏ là lvalue mang địa chỉ của rvalue thì rvalue đó sẽ k bị xoá mà vòng đời sẽ như cái con trỏ kia vì con trỏ k tự xoá. Còn gán giá trị của rvalue cho giá trị của con trỏ thì quá ez, rvalue tự bay màu sau khi gán.
+
+Như v, chốt ta cần tránh các lỗi khi dùng rvalue, lvalue. Đồng thời tối ưu, truyền địa chỉ mọi lúc lvalue(trừ khi ko muôn đối giá trị biến gốc); dùng move senmatics vs rvalue để tối ưu(nếu biến gốc ta k cần nx)
+=>ưu tiên tạo biến ko tên cho vc dùng 1 lần hơn là tạo lvalue chờ mãi đến hết phạm vi mới xoá(giá trị) or kết thúc ct ms xoá(con trỏ)(ví dụ tạo 1 biến class nhanh để truyền vào hàm và dùng nó duy nhất như v thôi=>thế thì tạo rvalue).

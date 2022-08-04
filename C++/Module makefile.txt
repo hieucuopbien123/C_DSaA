@@ -1,0 +1,69 @@
+# makefile
+
+-> Basic:
+makefile là 1 tập hợp các script chứa các thông tin: cấu trúc project(file,dependence) và các lệnh để tạo file. Đuôi của makefile là .mk
+Các file tạo ra là target, các file phụ thuộc là dependence, lệnh đc dùng để compile là action-> 3 cái đó hợp lại thành 1 rule.
+VD: hello.c, hello.h, main.c và ta cần compile ra file ra Ct main chạy biết Ct này dùng lệnh trong file main.c gọi đến hàm của hello.h khai báo trong hello.c-> trong linux nếu ta tạo thủ công thì k thể compile đc nh file như v bằng 1 lệnh gcc(trong window ta dùng các ide hiện đại đều tự compile hộ ta hết)-> ta dùng makefile: tạo 1 makefile có nội dung 3 rule như này:
+main:	main.o	hello.o
+	gcc -o	main	main.o	hello.o
+main.o:	main.c	hello.h
+	gcc -c	main.c
+hello.o:	hello.c	hello.h
+	gcc -c	hello.c
+->chú ý tt như này khi compile nh file, pb tạo file object bằng -c từ file .c và tạo file exe từ file.o bằng -o
+->vào terminal gọi hàm make là xong.
+(các phần tử khoảng trắng trong makefile ta dùng tab chứ k đc dùng space)
+->luồng compile: file.c->file.o->file thực thi
+=>Luồng trong make file: hàm make sẽ nhảy vào thư mục hiện hành và tìm file có tên là makefile(file text) và nhảy tới dòng đầu tiên->gặp rule 1 đọc từ trái sang phải yêu cầu tạo main từ main.o->nó tìm trong thư mục thấy k có file main.o sẽ tìm các rule tiếp theo->rule 2 có target là main.o sẽ đc làm vc trc, quay lại rule 1 làm tiếp thì lại gặp hello.o-> lại tìm thấy chưa có đi xuống tìm rule nào có target là hello.o r thực hiện-> có đủ 2 file .o thì main sinh ra.
+Thứ tự: rule1(check main.o)->rule2(tạo main.o)->rule1(check hello.o)->rule3(tạo hello.o)->complete rule1(tạo main)
+->đó là cách compile Ct có nhiều file k chỉ trong linux mà trong mọi ide chạy complier gcc của GNU
+
+Vì trong Ct của ta sẽ có rất nh file .h,.c và k thể lúc nào cx viết hết ra như v->ta sẽ cải tiến:
+CC=gcc
+TARGET=main
+OBJ=main.o	hello.o
+DEPS=hello.h
+$(TARGET): $(OBJ)
+	$(CC)	-o	$@	$(OBJ)
+%.o: %.c	(DEPS)
+	$(CC)	-c	$<
+clean:
+	rm	$(TARGET)	$(OBJ)
+->đặt biến: CC là trình biên dịch gcc(C) còn CPP cho g++(c++)(ta có thể đặt khác nhưng có thể k chuẩn). Tên file.o thường là OBJ,OBJS. Tên file sinh ra thg là TARGET. Các file phụ thuộc thường là DEPS
+Các cái khác là trong shell script: lấy giá trị của biến dùng $(var) or ${var};gán bằng dấu =; %.o,%.c thì % là tên file ta dùng () đằng sau để thế vào các % chỉ đổi đuôi; $@ là lấy giá trị nội dung bên trái dấu : của rule đó; $< là lấy nội dung đầu tiên bên trái sang của dependence tức là %.c ở đây; %^ là lấy bên tương tự nhưng là của file .o;
+phải có rule clean thì mới thực hiện đc lệnh make clean trong terminal-> nó sẽ xóa các file ta muốn-> ví dụ ta tạo ra và muốn sửa và compile lại bằng make thì phải xóa những cái đã compile đi ms đc-> định nghĩa clean và gọi make clean. rm là xóa các file nào, -f là option ép xóa file 
+Các từ trc dấu : trong rule là từ ta dùng ngay sau make rằng tạo cj, ta định nghĩa rule gì thì make <cái đó>-> sau khi clean ta make lại đc
+
+comment trong makefile bắt đầu bằng #
+cac target file.o chỉ có file.h mà k có phần action thì make vẫn có thể hiểu đc
+vd:hello.o:	hello.h
+hoặc rút gọn theo kiểu từng file .h 1 nhưng nó k tốt ít đc sử dụng
+chỉ có thể dùng tên là makefile or Makefile. Nếu tự đặt tên theo ý mình thì phải dùng: make -f(or -file) <tên makefile>
+có thể dùng \ để xuống dòng trong dòng dài
+
+(makefile nó như 1 ngôn ngữ riêng v, có cả vòng lặp,..)
+include filename1 filename2 ->include sẽ báo hiệu là tạm dừng đọc makefile này mà sang makefile khác(a.mk,b.mk,..) để đọc trc. Nếu sau include k có gì thì k báo lỗi và k có gì xảy ra.
+Nếu 1 dòng bắt đầu bằng dấu tab thì dòng đó là thực hiện 1 action, nếu action có vấn đề gì thì sẽ báo lỗi. Ở trên nếu ta dùng <tab>include mà sau include k có gì thì sẽ báo lối, còn include k có tab sẽ k báo lỗi
+ta có thể include <đường link đến file vs '/'>, or ta có thể dùng option '-I' or '-include-dir' để chỉ định vc tìm kiếm, nếu k nó sẽ tìm ở các thư mục include khác trong máy. Nếu k có trong bất kỳ thư mục nào thì nó sẽ báo 1 warning message, nếu nó remake lại các makefile k thành công thì make sẽ báo lỗi=> dùng lệnh -include <filename> sẽ bỏ qua các makefile k tồn tại or k thể remade sẽ k báo lỗi
+MAKEFILES là biến môi trường trong lưu các file.mk thg dùng trong đệ quy nhưng ta nên dùng -include bth thôi
+
+Ta có thể update các file Makefile or kiểm tra tính update 1 makefile bằng:make -f <makefile name>
+Nếu Ct của ta bị sửa đổi k nhất thiết phải clean nó đi trc mà gọi make thì sẽ tự động nhảy vào 'makefile' để thực hiện
+dùng:make -f Makefile --just-print/-n sẽ chỉ in ra các file bị thay đổi và nếu make lại thì sẽ make lại những file đó
+dùng make -f Makefile --just-printf sẽ in ra bảng danh sách các đối số của make
+
+Khi ta chạy make sẽ in ra các lệnh thực hiện trc sau đó mới in các lệnh in bên dưới
+
+lệnh gán '=' sẽ update biến mỗi lần sử dụng và nếu có tham số truyền vào thì nó sẽ tính gt tham số mà thực hiện gán luôn
+ngc lại vs ':=' k tính giá trị tham số
+VD:one = one ${var}->one là one var. Ở đây $(var) là tham số
+two := two ${var}->two chỉ là two. 
+gán var ?= val => nếu var chưa có giá trị thì gán giá trị val cho var
+gán var += val => là phép gán thêm ví dụ: var có hello.c, val là main.c thì var += val thì var là hello.c	main.c
+nếu ta k gán file mà gán cho string thì dùng "" thôi chả sao
+Đó là các command ta dùng trong shell script(lập trình nhúng linux), để sử dụng shell script trong makefile ta dùng $(shell shell_function)
+ví dụ:a="hello world"
+all:
+	echo $(a)=>echo là lệnh in ra
+Gọi make all sẽ thực hiện chỉ trong này, gọi make sẽ thực hiện toàn bộ.
+

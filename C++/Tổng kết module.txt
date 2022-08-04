@@ -149,6 +149,10 @@ hàm inline
 tính đa hình, abstract class và interface
 
 
+# Move senmatics
+# makefile
+
+
 
 # Other
 -> API là phương thức giúp ta kết nối đến các thư viện or ứng dụng khác, cung cấp khả năng truy xuất từ đó ta dùng code có sẵn or code của ng khác.
