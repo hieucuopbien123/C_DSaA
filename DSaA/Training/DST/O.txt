@@ -1,0 +1,96 @@
+#include <iostream>
+using namespace std;
+
+typedef struct LinkedList{
+    int leftData, data, rightData;
+    struct LinkedList* left, *right;
+    struct LinkedList* final;
+}LinkedList;
+
+typedef struct Temp{
+    int leftData, rightData;
+}Temp;
+
+LinkedList* createNewNode(int leftData, int data, int rightData){
+    LinkedList* newNode = (LinkedList*)malloc(sizeof(LinkedList));
+    newNode->leftData = leftData;
+    newNode->data = data;
+    newNode->rightData = rightData;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+int main()
+{
+    int n = 0;
+    cin >> n;
+    Temp tempArr[100];
+    LinkedList arr[100];
+    int arrIndex = 0;
+    for(int i = 0; i < n; i++){
+        cin >> tempArr[i].leftData;
+        cin >> tempArr[i].rightData;
+        if(tempArr[i].leftData == 0){
+            arr[arrIndex].leftData = 0;
+            arr[arrIndex].data = i + 1;
+            arr[arrIndex].rightData = tempArr[i].rightData;
+            arr[arrIndex].right = NULL;
+            arr[arrIndex].left = NULL;
+            arr[arrIndex].final = NULL;
+            arrIndex++;
+        }
+    }
+    // for(int i = 0; i < arrIndex; i++){
+    //     cout << "CHECK: " << " " << arr[i].leftData << " " << arr[i].data << endl;
+    // }//chuẩn r
+    
+    for(int i = 0; i < arrIndex; i++){
+        LinkedList* temp = arr + i;
+        while(temp->rightData != 0){
+            Temp tempData = tempArr[temp->rightData - 1];
+            LinkedList *newNode = createNewNode(tempData.leftData, temp->rightData,
+                                                tempData.rightData);
+            // cout << "Tạo node mới là: " << tempData.leftData << " " << temp->rightData << " " 
+            // << tempData.rightData << " để chập vào " << temp->leftData << " " 
+            // << temp->data << " " << temp->rightData << endl;
+            temp->right = newNode;
+            newNode->left = temp;
+            temp = temp->right;
+        }
+        arr[i].final = temp;
+    }
+    
+    // for(int i = 0; i < arrIndex; i++){
+    //     LinkedList* temp = arr + i;
+    //     while(temp->rightData != 0){
+    //         cout << temp->leftData << " " << temp->data << " " << temp->rightData << "->";
+    //         temp = temp->right;
+    //     }
+    //     cout << endl;
+    // }
+    // cout << endl;
+    
+    for(int i = 1; i < arrIndex; i++){
+        int temp1 = arr[i - 1].final->data;
+        int temp2 = arr[i].data;
+        // arr[i].left = temp;
+        // temp->right = arr + i;
+        // temp->rightData = arr[i].data;
+        // arr[i].leftData = temp->data;
+        
+        tempArr[temp1 - 1].rightData = temp2;
+        tempArr[temp2 - 1].leftData = temp1;
+        // cout << "CHECK: " << temp1 << " " << temp2 << endl;
+    }
+    // LinkedList *temp = arr;
+    // while(temp != NULL){
+    //     cout << temp->leftData << " " << temp->data << " " << temp->rightData << endl;
+    //     temp = temp->right;
+    // }
+    for(int i = 0; i < n; i++){
+        cout << tempArr[i].leftData << " " << tempArr[i].rightData << endl;
+    }
+    
+    return 0;
+}

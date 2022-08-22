@@ -1,0 +1,94 @@
+#include <bits/stdc++.h>
+using namespace std;
+int d[1005][1005];
+int n, m ,k;
+struct ii { int x, y; };
+queue <ii> q;
+
+void Push(int u, int v, int nU, int nV) {
+    //quá thì dừng. VD 2 bình đã full mà lại đổ từ bình này sang bình kia. 
+    //Ở đây, 
+    if (nU > m || nV > n) return;
+    //trùng nhưng số bước tốn nhiều hơn thì dừng, trùng mà tốn ít hơn thì lấy. Nó đảm bảo 
+    //gán giá trị ban đầu lớn và chỉ để cho 1 node ban đầu là 0 nhỏ v thôi thì mỗi lần thêm
+    //bớt vào sau để chạy vào đây lần đầu tiên thì sẽ được gán như dưới
+    // if (d[nU][nV] > d[u][v] + 1) {
+    //     //Để có được nU, nV ở 2 bình thì phải thêm 1 bước khi ban đầu có u,v trong bình
+    //     d[nU][nV] = d[u][v] + 1;
+    //     q.push({nU, nV});
+    // }
+    if(d[nU][nV] == 0x3f3f3f3f){
+        d[nU][nV] = d[u][v] + 1;
+        q.push({nU, nV});
+    }
+    return;
+}
+int naive()
+{
+    //gán giá trị ban đầu tất cả đều lớn
+    for (int i = 0; i <= m; i++)
+        for (int j = 0; j <= n; j++)
+            d[i][j] = 0x3f3f3f3f;
+    while(q.size()) q.pop();
+    
+    //ban đầu node gốc là 0,0 chỉ tốn 0 bước
+    d[0][0] = 0;
+    q.push({0, 0});
+    while(!q.empty())
+    {
+        //lấy top ra xử lý node đó và thêm các node con
+        int u = q.front().x, v = q.front().y;
+        q.pop();
+        //thỏa mãn thì dừng luôn
+        if (u == k || v == k) return d[u][v];
+        int newU, newV;
+        
+        //6 actions, cái nào thỏa mãn thì thêm vào tree
+        //  Case 1: u = 0, v = v;
+        Push (u, v, 0, v);
+ 
+        //  Case 2: u = u, v = 0;
+        Push (u, v, u, 0);
+ 
+        //  Case 3: u = u, v = n;
+        Push (u, v, u, n);
+ 
+        //  Case 4: u = m, v = v;
+        Push (u, v, m, v);
+ 
+        //  Case 5: u -> v;
+        newU = max (0, u - (n - v));
+        newV = v + u - newU;
+        Push (u, v, newU, newV);
+ 
+        //  Case 6: v -> u;
+        newV = max (0, v - (m - u));
+        newU = u + v - newV;
+        Push (u, v, newU, newV);
+    }
+    return -1;
+}
+int main()
+{
+    cin >> n >> m >> k;
+    cout << naive() << '\n';
+    return 0;
+}
+//Cơ chế: BFS. Ở đây nó giống kiểu mô hình cây. Từ gốc là 2 bình có (0,0) ta có 6 actions
+//thì mỗi action tạo ra các nhánh con. Ta theo chiều rộng của cây theo kiểu: hàng đợi + pop
+//1 cái thì phải thêm tất cả các node con của nó. Kiểu này thg dùng khi có rất nhiều hướng
+//đạt được mục tiêu nhưng chỉ kết quả gần nhất. ĐK dừng của cây là khi có 1 node thỏa mãn
+//giá trị or 1 node bị lặp thì chỉ lấy giá trị ngắn hơn thì lại thêm vào để làm lại or 1 bình
+//nào vượt quá max thì dừng.
+//Data structure: d[u][v] là số bước để có được bình chứa u lít và bình chứa v lít ở thời
+//điểm hiện tại. queue là cây chứa kiểu 2 số nguyên là số lít ở 2 bình. Mỗi node của cây có 
+//số lít khác nhau ở mỗi bình.
+
+//Quy trình: tạo 1 queue lưu tree, tạo 1 mảng 2 chiều lưu kết quả với 2 index là số lít còn
+//giá trị là số cách đạt được lít đó. thêm root vào tree. Khởi động vòng lặp mỗi lần pop rồi
+//push vào 6 actions chừng nào q còn trống thì tiếp tục. Để push vào ta chỉ cho các điều
+//kiện valid nếu k push vào mãi sẽ kbh hết. 
+//Để xét điều kiện trùng ta giả sử bước 4 có 1 số lượng lít mới ở 2 bình. 1 node nào đó của
+//bước 6 lại gặp số lượng đó thì nó so sánh 4 với 5+1. Do 4 < 5+1 nên k thêm vào nx
+
+

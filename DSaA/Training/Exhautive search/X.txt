@@ -1,0 +1,49 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+const int modeVal = 1e9+7;
+unsigned long long res[1001][1001] = {};
+
+//khi dùng memorization thì call lưu ở ngay đầu hàm chứ k đc lưu occho như dưới
+unsigned long long CLong(unsigned long long n, unsigned long long k){
+    if(k == n || k == 0)
+        return 1;
+    if(k == 1)
+        return n;
+    unsigned long long a, b;
+    if(res[n - 1][k - 1] == 0){
+        a = CLong(n - 1, k - 1);
+        res[n - 1][k - 1] = a;
+    }else
+        a = res[n - 1][k - 1];
+    if(res[n - 1][k] == 0){
+        b = CLong(n - 1, k);
+        res[n - 1][k] = b;
+    }else
+        b = res[n - 1][k];
+    return a + b;
+}
+
+//Với các dạng bài có mod thì thg có thể tính từng phần r mode từng phần vẫn ra kết quả đúng
+//Kể cả dùng unsigned long long thì đến tầm C 100 cũng đều ra số quá lớn k thể xử lý đc
+//ở đây phải chia mode ngay mới cho kết quả chuẩn. Đây cũng là 1 cách để có đc kết quả luôn
+//dưới 10^9+7, nếu lớn hơn sẽ tính ra C sai. Giới hạn kết quả chỉ trong 1 khoảng
+int C(int n, int k)
+{
+    if(res[n][k] != 0)
+        return res[n][k];
+    //Trong toán học k > 0 nhưng thực tế 1C0 = 1 vẫn có 1 cách k chọn gì cả mà
+    //điều kiện dưới sẽ chặn tất cả
+    if(k == 0 || k == n)
+        return 1;
+    return res[n][k] = (0LL + C(n - 1, k) + C(n - 1, k - 1)) % modeVal;
+}
+
+int main()
+{
+    unsigned long long n, k; 
+    cin >> k >> n;
+    cout << C(n, k);
+
+    return 0;
+}

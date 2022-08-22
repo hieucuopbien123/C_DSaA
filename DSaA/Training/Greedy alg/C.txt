@@ -1,0 +1,117 @@
+#include<bits/stdc++.h>
+using namespace std;
+unsigned long long N = 0;
+int S = 1;
+typedef struct Amount{
+    unsigned long long amount;
+    unsigned long long N;
+    int S;
+}Amount;
+
+//trả ra số note cần để giảm amount xuống dưới 1000*10^c
+Amount convertToCashes(unsigned long long amount, int c){
+    unsigned long long power = pow(10, c);
+    //hàm pow dùng cho kiểu double, dù kết quả tương đồng nhưng
+    // for(int i = 0; i < c; i++){
+    //     power *= 10;
+    // }
+    if(amount < 1000*power){
+        return Amount({amount, 0, 1});
+    }
+    unsigned long long NTemp = 0;
+    int STemp = 0;
+    // while(amount >= 10000*pow(10, c)){
+    //     amount -= 5000*pow(10, c);
+    //     NTemp++;
+    // }
+    if(amount >= 10000*power){
+        unsigned long long temp = amount - 10000*power;
+        // cout << "temp: " << temp << endl;
+        unsigned long long temp2 = temp/(5000*power);
+        // cout << "temp2: " << temp2 << endl;
+        amount = temp - temp2*(5000*power) + 10000*power;
+        // cout << "amount: " << amount << endl;
+        NTemp += temp2;
+    }
+    while(amount >= 10000*power){
+        amount -= 5000*power;
+        NTemp++;
+    }
+    // cout << "After amount: " << amount << endl;
+    unsigned long long temp = amount;
+    while(amount >= 10){
+        amount /= 10;
+        // cout << "amount: " << amount << endl;
+    }
+    switch(amount){
+        case 1:
+        case 2: 
+        case 3:
+            NTemp += 1;
+            STemp = 1;
+            break;
+        case 4:
+            NTemp += 2;
+            STemp = 2;
+            break;
+        case 5:
+            NTemp += 1;
+            STemp = 1;
+            break;
+        case 6:
+            NTemp += 2;
+            STemp = 2;
+            break;
+        case 7:
+            NTemp += 2;
+            STemp = 1;
+            break;
+        case 8:
+            NTemp += 2;
+            STemp = 1;
+            break;
+        case 9:
+            NTemp += 3;
+            STemp = 3;
+            break;
+    }
+    Amount temp1 = Amount({temp - amount*1000*power, NTemp, STemp});
+    return temp1;
+}
+
+void handle(unsigned long long amount, int c){
+    for(int i = c; i >= 0; i--){
+        Amount temp = convertToCashes(amount, i);
+        N += temp.N;
+        S *= temp.S;
+        amount = temp.amount;
+    }
+    if(amount != 0){
+        N = 0;
+        S = 1;
+        return;
+    }
+}
+
+int main() 
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+    int numberOfDataset;
+    cin >> numberOfDataset;
+    unsigned long long W;
+    int c;
+    while(numberOfDataset--){
+        cin >> W >> c;
+        
+        handle(W, c);
+        if(N == 0 && S == 1){
+            cout << "0" << endl;
+        }else
+            cout << N << " " << S << endl;
+        N = 0; 
+        S = 1;
+    }
+    
+    return 0;
+}

@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+    int W, H;
+    cin >> W >> H;
+    int w[W];
+    int h[H];
+    int numberOfSize;
+    cin >> numberOfSize;
+    for(int i = 0; i < numberOfSize; i++){
+        cin >> w[i] >> h[i];
+    }
+    int res[W + 1][H + 1];
+    for(int i = 0; i <= W; i++){
+        // cout << "i: " << i << endl;
+        for(int j = 0; j <= H; j++){
+            // cout << "j: " << j << endl;
+            if(i == 0 || j == 0){
+                res[i][j] = 0;
+                // cout << "A:[" << i << "][" << j << "] = " << res[i][j] << endl;
+                continue;
+            }
+            res[i][j] = i*j;
+            // for(int t = 1; t < max(i, j); t++){
+            //     if(t < i) res[i][j] = min(res[i][j], res[t][j] + res[i - t][j]);
+            //     if(t < j) res[i][j] = min(res[i][j], res[i][t] + res[i][j - t]);
+            //     cout << "B:[" << i << "][" << j << "] = " << res[i][j] << endl;
+            // }
+            for(int t = 0; t < numberOfSize; t++){
+                if(w[t] > i || h[t] > j) continue;
+                res[i][j] = min(res[i][j], res[i][j - h[t]] + res[i - w[t]][h[t]]);
+                res[i][j] = min(res[i][j], res[i - w[t]][j] + res[w[t]][j - h[t]]);
+                // cout << "C:[" << i << "][" << j << "] = " << res[i][j] << endl;
+            }
+                
+        }
+    }
+    cout << res[W][H];
+    
+    return 0;
+}
+/*bài này nó không giống bài chia xu vì: bài chia xu nó chia fit luôn số tiền cơ; bài này nó cắt theo kiểu mỗi
+lần cắt là phải cắt đôi cái tấm ra đến hết chứ k được cắt kiểu đục 1 hcn ở giữa => có thể sắp xếp các vị trí cắt
+sao cho chỉ cần dịch 1 chút viên gạch con bên trong có thể dẫn đến cắt được tấm gỗ chia đôi
+=> nch là nó liên quan đến cấu trúc hình học nên nếu ta lưu kiểu [i][j][k] là dùng đến i viên gạch tạo ra chiều
+rộng là j, chiều dài là k thì vc xử lý cấu trúc hình học rất phức tạp thậm chí k xử lý được=> khi gặp bài kiểu 2 
+chiều như này: hãy lưu nó thành mảng 2 chiều 2 kích thước như kiểu mapping
+Đi từ từ kích thước ban dầu từ [1][1] tới [w][h] lưu số kích thước còn thừa ở vị trí kích thước đó
+Tính chất: mỗi lần cắt là cắt làm đôi=> Để cắt đôi thì 1 góc của 1 hình con bên trong phải ở mép của cái cắt đôi
+nên ý tưởng là mỗi lần thêm 1 hình mới thì ta check phần thừa ở vị trí cắt đôi cái mép ở ô đó
+*/
+/*Câu hỏi: tại sao phải chạy vòng for đầu, 2 vòng for sau bộ k đủ sao
+*/

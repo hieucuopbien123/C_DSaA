@@ -1,0 +1,141 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+//dữ kiện đề bài cho
+int n, k;
+int arr[23][23];
+
+//check branch and bound
+int curRes = 0;
+int res = 999999;
+
+//check backtrack
+bool isVisited[23];
+
+//điều kiện khác để lấy data
+int curPass = 0;
+int curVisit[23];
+int cmin = 999999;
+
+void Try(int idx){
+    //tập candidate
+    for(int i = 1; i <= 2*n; i++){
+        //check backtrack
+        if(isVisited[i] == false){
+            //chia TH handle data. TH1: trống
+            if(curPass == 0){
+                if(i > n)
+                    continue;
+                    
+                //handle branch and bound
+                curRes += arr[curVisit[idx - 1]][i];
+                
+                //handle data khác
+                curVisit[idx] = i;
+                curPass++;
+                
+                //handle data backtrack
+                isVisited[i] = true;
+            }
+            
+            //TH2 khách trên bus chưa full 
+            else if(curPass < k){
+                //nếu trở tới đích
+                if(i > n){
+                    if(isVisited[i - n] == false)
+                        continue;
+                    
+                    //handle data khác
+                    curPass--;
+                }
+                
+                //nếu trở k thêm khách mới
+                if(i <= n){
+                    //handle data khác
+                    curPass++;
+                }
+                
+                //handle data branch and bound
+                curRes += arr[curVisit[idx - 1]][i];
+                
+                //handle data khác
+                curVisit[idx] = i;
+                
+                //handle data backtrack
+                isVisited[i] = true;
+            } 
+            
+            //TH3 khách trên xe đầy r
+            else if(curPass >= k){
+                //chỉ trở tới đích thôi
+                if(i <= n || isVisited[i - n] == false)
+                    continue;
+                
+                //handle data branch and bound
+                curRes += arr[curVisit[idx - 1]][i];
+                
+                //handle data backtrack
+                isVisited[i] = true;
+                
+                //handle data khác
+                curVisit[idx] = i;
+                curPass--;
+            }
+            
+            //nếu đi hết các ô thỏa mãn r
+            if(idx == 2*n)
+                res = min(res, curRes + arr[i][0]);
+                //cập nhập kết quả
+                
+            //check branch and boun
+            else if(curRes + (2*n + 1 - idx)*cmin < res)
+                Try(idx + 1);
+                //thỏa mãn thì mới đi tiếp
+            
+            //lùi lại data branch and bound
+            curRes -= arr[curVisit[idx - 1]][i];
+            
+            //lùi lại backtrack
+            isVisited[i] = false;
+            
+            //lùi lại khi trở tới đích
+            if(i > n)
+                curPass++;
+                //lùi lại data khác
+            
+            //lùi lại khi trở thêm khách
+            else if(i <= n)
+                curPass--;
+                //lùi lại data khác
+        }
+    }
+}
+
+int main()
+{
+    //lấy data
+    cin >> n >> k;
+    for(int i = 0; i < 2*n + 1; i++){
+        for(int j = 0; j < 2*n + 1; j++){
+            cin >> arr[i][j];
+            if(arr[i][j] < cmin && i != j){
+                cmin = arr[i][j];
+            }
+        }
+    }
+    //set giá trị ban đầu
+    curVisit[0] = 0;
+    memset(isVisited, false, sizeof(isVisited));
+    
+    //xử lý và in kết quả
+    Try(1);
+    cout << res;
+
+    return 0;
+}
+//Cải tiến: canVisitNow là thừa thải vì để check ô i+n có ok k ta chỉ cần check ô i đã visited chưa là đc
+//Luôn nhớ là trước khi tạo 1 biến mới để check cái gì, hãy nghĩ xem dựa vào các biến đã có, có thể check với
+//O(1) đc k trước và nên nhớ mảng thì luôn truy xuất mọi phần tử với O(1)
+//biến curVisitNow nó y hệt biến idx éo khác gì, ta có thể dùng 1 số đếm tăng dần bằng cách tái sử dụng biến idx
+//chỉ cần khéo léo 1 chút

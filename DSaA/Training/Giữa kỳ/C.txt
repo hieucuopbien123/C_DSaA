@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+using namespace std;
+int numberOfCities = 0, maxDistance = 0;
+int distanceMatrix[16][16];
+bool isVisited[16];
+int currentDistance = 0;
+int currentCities = 1;
+int numberOfWay = 0;
+int minDistance = 99999;
+
+void Try(int k)
+{
+    for(int i = 2; i <= numberOfCities; i++){
+        if(isVisited[i] == false){
+            isVisited[i] = true;
+            currentDistance += distanceMatrix[currentCities][i];
+            // cout << distanceMatrix[currentCities][i] << endl;
+            // cout << currentCities << " visited " << i << endl;
+            int saveCurrentCitiesForBacktracks = currentCities;
+            currentCities = i;
+            // cout << currentDistance << endl;
+            if(k == numberOfCities - 1){
+                // cout << "check: " << currentDistance + distanceMatrix[currentCities][1] << " " << maxDistance << endl;
+                if(currentDistance + distanceMatrix[currentCities][1] <= maxDistance){
+                    numberOfWay++;
+                }
+            }else if(currentDistance + minDistance*(numberOfCities - k) <= maxDistance){
+                Try(k + 1);
+            }
+            isVisited[i] = false;
+            currentCities = saveCurrentCitiesForBacktracks;
+            currentDistance -= distanceMatrix[currentCities][i];
+        }
+    }
+    
+    
+    // for(các city)
+    //     if city chưa đi qua
+    //         đi qua nó
+    //         cập nhập khoảng cách
+    //         đánh dấu là đã đi qua
+    //         if đi hết 4 cities
+    //             check nếu chưa quá maxDistance
+    //                 tính đi đến thành phố ban đầu chưa quá maxDistance
+    //                     cập nhập count
+    //         else if(khoảng cách hiện tại chưa quá maxDistance)
+    //             try(k+1)
+    //         khoảng cách lùi lại
+    //         đánh dấu là chưa đi qua
+}
+
+int main()
+{
+    memset(isVisited, false, sizeof(isVisited));
+    cin >> numberOfCities >> maxDistance;
+    for(int i = 1; i <= numberOfCities; i++){
+        for(int j = 1; j <= numberOfCities; j++){
+            cin >> distanceMatrix[i][j];
+            if(distanceMatrix[i][j] != 0 && distanceMatrix[i][j] < minDistance)
+                minDistance = distanceMatrix[i][j];
+        } 
+    }
+    // cout << distanceMatrix[2][3] << endl;
+    Try(1);
+    cout << numberOfWay;
+    
+    return 0;
+}
+//có cái pseudo code là chuẩn r, phần còn lại là code phải chuẩn từng điều kiện. Thà làm chậm 1 phát ăn ngay còn hơn
+//sai r debug lại lâu lắm. BH còn sai cái <= với cả == nhầm = nx thì chịu r. Code chậm thôi. Logic lấy vd ra

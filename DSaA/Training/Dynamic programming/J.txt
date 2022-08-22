@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    int numberOfStations, maxTime, maxDistance;
+    cin >> numberOfStations >> maxTime >> maxDistance;
+    int goodsEachStation[numberOfStations + 1];
+    int pickupTimeEachStation[numberOfStations + 1];
+    for(int i = 1; i <= numberOfStations; i++){
+        cin >> goodsEachStation[i];
+        // cout << "Good: " << i << " " << goodsEachStation[i] << endl;
+        // cout << goodsEachStation[1] << endl;
+    }
+    // cout << goodsEachStation[1] << endl;
+    for(int i = 1; i <= numberOfStations; i++){
+        cin >> pickupTimeEachStation[i];
+        // cout << i << " " << goodsEachStation[1] << endl;
+    }
+    // cout << goodsEachStation[1] << endl;
+    int res[maxTime + 1][numberOfStations + 1];
+    for(int i = 1; i <= maxTime; i++){
+        for(int j = 1; j <= numberOfStations; j++){
+            //xây base case
+            //nếu thời gian hiện tại bằng với thời gian ở station hiện tại thì gán bằng giá trị nó luôn
+            //nhỏ hơn thì 0
+            // cout << "i: " << i << "; j: " << j << endl;
+            if(i == pickupTimeEachStation[j]){
+                res[i][j] = goodsEachStation[j];
+                // cout << j << " " << goodsEachStation[1];
+                // cout << "Equal: ";
+                // cout << res[i][j] << endl;
+                continue;
+            }
+            if(i < pickupTimeEachStation[j]){
+                res[i][j] = 0;
+                // cout << "Smaller: " << res[i][j] << endl;
+                continue;
+            }
+            //base case còn là khi thời gian hiện tại lớn hơn thời gian ở station 
+            //k là base case thì xây đáp án từ giá trị hiện tại và giá trị đã có
+            int maxVal = 0;
+            for(int k = j - maxDistance; k <= j - 1; k++){
+                if(k <= 0){
+                    continue;
+                }
+                maxVal = max(maxVal, res[i - pickupTimeEachStation[j]][k]);
+                // cout << "update maxval at res[" << i - pickupTimeEachStation[j] << "][" << k << "]="
+                // << res[i - pickupTimeEachStation[j]][k] << endl;
+            }
+            res[i][j] = goodsEachStation[j] + maxVal;
+            // cout << res[i][j] << endl;
+        }
+    }
+    int maxVal = -1;
+    for(int i = 1; i <= numberOfStations; i++){
+        maxVal = max(maxVal, res[maxTime][i]);
+    }
+    cout << maxVal;
+
+    return 0;
+}

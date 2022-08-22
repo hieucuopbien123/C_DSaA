@@ -1,0 +1,146 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+unsigned long long calculatedResult[101];
+unsigned long long fiboNum[101];
+string fiboString[101];
+
+bool checkAppearanceCenterLeft(string patternToCheck, unsigned long long indexOfF)
+{
+    // cout << indexOfF << "???" << patternToCheck << endl;
+    if(patternToCheck == ""){
+        return true;
+    }
+    if(indexOfF == 0)
+        if(patternToCheck == "0")
+            return true;
+        else 
+            return false;
+    if(indexOfF == 1) 
+        if(patternToCheck == "1")
+            return true;
+        else
+            return false;
+    
+    // cout << indexOfF << "????" << patternToCheck << endl;
+    if(patternToCheck.length() > fiboNum[indexOfF - 2]){
+        // cout << "CHECK" << endl;
+        string rightString = patternToCheck.substr(patternToCheck.length() - fiboNum[indexOfF - 2], fiboNum[indexOfF - 2]);
+        string leftString = patternToCheck.substr(0, patternToCheck.length() - fiboNum[indexOfF - 2]);
+        // cout << "string: " << leftString << " " << rightString << endl;
+        bool check1 = checkAppearanceCenterLeft(rightString, indexOfF - 2);
+        // cout << "CHECCK: " <<
+        // patternToCheck.substr(fiboNum[indexOfF - 1], int(patternToCheck.length() - fiboNum[indexOfF - 1])) << endl;
+        // cout << patternToCheck << " " << fiboNum[indexOfF - 1] << " " << patternToCheck.length() - fiboNum[indexOfF - 1] << endl;
+        if(check1){
+            // cout << "Here" << endl;
+            check1 = checkAppearanceCenterLeft(leftString, indexOfF - 1);
+        }
+        // cout << "Here1: " << check1 << endl;
+        return check1;
+    }else{
+        return checkAppearanceCenterLeft(patternToCheck, indexOfF - 2);
+    }
+}
+bool checkAppearanceCenterRight(string patternToCheck, unsigned long long indexOfF)
+{
+    // chú ý trap sai khi gộp của ta
+    // if(indexOfF == 0 && patternToCheck == "0")
+    //     return true;
+    // else 
+    //     return false;
+    // if(indexOfF == 1 && patternToCheck == "1")
+    //     return true;
+    // else
+    //     return false;
+    // cout << indexOfF << "?A?" << patternToCheck << endl;
+    if(patternToCheck == ""){
+        return true;
+    }
+    if(indexOfF == 0)
+        if(patternToCheck == "0")
+            return true;
+        else 
+            return false;
+    if(indexOfF == 1) 
+        if(patternToCheck == "1")
+            return true;
+        else
+            return false;
+    if(patternToCheck.length() > fiboNum[indexOfF - 1]){
+        string rightString = patternToCheck.substr(fiboNum[indexOfF - 1], patternToCheck.length() - fiboNum[indexOfF - 1]);
+        string leftString = patternToCheck.substr(0, fiboNum[indexOfF - 1]);
+        // cout << "CHECCKright: " << patternToCheck.substr(0, fiboNum[indexOfF - 1]) << " " << 
+        // patternToCheck.substr(fiboNum[indexOfF - 1], patternToCheck.length() - fiboNum[indexOfF - 1]) << endl;
+        bool check1 = checkAppearanceCenterRight(rightString, indexOfF - 2);
+        if(check1)
+            check1 = checkAppearanceCenterRight(leftString, indexOfF - 1);
+        return check1;
+    }else{
+        return checkAppearanceCenterRight(patternToCheck, indexOfF - 1);
+    }
+}
+
+unsigned long long findAppearanceOf(string patternToCheck, unsigned long long indexOfF)
+{
+    if(calculatedResult[indexOfF] != -1){
+        return calculatedResult[indexOfF];
+    }
+    if(indexOfF == 0){
+        return patternToCheck == "0" ? 1 : 0;
+    }
+    if(indexOfF == 1){
+        return patternToCheck == "1" ? 1 : 0;
+    }
+    unsigned long long a = findAppearanceOf(patternToCheck, indexOfF - 1);
+    unsigned long long b = findAppearanceOf(patternToCheck, indexOfF - 2);
+    unsigned long long centerAppearance = 0;
+    // cout << indexOfF << endl;
+    if(fiboNum[indexOfF - 1] + fiboNum[indexOfF - 2] >= patternToCheck.length()){
+        unsigned long long start = patternToCheck.length() > fiboNum[indexOfF - 2] 
+                                ?  patternToCheck.length() - fiboNum[indexOfF - 2] : 1;
+        unsigned long long end = patternToCheck.length() > fiboNum[indexOfF - 1] 
+                                ? fiboNum[indexOfF - 1] : patternToCheck.length() - 1;
+        // cout << start << ":" << end << endl;
+        for(int i = start; i <= end; i++){
+            // cout << patternToCheck.substr(0, i) << " " << indexOfF - 1 << endl;
+            bool check1 = checkAppearanceCenterLeft(patternToCheck.substr(0, i), indexOfF - 1);
+            // cout << "check1: " << check1 << endl;
+            if(check1)
+                check1 = checkAppearanceCenterRight(patternToCheck.substr(i, patternToCheck.length() - i), indexOfF - 2);
+            if(check1)
+                centerAppearance++;
+            // cout << "check1: " << check1 << endl;
+        }
+    }
+    
+    calculatedResult[indexOfF] = a + b + centerAppearance;
+    // cout << "res: " << indexOfF << " " << a << " " << b << " " << centerAppearance << endl;
+    return calculatedResult[indexOfF];
+}
+
+int main()
+{
+    memset(calculatedResult, -1, sizeof(calculatedResult));
+    fiboNum[0] = 1;
+    fiboNum[1] = 1;
+    for(int i = 2; i < 101; i++){
+        fiboNum[i] = fiboNum[i - 1] + fiboNum[i - 2];
+    }
+    unsigned long long indexOfF = 0;
+    fiboString[0] = "0";
+    fiboString[1] = "1";
+    string patternToCheck = "";
+    cin >> indexOfF;
+    cin >> patternToCheck;
+    unsigned long long testCaseIndex = 0;
+    while(indexOfF != 0){
+        cout << "Case " << ++testCaseIndex << ": " << findAppearanceOf(patternToCheck, indexOfF) << endl;
+        memset(calculatedResult, -1, sizeof(calculatedResult));
+        indexOfF = 0;
+        cin >> indexOfF >> patternToCheck;
+    }
+    
+    return 0;
+}
+

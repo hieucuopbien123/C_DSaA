@@ -1,0 +1,36 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int numberOfTotalSet = 0, numberOfElementTaken = 0;
+    cin >> numberOfTotalSet >> numberOfElementTaken;
+    int inputCombination[10001];
+    int totalSet[10001];
+    for(int i = 1; i <= numberOfElementTaken; i++){
+        cin >> inputCombination[i];
+    }
+    for(int i = 1; i <= numberOfTotalSet; i++){
+        totalSet[i] = i;
+    }
+    bool isFinish = false;
+    for(int i = numberOfElementTaken; i >= 1; i--){
+        if(inputCombination[i] < numberOfTotalSet - numberOfElementTaken + i){
+            isFinish = true;
+            inputCombination[i]++;
+            for(int j = i + 1; j <= numberOfElementTaken; j++){
+                inputCombination[j] = inputCombination[j - 1] + 1;
+            }
+            break;
+        }
+    }
+    if(isFinish == true){
+        for(int i = 1; i <= numberOfElementTaken; i++){
+            cout << inputCombination[i] << " ";
+        }
+    }else{
+        cout << "-1";
+    }
+
+    return 0;
+}

@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    int numberOfWarehouses;
+    int L1, L2;
+    cin >> numberOfWarehouses >> L1 >> L2;
+    int amountOfGold[numberOfWarehouses + 1];
+    for(int i = 1; i <= numberOfWarehouses; i++){
+        cin >> amountOfGold[i];
+    }
+    int res[numberOfWarehouses + 1];
+    int final = -1;
+    for(int i = 1; i <= numberOfWarehouses; i++){
+        // cout << "i: " << i << endl;
+        //xây base case
+        if(i <= L1){
+            res[i] = amountOfGold[i];
+            // cout << "RES: " << res[i] << endl;
+            continue;
+        }
+        if(i == L1 + 1){
+            res[i] = amountOfGold[i] + amountOfGold[i - L1];
+            // cout << "RES: " << res[i] << endl;
+            continue;
+        }
+        //nếu k là base case, đi cha từ con
+        int temp = -1;
+        // cout << i - L2 << " A " << i - L1 << endl;
+        for(int j = i - L2; j <= i - L1; j++){
+            //nếu là cái cần-> cập nhập temp
+            if(j > 0){
+                // cout << "add: " << res[j] << " + " << amountOfGold[i] << endl;
+                temp = max(temp, res[j] + amountOfGold[i]);
+            }
+            // cout << "Temp: " << temp << endl;
+            //nếu k thì break;
+        }
+        res[i] = temp;
+        final = max(final, res[i]);
+        // cout << "RES: " << res[i] << endl;
+    }
+    cout << final;
+
+    return 0;
+}

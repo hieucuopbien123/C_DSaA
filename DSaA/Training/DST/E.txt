@@ -1,0 +1,44 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    long number = 0;
+    cin >> number;
+    long long arr[number];
+    int res = 1;
+    cin >> arr[0];
+    for(long i = 1; i < number; i++){
+        cin >> arr[i];
+        if(arr[i] != arr[i - 1])
+            res++;
+    }
+    long n = 0;
+    cin >> n;
+    long index = 0;
+    long long type = 0;
+    for(long i = 0; i < n; i++){
+        cin >> index;
+        cin >> type;
+        
+        int old = 0;
+        int newV = 0;
+        if(index != 1){
+            if(arr[index - 1] != arr[index - 2])
+                old++;
+            if(arr[index - 2] != type)
+                newV++;
+        }
+        if(index != number){
+            if(arr[index - 1] != arr[index])
+                old++;
+            if(arr[index] != type)
+                newV++;
+        }
+        arr[index - 1] = type;
+        res += (newV - old);
+        cout << res << endl;
+    }
+    
+    return 0;
+}

@@ -1,0 +1,108 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef struct Union_Find {
+    vector<int> iParent;
+    Union_Find(int n){
+        iParent = vector<int>(n + 1);
+        for(int i = 1; i <= n; i++){
+            iParent[i] = i;
+        }
+    }
+    int find(int x){
+        if(iParent[x] == x){
+            return x;
+        } else {
+            iParent[x] = find(iParent[x]);
+            return iParent[x];
+        }
+    }
+    void unite(int x, int y){
+        iParent[find(x)] = find(y);
+    }
+}Union_Find;
+typedef struct edge{
+    int u, v, weight;
+}edge;
+int res = 0;
+int numberOfEdges, numberOfVertices, maxWeight;
+vector<edge> adj;
+Union_Find uf(0);
+int final = 9999;
+vector<int> resTree[16];
+vector<bool> isVisited(16, false);
+int depth[16] = {};
+int maxDepth = 0;
+
+void dfs(int k, int parent){
+    for(int i = 0; i < resTree[k].size(); i++){
+        int v = resTree[k][i];
+        if(v == parent) continue;
+        // cout << "k = " << k << " and v = " << v << endl;
+        dfs(v, k);
+        // cout << "k = " << k << " depth of v: " << depth[v] << endl;
+        maxDepth = max(depth[v] + 1 + depth[k], maxDepth);
+        // cout << maxDepth << endl;
+        depth[k] = max(depth[k], depth[v] + 1);
+    }
+}
+
+bool check(){
+    maxDepth = 0;
+    memset(depth, 0, sizeof(depth));
+    dfs(1, -1);
+    if(maxDepth > maxWeight){
+        // cout << "MaxDepth: " << maxDepth << endl;
+        return false;
+    }
+    return true;
+}
+
+void Try(int k, int start){
+    for(int i = start + 1; i < numberOfEdges; i++){
+        if(uf.find(adj[i].u) != uf.find(adj[i].v)){
+            Union_Find temp = uf;
+            uf.unite(adj[i].u, adj[i].v);
+            res += adj[i].weight;
+            resTree[adj[i].u].push_back(adj[i].v);
+            resTree[adj[i].v].push_back(adj[i].u);
+            // cout << "Handle edge: " << adj[i].u << " " << adj[i].v << " with k = " << k << endl;
+            if(k == numberOfVertices - 1){
+                // cout << "res: " << res << endl;
+                if(check()){
+                    // cout << "Take this" << endl;
+                    final = min(final, res);
+                }
+                // cout << "Check false" << endl;
+                // for(int j = 1; j <= numberOfVertices; j++){
+                //     cout << j << " ";
+                //     for(int m = 0; m < resTree[j].size(); m++){
+                //         cout << resTree[j][m] << " ";
+                //     }
+                //     cout << endl;
+                // }
+            }else if(res < final){
+                Try(k + 1, i);
+            }
+            res -= adj[i].weight;
+            resTree[adj[i].u].pop_back();
+            resTree[adj[i].v].pop_back();
+            uf = temp;
+        }
+    }
+}
+
+int main() 
+{
+    cin >> numberOfVertices >> numberOfEdges >> maxWeight;
+    for(int i = 0; i < numberOfEdges; i++){
+        int a, b, c;
+        cin >> a >> b >> c;
+        adj.push_back({a, b, c});
+    }
+    uf = Union_Find(numberOfVertices);
+    Try(1, -1);
+    cout << final << endl;
+    
+    return 0;
+}

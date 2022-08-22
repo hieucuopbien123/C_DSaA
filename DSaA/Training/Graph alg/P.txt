@@ -1,0 +1,117 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef struct Node{
+    int fare;
+    int capacity;
+}Node;
+vector<Node> cities;
+vector<int> adj[5001];
+typedef struct edge{
+    int v, weight;
+}edge;
+vector<edge> newAdj[5001];
+int numberOfVertices, numberOfEdges;
+
+//các lỗi sai: thày dùng bfs để build directed graph mới và dùng Djiska để lấy intest path
+//bộ nhớ lưu cx nhẹ hơn và thuật Djiska cũng k dùng cái mảng tởm như v
+// void build(int u, int cur, int cap, int wei){
+//     if(cap == 0){
+//         return;
+//     }
+//     for(int i = 0; i < adj[cur].size(); i++){
+//         int v = adj[cur][i];
+//         newAdj[u].push_back({v, wei});
+//         build(u, v, cap - 1, wei);
+//     }
+// }
+// void construct(){
+//     for(int i = 1; i <= numberOfVertices; i++){
+//         int weight = cities[i].fare;
+//         int capacity = cities[i].capacity;
+//         build(i, i, capacity, weight);
+//     }
+// }
+
+int d[5005];
+void bfs(int st)
+{
+    for (int i = 1; i <= numberOfVertices; ++i)
+    {
+        d[i] = -1;
+    }
+    d[st] = 0;
+    queue <int> q;
+    q.push(st);
+    while (!q.empty())
+    {
+        int u = q.front(); q.pop();
+        for (int v : adj[u])
+        {
+            if (d[v] != -1) continue;
+            d[v] = d[u] + 1;
+            q.push(v);
+        }
+    }
+}
+
+vector<int> iDist(5005, INT_MAX);
+void Dijkstra(int start){
+    iDist[start] = 0;
+    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> PQ;
+    PQ.push(make_pair(0, start));
+    while(!PQ.empty()){
+        int u = PQ.top().second;
+        PQ.pop();
+        // if (iDist[u] != PQ.top().first) continue;
+        for(int i = 0; i < newAdj[u].size(); i++){
+            int v = newAdj[u][i].v;
+            int w = newAdj[u][i].weight;
+            if(w + iDist[u] < iDist[v]){
+                // cout << "Gán iDist[" << v << "]=" << w + iDist[u] << endl;
+                iDist[v] = w + iDist[u];
+                PQ.push(make_pair(iDist[v], v));
+            }
+        }
+    }
+}
+
+int main() 
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+    cin >> numberOfVertices >> numberOfEdges;
+    cities.push_back({0,0});
+    for(int i = 0; i < numberOfVertices; i++){
+        int a, b;
+        cin >> a >> b;
+        cities.push_back({a, b});
+    }
+    for(int j = 0; j < numberOfEdges; j++){
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    
+    // construct();
+    //ta có thể cấp nh vùng nhớ nhưng khi ta dùng đến 1 lượng quá mức cho phép mới bị sai
+    //Ở đây dùng BFS nhanh hơn và ít vùng nhớ hơn là vì nó check nếu đã duyệt r thì k đi nx. Thành ra đi lại
+    //node cũ là k tính=> VD 1 node nào đó connect với 2000 node khác thì gặp cái trùng là dừng chứ cứ kéo
+    //dài 2000 vòng for thì chết à=> chú ý khi cần làm gì mà duyệt qua các node hay các edge thì nên cân nhắc
+    //BFS, DFS có đc k đã r mới tự làm
+    for (int i = 1; i <= numberOfVertices; ++i)
+    {
+        bfs(i);
+        for (int j = 1; j <= numberOfVertices; ++j)
+        {
+            if (d[j] <= cities[i].capacity) {
+                newAdj[i].push_back({j, cities[i].fare});
+            }
+        }
+    }
+    
+    Dijkstra(1);
+    cout << iDist[numberOfVertices];
+
+    return 0;
+}

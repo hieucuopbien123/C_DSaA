@@ -1,0 +1,24 @@
+#include<bits/stdc++.h>
+#include<math.h>
+using namespace std;
+const unsigned long long modValue = 1e9 + 7;
+
+unsigned long long calculate(unsigned long long a, unsigned long long b)
+{
+    if(b == 1)
+        return a;
+    unsigned long long temp = calculate(a, b/2)%modValue;
+    if(b%2 == 0)
+        return (temp*temp)%modValue;
+    else
+        return (((temp*temp)%modValue)*a)%modValue;
+}
+
+int main()
+{
+    unsigned long long a, b;
+    cin >> a >> b;
+    cout << calculate(a%modValue, b);
+    
+    return 0;
+}

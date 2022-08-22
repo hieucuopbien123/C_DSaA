@@ -1,0 +1,33 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() 
+{
+    int n;
+    cin >> n;
+    vector<int> v[n + 1];
+    int maxDead = 0;
+    for(int i = 0; i < n; i++){
+        int a, b;
+        cin >> a >> b;
+        v[a].push_back(b);
+        maxDead = max(maxDead, a);
+    }
+    
+    priority_queue<int> maxHeap;
+    unsigned long long res = 0;
+    
+    for(int i = maxDead; i > 0; i--){
+        for(int j = 0; j < v[i].size(); j++){
+            maxHeap.push(v[i][j]);
+        }
+        if(!maxHeap.empty()){
+            res += maxHeap.top();
+            maxHeap.pop();
+        }
+    }
+    cout << res;
+    
+    return 0;
+}
+

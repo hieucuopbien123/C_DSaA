@@ -1,0 +1,27 @@
+#include <bits/stdc++.h> 
+using namespace std;
+
+int main()
+{
+    int n = 0;
+    cin >> n;
+    int arr[n];
+    int memorization[n];
+    for(int i = 0; i < n; i++){
+        cin >> arr[i];
+        memorization[i] = 1;
+    }
+    //memorization[i] là longest subseq kết thúc với i
+    // memset(memorization, 1, sizeof(int)*n);
+    for(int i = 1; i < n; i++){
+        for(int j = 0; j < i; j++){
+            if(arr[j] < arr[i]){
+                memorization[i] = max(memorization[j] + 1, memorization[i]);
+                // cout << memorization[i] << endl;
+            }
+        }
+    }
+    cout << *max_element(memorization, memorization + n);
+
+    return 0;
+}

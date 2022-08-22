@@ -1,0 +1,69 @@
+#include<bits/stdc++.h>
+using namespace std;
+vector<int> adj[100001];
+vector<int> low(100001), num(100001, -1);
+int curNum = 0;
+// vector<pair<int, int>> bridges;
+int bridges = 0;
+int numberOfAPs = 0;
+vector<bool> countThis(100001, false);
+
+void find_bridges(int u, int p)
+{
+    // cout << u << " B " << p << endl;
+    low[u] = num[u] = curNum++;
+    for(int i = 0; i < adj[u].size(); i++){
+        if(adj[u].size() == 1){
+            // cout << "countThis là true : " << u << endl;
+            countThis[u] = true;
+        }
+        int v = adj[u][i];
+        if(v == p) continue;
+        if(num[v] == -1){
+            find_bridges(v, u);
+            low[u] = min(low[u], low[v]);
+            if(countThis[u] == false){
+                if(low[v] > num[u]){
+                    // cout << u << " " << v << " " << low[v] << " " << num[u] << endl;
+                    numberOfAPs++;
+                    countThis[u] = true;
+                }
+                if(low[v] == num[u] && num[u] != 0){
+                    // cout << u << " " << v << " " << low[v] << " " << num[u] << endl;
+                    numberOfAPs++;
+                    countThis[u] = true;
+                }
+            }
+        }else {
+            low[u] = min(low[u], num[v]);
+        }
+        // cout << u << " A " << v << endl;
+        if(low[v] > num[u]){
+            bridges++;
+        }
+    }
+}
+
+int main() 
+{
+    ios_base::sync_with_stdio(false); cin.tie(0);
+    int numberOfVertices, numberOfEdges;
+    cin >> numberOfVertices >> numberOfEdges;
+    for(int i = 0; i < numberOfEdges; i++){
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    
+    for(int i = 1; i <= numberOfVertices; i++){
+        if(num[i] == -1){
+            find_bridges(i, -1);
+            curNum = 0;
+        }
+    }
+    cout << numberOfAPs << " " << bridges;
+    
+    return 0;
+}
+

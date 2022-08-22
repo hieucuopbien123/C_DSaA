@@ -1,0 +1,64 @@
+#include <bits/stdc++.h>
+using namespace std;
+int numberOfCities;
+int fee[21][21];
+int iMem[21][1 << 21];//i<<N là số lớn nhất cần lưu đó
+
+int TSP(int i, int S)
+{
+    // cerr << "Base = i: " << i << " S: " << S << endl;
+    // basecase/endcase
+    if(S == ((1 << numberOfCities) - 1) << 1){//đã đi hết các thành phố
+        // cerr << "i: " << i << " S: " << S << endl;
+        // cerr << "It get1: " << fee[i][1] << endl;
+        if(fee[i][1] != 0)
+            return fee[i][1];
+        else
+            return INT_MAX;
+    }//đã tính
+    if(iMem[i][S] != 0){
+        // cerr << "i: " << i << " S: " << S << endl;
+        // cerr << "It get2: " </< iMem[i][S] << endl;
+        return iMem[i][S];
+    }//giải quyết=> gọi recur như kiểu đã tính được đến giá trị con r
+    int res = INT_MAX;
+    for(int j = 1; j <= numberOfCities; j++){
+        // cerr << "loop3: " << j << endl;
+        if(S & (1 << j) || fee[i][j] == 0){
+            continue;
+        }
+        // cerr << "Pass condition loop3" << endl;
+        //nếu đã visit r thì dừng. Nếu chưa visit thì cho nó visit
+        int temp = TSP(j, S | (1 << j));
+        if(temp != INT_MAX)
+            res = min(res, fee[i][j] + temp);
+        // cerr << "fee: " << fee[i][j] << " TSP: " << TSP(j, S | (1 << j)) << endl;
+        // cerr << "It get3: " << res << endl;
+        // S | (1 << j) trả ra giá trị các thành phố đã visit thì visit thêm tp j nx
+    }
+    //trả kết quả
+    // cerr << "Cập nhập iMem[" << i << "][" << S << "]=" << res << endl;
+    iMem[i][S] = res;
+    return res;
+}
+
+int main()
+{
+    cin >> numberOfCities;
+    memset(fee, 0, sizeof(fee));
+    memset(iMem, 0, sizeof(iMem));
+    int temp;
+    cin >> temp;
+    for(int i = 0; i < temp; i++){
+        int temp1, temp2;
+        cin >> temp1 >> temp2;
+        cin >> fee[temp1][temp2];
+    }
+    //hàm tối ưu: cal(m,n) với n là bitmask lưu tất cả thành phố đã visit-> iMem[m][n]
+    //là chi phí đi từ thành phố m đến tất cả các thành phố chưa visit xác định trong n
+    cout << TSP(1, 1 << 1);
+    //1 << 0 là đã visit mỗi thành phố số 0=> 0..01
+    
+    return 0;
+}
+//dynamic bài traveling saleman bằng bitmask

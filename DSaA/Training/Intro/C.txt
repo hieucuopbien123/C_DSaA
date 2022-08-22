@@ -1,0 +1,15 @@
+#include <iostream>
+#include <iomanip>
+#include <math.h>
+using namespace std;
+int main()
+{
+    unsigned long long a, b;
+    cin >> a >> b;
+    int a1 = a%(long(pow(10,9)) + 7);
+    int b1 = b%(long(pow(10,9)) + 7);
+    int c1 = a1 + b1;
+    int d2 = c1%(long(pow(10,9)) + 7);
+    cout << d2;
+    return 0;
+}

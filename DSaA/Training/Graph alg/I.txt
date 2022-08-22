@@ -1,0 +1,91 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef struct Union_Find{
+    vector<int> iParent;
+    Union_Find(int n){
+        iParent = vector<int>(n + 1);
+        for(int i = 1; i <= n; i++){
+            iParent[i] = i;
+        }
+    }
+    //Find lấy ra gốc của cây chứu node hiện tại
+    int Find(int x){
+        if(iParent[x] == x){
+            return x;
+        }else{
+            iParent[x] = Find(iParent[x]);
+            //bước gán này gọi là nén đường. Nếu gọi lại Find(x) vói cùng 1 giá trị x thì lần đầu có thể dài
+            //các lần sau được gán luôn như này sẽ tìm tốc độ O(1)
+            return Find(iParent[x]);
+        }
+    }
+    void Unite(int x, int y){
+        iParent[Find(x)] = Find(y);
+    }
+}Union_Find;
+int numberOfVertices, numberOfEdges;
+vector<int> adj[21];
+typedef struct Edge{
+    int u, v;
+}Edge;
+vector<Edge> edges;
+int counter = 0;
+int curnumEdges = 0;
+Union_Find uf(1);
+
+void handle(int k){
+    for(int i = k; i <= numberOfEdges - (numberOfVertices - 1 - curnumEdges); i++){
+        // cout << "K = " << k << " and i = " << i << endl; 
+        int u = edges[i].u;
+        int v = edges[i].v;
+        // cout << "Handle: " << u << " " << v << endl;
+        // vector<int> tempP;
+        Union_Find temp = uf;
+        // for(int i = 0; i < uf.iParent.size(); i++){
+            // tempP.push_back(uf.iParent[i]);
+        // }
+        // cout << "Before Cout to check uf find 1: " << temp.Find(1) << endl;
+        // cout << "Before Cout to check uf find 1: " << uf.Find(1) << endl;
+        if(uf.Find(u) != uf.Find(v)){
+            // cout << "United u and v" << endl;
+            uf.Unite(u, v);
+        }
+        else{
+            // cout << uf.Find(u) << " and " << uf.Find(v) << endl;
+            // cout << "Not United u and v" << endl;
+            continue;
+        }
+        curnumEdges++;
+        // cout << "curnumEdges: " << curnumEdges << endl;
+        if(curnumEdges == numberOfVertices - 1){
+            // cout << "Get curnumEdges: " << curnumEdges << endl;
+            counter++;
+        }else{
+            handle(i + 1);
+        }
+        // uf.iParent = tempP;
+        uf = temp;
+        curnumEdges--;
+        // cout << "Backtrack curnumEdges: " << curnumEdges << endl;
+        // cout << "After Cout to check uf find 1: " << temp.Find(1) << endl;
+        // cout << "After Cout to check uf find 1: " << uf.Find(1) << endl;
+    }
+}
+
+int main() 
+{
+    cin >> numberOfVertices >> numberOfEdges;
+    for(int i = 0; i < numberOfEdges; i++){
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+        edges.push_back({a, b});
+    }
+    uf = Union_Find(numberOfVertices);
+    handle(0);
+    cout << counter;
+    
+    
+    return 0;
+}

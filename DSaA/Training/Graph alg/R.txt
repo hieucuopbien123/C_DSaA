@@ -1,0 +1,34 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() 
+{
+    int f, s, g, u, d;
+    cin >> f >> s >> g >> u >> d;
+    int counter[1000000];
+    memset(counter, -1, sizeof(counter));
+    queue<int> Q;
+    Q.push(s);
+    counter[s] = 0;
+    //update counter theo kiểu: ta gán cho phần tử hiện tại cái level hiện tại
+    //như v khi dừng ở node nào chỉ cần lấy level của nó lúc đó
+    while(!Q.empty()){
+        int t = Q.front();
+        Q.pop();
+        if(t == g){
+            cout << counter[t];
+            exit(0);
+        }
+        if(t + u <= f && counter[t + u] == -1){
+            counter[t + u] = counter[t] + 1;
+            Q.push(t + u);
+        }
+        if(t - d > 0 && counter[t - d] == -1){
+            counter[t - d] = counter[t] + 1;
+            Q.push(t - d);
+        }
+    }
+    cout << "use the stairs";
+    
+    return 0;
+}

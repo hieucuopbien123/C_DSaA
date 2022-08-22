@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    //get input faster
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+    
+    //initialization
+    long long int numberOfTrees = 0;
+    long long int requiredAmountOfWood = 0;
+    long long int right = 0, left = 0;
+    cin >> numberOfTrees >> requiredAmountOfWood;
+    int trees[numberOfTrees];
+    for(long long int i = 0; i < numberOfTrees; i++){
+        cin >> trees[i];
+        if(trees[i] > right){
+            right = trees[i];
+        }
+    }
+
+    //O(nlog(max of height)) = O(10^6*log(10^9)) ~ 10^6*9log(10)= 10^6*9*3
+    long long int currentAmountOfWood = 0;
+    while(left <= right){
+        long long int mid = (right + left)/2;
+        for(long long int i = 0; i < numberOfTrees; i++){
+            if(trees[i] > mid)
+                currentAmountOfWood += (trees[i] - mid);
+        }
+        if(currentAmountOfWood == requiredAmountOfWood){
+            right = mid;
+            break;
+        }
+        else if(currentAmountOfWood > requiredAmountOfWood){
+            left = mid + 1;
+        }
+        else
+            right = mid - 1;
+        currentAmountOfWood = 0;
+    }
+    cout << right << endl;
+    
+    return 0;
+}
+
+

@@ -1,0 +1,55 @@
+#include <iostream>
+#include <queue>
+#include <map>
+using namespace std;
+int maze[901][901];
+int checkSame[901][901];
+typedef struct Box{
+    int x, y, res;
+}Box;
+
+int main()
+{
+    int n, k, i0, j0;
+    cin >> n >> k >> i0 >> j0;
+    for(int i = 1; i <= n; i++)
+        for(int j = 1; j <= k; j++)
+            cin >> maze[i][j];
+    queue<Box> res;
+    res.push({i0, j0, 0});
+    while(!res.empty()){
+        Box box = res.front();
+        res.pop();
+        
+        //ngay từ đầu ô này đã là 1 r
+        if(maze[box.x][box.y] == 1){
+            cout << "1";
+            return 0;
+        }
+        if(box.x == n || box.y == k || box.x == 1 || box.y == 1){
+            cout << box.res + 1;
+            exit(0);
+        }
+        
+        //thêm các ô khác
+        if(maze[box.x - 1][box.y] == 0 && checkSame[box.x - 1][box.y] == 0){
+            res.push({box.x - 1, box.y, box.res + 1});
+            checkSame[box.x - 1][box.y] = 1;
+        }
+        if(maze[box.x + 1][box.y] == 0 && checkSame[box.x + 1][box.y] == 0){
+            res.push({box.x + 1, box.y, box.res + 1});
+            checkSame[box.x + 1][box.y] = 1;
+        }
+        if(maze[box.x][box.y - 1] == 0 && checkSame[box.x][box.y - 1] == 0){
+            res.push({box.x, box.y - 1, box.res + 1});
+            checkSame[box.x][box.y - 1] = 1;
+        }
+        if(maze[box.x][box.y + 1] == 0 && checkSame[box.x][box.y + 1] == 0){
+            res.push({box.x, box.y + 1, box.res + 1});
+            checkSame[box.x][box.y + 1] = 1;
+        }
+    }
+    cout << "-1";
+
+    return 0;
+}

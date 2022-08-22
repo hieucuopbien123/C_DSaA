@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef struct Period{
+    int start;
+    int end;
+}Period;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+    int numberOfPeriods;
+    cin >> numberOfPeriods;
+    Period periods[numberOfPeriods];
+    int endList[2000000];
+    memset(endList, 0, sizeof(endList));
+    for(int i = 0; i < numberOfPeriods; i++){
+        cin >> periods[i].start >> periods[i].end;
+        int period = periods[i].end - periods[i].start;
+        int end = periods[i].end;
+        endList[end] = max(endList[end], period);
+    }
+    for(int i = 1; i < 2000000; i++){
+        if(endList[i] == 0 || endList[i] < endList[i - 1])
+            endList[i] = endList[i - 1];
+    }
+    // cout << "CHECK: ";
+    // for(int i = 0; i < 12; i++){
+        // cout << endList[i] << " ";
+    // }
+    // cout << endl;
+    int res = -1;
+    for(int i = 0; i < numberOfPeriods; i++){
+        int temp = periods[i].end - periods[i].start;
+        // cout << "Temp: " << temp << endl;
+        if(endList[periods[i].start] != 0){
+            temp = temp + endList[periods[i].start];
+            // cout << "Plus with endlist " << i << " " << endList[i] << endl;
+            if(temp > res){
+                res = temp;
+                // cout << "Res" << res << endl;
+            }
+        }
+    }
+    cout << res;
+    
+
+    return 0;
+}
+/*
+bruteforce: for 2 vòng chạy lấy 2 mốc check k overlap thì tính tổng 2 cái ra kết quả
+nếu chỉ có 1 mốc tg=> -1
+nếu có 2 mốc-> đít mốc này đầu mốc kia mà trùng thì -1
+3 mốc-> mốc 1 lưu, mốc 2 check với mốc 1, mốc 3 check vói 2 mốc lấy cái lớn nhất
+
+=> sắp xếp tăng dần-> duyệt trái qua-> lưu res[i] là thời gian dùng đến period thứ nhất
+duyệt gặp mốc 1 
+*/

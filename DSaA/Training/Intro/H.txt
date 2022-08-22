@@ -1,0 +1,33 @@
+#include <iostream>
+#include <string>
+using namespace std;
+ 
+int main()
+{
+    short int n1; 
+    cin >> n1;
+    string a[n1] = {};
+    for(int i = 0; i < n1; i++){
+        cin >> a[i];
+    }
+    short int n2; 
+    cin >> n2;
+    string temp;
+    int res = 1;
+    for(int i = 0; i < n2; i++){
+        cin >> temp;
+        int check = false;
+        for(int j = 0; j < n1; j++){
+            if(a[j] == temp){
+                check = true;
+                break;
+            }
+        }
+        if(check == false)
+            res = false;
+    }
+    cout << res;
+    
+    
+    return 0;
+}

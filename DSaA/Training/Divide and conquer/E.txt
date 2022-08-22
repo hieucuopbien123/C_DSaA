@@ -1,0 +1,99 @@
+#include <bits/stdc++.h>
+using namespace std;
+long long testcase;
+long long numberOfBarn;
+long long numberOfCow;
+long long maxOfMinDistance;
+
+bool check(long long distance, long long barns[]){
+    /*
+    lưu bò đầu tiên
+    long long số bò
+    for 1 vòng
+        nếu khoảng cách vị trí này so với bò trước >= distance
+            update vị trí bò trước và số bò, update maxOfMinDistance
+        nếu số bò nhiều hơn
+            return true
+    return false
+    */
+    long long currentPos = barns[0];
+    long long cowNum = 1;
+    // cout << "check" << endl;
+    for(long long i = 1; i < numberOfBarn; i++){
+        long long curDis = barns[i] - currentPos;
+        // cout << "curPos: " << currentPos << " i:" << i << " curDis:" << curDis << " barn:" << barns[i] << endl;
+        if(curDis >= distance){
+            currentPos = barns[i];
+            cowNum++;
+            // cout << "cowNum now: " << cowNum << endl;
+            if(curDis < maxOfMinDistance){
+                maxOfMinDistance = curDis;
+                // cout << "maxOfMinDistance: " << maxOfMinDistance << endl;
+            }
+            if(cowNum >= numberOfCow){
+                // cout << "cowNum > numberOfCow" << endl;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+int main()
+{
+    ios::sync_with_stdio(0);
+    cin.tie(0); cout.tie(0);
+    cin >> testcase;
+    while(testcase--){
+        // cout << "testcase: " << testcase + 1 << endl;
+        cin >> numberOfBarn >> numberOfCow;
+        long long barns[numberOfBarn];
+        for(long long i = 0; i < numberOfBarn; i++){
+            cin >> barns[i];
+        }
+        maxOfMinDistance = 999999999;
+        sort(barns, barns + numberOfBarn);
+        long long high = barns[numberOfBarn - 1] - barns[0];
+        long long low = 99999;
+        for(long long i = 1; i < numberOfBarn; i++){
+            if(barns[i] - barns[i - 1] < low)
+                low = barns[i] - barns[i - 1];
+        }
+        // cout << "Low: " << low << " high: " << high << endl;
+        long long mid;
+        //lấy mid là kc 2 con bò ít nhất phải đạt được
+        //tìm ra số bò bằng cách duyệt
+        //nếu số bò có được ít hơn thực tế, khoảng cách phải nhỏ lại-> giảm right xuống-> đến khi số bò bằng or lớn
+        //hơn thì tăng left lên-> đến 1 lúc đúng giá trị r ta vẫn tăng lên thì về sau lấy right khi nhỏ hơn left
+        /*
+        while(right >= left){
+            tính mid
+            check mid
+                if(true)
+                    left tăng
+                if false 
+                    right giảm
+            maxOfMinDistance = 999;
+        printAn => duyệt và điền vào số bò để lấy kết quả
+        }
+        */
+        while(high >= low){
+            mid = (low + high)/2;
+            // cout << "low: " << low << " high:" << high << endl;
+            // cout << "mid: " << mid << endl;
+            if(check(mid, barns)){
+                // cout << "check true" << endl;
+                low = mid + 1;
+            }else{
+                // cout << "check false" << endl;
+                high = mid - 1;
+            }
+        }
+        // cout << "answer now" << endl;
+        maxOfMinDistance = 999999999;
+        check(high, barns);
+        cout << maxOfMinDistance << "\n";
+    }
+    
+    return 0;
+}

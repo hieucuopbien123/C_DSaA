@@ -1,0 +1,25 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() 
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+    long long numberOfTestCase;
+    cin >> numberOfTestCase;
+    long long x;
+    long long k;
+    while(numberOfTestCase--){
+        cin >> x >> k;
+        if((x - (k*(k-1))/2) % k == 0){
+            // cout << "YES" << endl;
+            printf("YES\n");
+        }
+        // else cout << "NO" << endl;
+        else printf("NO\n");
+    }
+    
+    
+    return 0;
+}
+

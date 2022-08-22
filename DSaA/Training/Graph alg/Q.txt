@@ -1,0 +1,76 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+#include <string.h>
+using namespace std;
+int N,M;
+vector<vector<int>> adl,adl1;
+int check[100001] = {0};
+int disc[100001] = {0};
+int low[100001];
+int time = 0;
+long long count_bridge = 0, count_v = 0, res = 0;
+
+//tìm các bridge
+void dfs_bridge(int u, int parent){
+	int child = 0;
+	check[u] = 1;
+	disc[u] = time + 1;
+	low[u] = ++time;
+	for(int v: adl[u]){
+		if(!check[v]){
+			child++;
+			dfs_bridge(v, u);
+			low[u] = min(low[u], low[v]);
+			if (low[v] > disc[u]){
+				count_bridge++;
+				//nếu là bridge thì tăng count để tính xem có bao nhiều bridge và thêm vào 
+				//tree=> chú ý thêm 2 chiều
+				adl1[u].push_back(v);
+				adl1[v].push_back(u);
+			}
+		}
+		else if(v != parent)
+			low[u]=min(low[u],disc[v]);
+	}
+}
+
+void dfs_com(int i){
+	count_v++;
+	check[i] = 1;
+	for(int j: adl1[i]){
+		if(!check[j]){
+			check[j] = 1;
+			dfs_com(j);
+		}
+	}
+}
+
+int main(){
+	ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cin >> N >> M;
+    adl.resize(N + 1);
+    adl1.resize(N + 1);
+    int u, v;
+    for(int i = 1; i <= M; i++){
+    	cin >> u >> v;
+    	adl[u].push_back(v);
+    	adl[v].push_back(u);
+	}
+	for(int i = 1; i <= N; i++)
+		low[i]=INT_MAX;
+	for(int i = 1; i <= N; i++){
+		if(!check[i]) dfs_bridge(i, -1);
+	}
+	memset(check, 0, sizeof(check));
+	for(int i = 1; i <= N; i++){
+		if (!check[i]){
+			dfs_com(i);
+			res += (count_v - 2)*(count_v - 1)/2;
+			count_v=0;
+		}
+	}
+	cout << res;
+    return 0;
+}

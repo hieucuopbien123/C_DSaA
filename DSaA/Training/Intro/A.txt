@@ -1,0 +1,20 @@
+/*
+Instead of adding directly two number, you can add the first 18
+number of A and B together to avoid overflow, then add the last digit
+of A and B together
+*/
+#include <iostream>
+using namespace std;
+unsigned long long a, b, a1, b1, a2, b2, c, co;
+int main()
+{
+    cin >> a >> b;
+    a1 = a / 10; // the first part of a
+    a2 = a % 10; // the last digit of a
+    b1 = b / 10; // the first part of a
+    b2 = b % 10; // the last digit of b
+    c = (a2 + b2) % 10;
+    co = (a2 + b2) / 10;
+    if (a1 + b1 + co != 0) cout << a1 + b1 + co;
+    cout << c;
+}

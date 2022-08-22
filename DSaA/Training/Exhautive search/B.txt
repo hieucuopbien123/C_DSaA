@@ -1,0 +1,54 @@
+#include <iostream>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+int numberOfStuff = 0, maxQuantity = 0;
+typedef struct Stuff{
+    int value;
+    int mass;
+}Stuff;
+Stuff stuffs[31];
+int maxValue = 0;
+int currentValue = 0;
+int minMass = 999999;
+Stuff boundCheck[31];
+
+bool compare(Stuff a, Stuff b){
+    return a.mass > b.mass;
+}
+int start = 1;
+
+//bài này mở ra cách dùng backtrack cho nh dạng hơn
+void Try(int k)
+{
+    for(int i = start; i <= numberOfStuff; i++){
+        if(maxQuantity - stuffs[i].mass >= 0){
+            maxQuantity -= stuffs[i].mass;
+            currentValue += stuffs[i].value;
+            if(maxQuantity - minMass < 0 || i == numberOfStuff)
+                maxValue = max(maxValue, currentValue);
+            else{
+                start = i + 1;
+                Try(k + 1);
+            }
+            maxQuantity += stuffs[i].mass;
+            currentValue -= stuffs[i].value;
+        }
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+    cin >> numberOfStuff >> maxQuantity;
+    for(int i = 1; i <= numberOfStuff; i++){
+        cin >> stuffs[i].mass >> stuffs[i].value;
+    }
+    sort(stuffs + 1, stuffs + numberOfStuff + 1, compare);
+    minMass = stuffs[numberOfStuff].mass;
+    Try(1);
+    cout << maxValue;
+
+    return 0;
+}

@@ -1,0 +1,109 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+    int numberOfWarehouses;
+    int L1, L2;
+    cin >> numberOfWarehouses >> L1 >> L2;
+    int amountOfGold[numberOfWarehouses + 1];
+    for(int i = 1; i <= numberOfWarehouses; i++){
+        cin >> amountOfGold[i];
+    }
+    int res[numberOfWarehouses + 1];
+    int final = -1;
+    int maxVal = 0;
+    for(int i = 1; i <= numberOfWarehouses; i++){
+        // cout << "i: " << i << endl;
+        //xây base case
+        if(i <= L1){
+            res[i] = amountOfGold[i];
+            // cout << "RES: " << res[i] << endl;
+            continue;
+        }
+        if(i == L1 + 1){
+            res[i] = amountOfGold[i] + amountOfGold[i - L1];
+            // cout << "RES: " << res[i] << endl;
+            continue;
+        }
+        //nếu k là base case, đi cha từ con
+        maxVal = max(maxVal, res[i - L1]);
+        // int temp = -1;
+        // cout << i - L2 << " A " << i - L1 << endl;
+        // for(int j = i - L2; j <= i - L1; j++){
+        //     //nếu là cái cần-> cập nhập temp
+        //     if(j > 0){
+        //         // cout << "add: " << res[j] << " + " << amountOfGold[i] << endl;
+        //         temp = max(temp, res[j] + amountOfGold[i]);
+        //     }
+        //     // cout << "Temp: " << temp << endl;
+        //     //nếu k thì break;
+        // }
+        res[i] = amountOfGold[i] + maxVal;
+        final = max(final, res[i]);
+        // cout << "RES: " << res[i] << endl;
+    }
+    cout << final;
+
+    return 0;
+}
+/* Tư duy từ lúc chưa có hướng gì tới hoàn thành: mất nhiều nhất 2h, code chỉ mất 30p là quá nh
+Giả sử a[3] là tối ưu subset max dùng đến 3 phần tử đầu tiên r or kết thúc tại phần tử thứ 3
+=> xây a[4]:
+lấy tổng tất cả các phần tử từ 4 với L1->L2(2->3)
+VD: 2 2 2 1 2 5 11 1 1 1 1
+2 2 10 9 2 8 2 với L1 = 2 => 2 + 9 + 8 là nhất, 10 max k làm đc j
+
+brute force k được, bài này backtrack được
+
+L1 = L2:
+vòng for duyệt mọi Th và lấy tổng ez
+L2 = L1 + 1 => backtrack
+
+Nếu chỉ có 1 phần tử-> chính nó:
+2 phần tử-> duyệt-> phần tử 2 nhỏ hơn L1 thì bỏ, lớn hơn or bằng L1 thì lấy
+3 phần tử duyệt-> 2 nhỏ hơn L1 thì bỏ, 3 nhỏ hơn L1 thì bỏ tiếp
+2 nhỏ hơn L1 thì bỏ, 3 lớn hơn L1 thì lấy
+2 lớn hơn L1 thì lấy, lấy cả 3 luôn
+
+mảng 2 chiều [m][n] là dùng đến max là m khoảng cách với n phần tử đầu tiên với giá trị là lớn nhất
+VD:
+[2][0] = 0  => 0
+[3][0] = 0  => 0
+[2][1] = 3  => 3
+[3][1] = 3  => 3
+[2][2] = 5  => 5
+[3][2] = 5  => 5
+[2][3] = 3 + 9 hay 5 = 12  => 9
+[3][3] = 9 + 3 or 5 = 12  => 9
+[2][4] = 3 + 9 hay 5 + 6 = 12  => 6
+[3][4] = 3 + 9 hay 5 + 6 hay 3 + 6 = 12  => 6
+[2][5] = 3 + 9 + 7 hay 5 + 6 = 19  => 7
+[3][5] = 3 + 9 + 7 hay 3 + 6 hay 5 + 7  => 7
+[2][6] = 3 + 9 + 7 hay 5 + 6 + 4
+[3][6] = 3 + 9 + 7 hay 5 + 6 + 4 hay 3 + 6 + 4 hay 3 + 9 + 4 hay 5 + 7 => 4
+
+tính [3][6] với 4 và các giá trị cũ: lấy [2][6], lấy [3][4] và [3][3]
+cấu trúc con tối ưu: muốn tính [3][6] thì phải tính được [3][3] và [3][4] vì muốn có [3][6] chắc chắn phải cộng từ 2 cái đó
+Để xây [2][6] dùng đến distance bằng 2 với 6 phần tử đầu tiên-> ta dùn..
+
+Formula: giả sử L1, L2 từ 2,3,4
+[3][6] = [3][4] + [3][3] + [3][2] => k cần mảng 2 chiều
+
+[1] = [1]
+[2] = [2]
+[3] = [3] + [1]
+[4] = max([4] + [2], [4] + [1])
+[5] = max([5] + [3], [5] + [2], [5] + [1])
+[6] = max([6] + [4], [6] + [3], [6] + [2]) 
+
+VD: 10 1 1 1 1 5
+
+chốt: [m][n] với m thuộc [L1;L2] và N là kết thúc bằng phần tử thứ bnh
+=> vì giả sử kết quả ta tìm ra là 1 sợi dây có các node cách nhau 2,3,4 or 5 thì muốn tìm được node cuối, ta phải tìm được node kế trước nó
+thứ ta xây là 1 cái gì gắn liền với phần tử cơ
+n^3*/
+
+

@@ -1,0 +1,52 @@
+#include <iostream>
+#include <stack>
+using namespace std;
+
+int main()
+{
+    stack<int> s1;
+    stack<int> s2;
+    stack<int> s3;
+    int n = 0;
+    cin >> n;
+    int temp;
+    for(int i = 0; i < n; i++){
+        cin >> temp;
+        if(temp < 0)
+            s1.push(temp);
+        else if(temp == 0)
+            s3.push(temp);
+        else
+            s2.push(temp);
+    }
+    if(s1.size() % 2 == 0){
+        s3.push(s1.top());
+        s1.pop();
+    }
+    if(s2.size() == 0){
+        s2.push(s1.top());
+        s1.pop();
+        s2.push(s1.top());
+        s1.pop();
+    }
+    cout << s1.size() << " ";
+    while(!s1.empty()){
+        cout << s1.top() << " ";
+        s1.pop();
+    }
+    cout << "\n";
+    cout << s2.size() << " ";
+    while(!s2.empty()){
+        cout << s2.top() << " ";
+        s2.pop();
+    }
+    cout << "\n";
+    cout << s3.size() << " ";
+    while(!s3.empty()){
+        cout << s3.top() << " ";
+        s3.pop();
+    }
+    cout << "\n";
+
+    return 0;
+}

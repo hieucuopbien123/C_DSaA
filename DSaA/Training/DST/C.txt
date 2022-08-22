@@ -1,0 +1,50 @@
+#include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <vector>
+// #include <pair>
+#include <algorithm>
+using namespace std;
+int testNum = 0;
+int L = 0, C = 0;
+vector<pair<int, int>> before, after;
+int res[2001][2001];
+int maxVal = 0;
+
+int main()
+{
+    int temp;
+    cin >> testNum;
+    while(testNum--)
+    {
+        cin >> L >> C;
+        for(int i = 0; i < L; i++){
+            for(int j = 0; j < C; j++){
+                cin >> temp;
+                if(temp == 1)
+                    before.push_back(pair<int, int>(i, j));
+            }
+        }
+        for(int i = 0; i < L; i++){
+            for(int j = 0; j < C; j++){
+                cin >> temp;
+                if(temp == 1)
+                    after.push_back(pair<int, int>(i, j));
+            }
+        }
+        for(vector<pair<int,int>>::iterator i = before.begin(); i != before.end(); i ++){
+            for(vector<pair<int,int>>::iterator j = after.begin(); j != after.end(); j++){
+                int u = j->first - i->first;
+                int v = j->second - i->second;
+                maxVal = max(maxVal, ++res[u + 1001][v + 1001]);
+            }
+        }
+        cout << maxVal << endl;
+        maxVal = 0;
+        before.clear();
+        after.clear();
+        memset(res, 0, sizeof(res));
+    }
+    
+    return 0;
+}

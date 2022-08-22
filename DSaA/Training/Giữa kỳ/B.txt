@@ -1,0 +1,133 @@
+#include <bits/stdc++.h>
+using namespace std;
+int numberOfParanthesis = 0, maxDepth = 0;
+vector<char> stringParathesis;
+vector<char> onlyQuestionMark;
+char candidateParanthesis[2];
+int numberOfWay = 0;
+int depth = 0;
+int lastPositionForDepth = -1;
+int numberOfClose = 0;
+int numberOfOpen = 0;
+
+void Try(int k)
+{
+    for(int i = 0; i < 2; i++){
+        stringParathesis.at(onlyQuestionMark.at(k - 1)) = candidateParanthesis[i];
+        int saveCurrentDepthForBacktrack = depth;
+        int saveLastPositionForDepthForBackTrack = lastPositionForDepth;
+        if(candidateParanthesis[i] == '(')  numberOfOpen++;
+        if(candidateParanthesis[i] == ')')  numberOfClose++;
+        // cout << numberOfMark << " and " << onlyQuestionMark.size() - k << " " << k << endl;
+        // cout << "depth before: " << depth << endl;
+        for(int j = lastPositionForDepth + 1; j <= onlyQuestionMark.at(k - 1); j++){
+            if(stringParathesis.at(j) == '('){
+                depth++;
+            }else{
+                depth--;
+            }
+        }
+        lastPositionForDepth = onlyQuestionMark.at(k - 1);
+        // cout << i << " " << depth - (numberOfParanthesis - 1 - lastPositionForDepth) << endl;
+        // cout << "stringParathesis1: " << depth << " ";
+        // for(int test = 0; test < stringParathesis.size(); test++){
+        //     cout << stringParathesis.at(test);
+        // }cout << endl;
+        // cout << "depth: " << depth << " " << k << " and " << candidateParanthesis[i] << endl;
+        if(k == onlyQuestionMark.size()){
+            // cout << "stringParathesis: " << depth << " ";
+            // for(int test = 0; test < stringParathesis.size(); test++){
+            //     cout << stringParathesis.at(test);
+            // }
+            // cout << endl;
+            for(int j = lastPositionForDepth + 1; j <= stringParathesis.size() - 1; j++){
+                if(stringParathesis.at(j) == '('){
+                    depth++;
+                }else{
+                    depth--;
+                }
+            }
+            if(depth == 0){
+                int depth2 = 0;
+                int currentMaxDepth = 0;
+                bool unresonableParanthesis = false;
+                for(int j = 0; j < stringParathesis.size(); j++){
+                    if(stringParathesis.at(j) == '('){
+                        depth2++;
+                        if(depth2 > currentMaxDepth){
+                            currentMaxDepth = depth2;
+                        }
+                    }
+                    else{
+                        depth2--;
+                        if(depth2 < 0){
+                            unresonableParanthesis = true;
+                            break;
+                        }
+                    }
+                }
+                //vẫn có unresonableParanthesis ở đây vì lần cuối biết đâu nó đóng ngoặc là sai thì sao
+                if(unresonableParanthesis == true){
+                    
+                }else if(currentMaxDepth <= maxDepth){
+                    numberOfWay++;
+                }
+            }
+        }else if(depth >= 0 &&  onlyQuestionMark.size() - k >= abs((numberOfOpen - numberOfClose))){
+            // cout << "Run herer" << endl;
+            Try(k + 1);
+        }
+        depth = saveCurrentDepthForBacktrack;
+        lastPositionForDepth = saveLastPositionForDepthForBackTrack;
+        if(candidateParanthesis[i] == '(')  numberOfOpen--;
+        if(candidateParanthesis[i] == ')')  numberOfClose--;
+    }
+    
+    // depth
+    // for ) or (
+    //     thế vị trí stringParathesis[onlyQuestionMark] bằng nó
+    //     int tempDepth = depth
+    //     for các phần tử của string cuối đến vị trí cái [onlyQuestionMark]
+    //         tính depth luôn
+    //     if onlyQuestionMark size = k
+    //         if depth khác 0 thì bỏ qua
+    //         depth, (max)
+    //         for các phần tử
+    //             if gặp (
+    //                 cộng depth lên
+    //                 nếu depth lớn hơn max depth
+    //                     cập nhập max 
+    //             if gặp )
+    //                 depth trừ đi
+    //                 nếu depth âm
+    //                     break vòng for và gán check = false
+    //         else
+    //             if max nhỏ hơn or bằng maxDepth
+    //                 số cách ++
+    //             else
+    //                 bỏ qua
+    //     else if depth > 0
+    //         Try(k + 1)
+    //     quay lui depth = tempDepth
+}
+  
+int main()
+{
+    candidateParanthesis[0] = '(';
+    candidateParanthesis[1] = ')';
+    cin >> numberOfParanthesis >> maxDepth;
+    for(int i = 0; i < numberOfParanthesis; i++){
+        char tempChar;
+        cin >> tempChar;
+        stringParathesis.push_back(tempChar);
+        if(tempChar == '?'){
+            onlyQuestionMark.push_back(i);
+        }
+        if(tempChar == ')') numberOfClose++;
+        if(tempChar == '(') numberOfOpen++;
+    }
+    Try(1);
+    cout << numberOfWay;
+    
+    return 0;
+}

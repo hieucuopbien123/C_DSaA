@@ -1,0 +1,58 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <utility>
+using namespace std;
+
+typedef struct var{
+    int x;
+    int y;
+}var;
+
+bool compare(var x, var y){
+    if(x.y == y.y){
+        return x.x < y.x;
+    }
+    return x.y < y.y;
+}
+
+int main()
+{
+    int num;
+    cin >> num;
+    cin.ignore();
+    var arr1[num];
+    var arr2[num];
+    int res[num];
+    for(int i = 0; i < num; i++){
+        cin >> arr1[i].y;
+        arr1[i].x = i;
+        arr2[i].x = i;
+        arr2[i].y = arr1[i].y;
+    }
+    sort(arr2, arr2 + num, compare);
+    // for(int i = 0; i < num; i++){
+        // cout << arr2[i].x << " K " << arr2[i].y << endl;
+    // }
+    int index = num - 1;
+    for(int i = num - 1; i >= 0; i--){
+        // cout << arr1[i].y << " " << index << " " << arr2[index].y << endl;
+        if(index == -1)
+            break;
+        if(arr1[i].y > arr2[index].y){
+            continue;
+        }else{
+            auto temp = lower_bound(arr2, arr2 + index, arr1[i], compare);
+            // cout << "Find " << arr1[i].y << " at: " << (*temp).x << endl;
+            while(arr2 + index + 1 != temp){
+                res[(*(arr2 + index)).x] = -1 + i - (*(arr2 + index)).x;
+                // cout << "We can cal at " << (*(arr2 + index)).x <<
+                        // " with " << res[(*(arr2 + index)).x] << endl;
+                index--;
+            }
+        }
+    }
+    for(int i = 0; i < num; i++)
+        cout << res[i] << " ";
+    return 0;
+}

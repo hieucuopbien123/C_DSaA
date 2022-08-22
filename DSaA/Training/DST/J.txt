@@ -1,0 +1,91 @@
+#include <iostream>
+#include <list>
+#include <deque>
+#include <queue>
+using namespace std;
+
+queue<string> split(string str, bool test)
+{
+    int start = (test == true) ? 4 : 3;
+    queue<string> que;
+    for(int i = start; i < str.length(); i++){
+        if(str[i] == '/'){
+            string a = str.substr(start, i - start);
+            start = i + 1;
+            que.push(a);
+        }
+        else if(i == str.length() - 1){
+            string a = str.substr(start, i);
+            que.push(a);
+        }
+    }
+    return que;
+}
+void read(queue<string> que, list<string>* dic)
+{
+    while(!que.empty())
+    {
+        string temp = que.front();
+        if(temp == ".."){
+            dic->pop_back();
+        }else{
+            dic->push_back(temp);
+        }
+        que.pop();
+    }
+}
+void cd(string str, list<string>* dic)
+{
+    if(str[3] == '/'){
+        dic->clear();
+        queue<string> que = split(str, true);
+        while(!que.empty()){
+            string test = que.front();
+            if(test == ".."){
+                dic->pop_back();
+            }else{
+                dic->push_back(test);
+            }
+            que.pop();
+        }
+    }else{
+        queue<string> que = split(str, false);
+        read(que,dic);
+    }
+}
+
+void pwd(list<string> v, int i, int n)
+{
+    list<string>::iterator ite = v.begin();
+    if(v.empty())
+        cout << "/";
+    else{
+        for(ite = v.begin(); ite != v.end(); ite++){
+            cout << "/" << *ite;
+        }
+        cout << "/";
+    }
+    if(i != n - 1)
+        cout << endl;
+    //phải đúng cả vc xuống dòng cuối
+}
+
+int main()
+{
+    int n = 0;
+    cin >> n;
+    cin.ignore(32767, '\n');
+    string arr[n];
+    list<string> v;
+    for(int i = 0; i < n; i++){
+        getline(cin, arr[i]);
+    }
+    for(int i = 0; i < n; i++){
+        if(arr[i][0] == 'p')
+            pwd(v, i, n);
+        else if(arr[i][0] == 'c')
+            cd(arr[i], &v);
+    }
+
+    return 0;
+}

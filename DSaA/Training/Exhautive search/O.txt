@@ -1,0 +1,140 @@
+#include <bits/stdc++.h>
+using namespace std;
+int numberToPermutate = 0, indexK = 0;
+vector<int> arrToPermutate(14); //index từ 1 đến 12
+int numberElementOfArrToPermutate = 0;
+int counter = 0;
+bool alreadyAppear[14];
+int currentPermutation[14];
+
+void Try(int k)
+{
+    for(int i = 1; i <= numberElementOfArrToPermutate; i++){
+        if(alreadyAppear[i] == false){
+            currentPermutation[k] = arrToPermutate[i];
+            alreadyAppear[i] = true;
+            if(k == numberElementOfArrToPermutate){
+                counter++;
+                if(counter == indexK){
+                    for(int j = 1; j <= numberElementOfArrToPermutate; j++){
+                        cout << currentPermutation[j] << " ";
+                    }
+                    exit(0);
+                }
+            }else{
+                Try(k + 1);
+            }
+            alreadyAppear[i] = false;
+        }
+    }
+    
+//     for(các phần tử của arr)
+//         if phần tử đó chưa có
+//             nhét nó vào trong permutation
+            
+//             đánh dấu nó 
+//             if đủ phần tử r
+//                 cộng count lên
+//                 if(count đã điểm)
+//                     in ra và exit
+//             else
+//                 Try(k + 1);
+//             bỏ đánh dấu
+}
+
+int main()
+{
+    memset(alreadyAppear, false, sizeof(alreadyAppear));
+    cin >> numberToPermutate >> indexK;
+    if(numberToPermutate >= 13){
+        numberElementOfArrToPermutate = 13;
+        for(int i = 1; i <= 13; i++){
+            arrToPermutate[i] = numberToPermutate - 13 + i;
+        }
+        for(int i = 1; i <= numberToPermutate - 13; i++){
+            cout << i << " ";
+        }
+        if(indexK > 479001600 && indexK <= 1000000000){
+            const int factorOf11 = 479001600;
+            int integerPart = indexK/factorOf11;
+            int fractPart = indexK%factorOf11;
+            if(fractPart > 0){
+                cout << arrToPermutate[integerPart + 1] << " ";
+                arrToPermutate[integerPart + 1];
+                for(int i = integerPart + 1; i < arrToPermutate.size() - 1; i++){
+                    arrToPermutate[i] = arrToPermutate[i + 1];
+                }
+                numberElementOfArrToPermutate--;
+                indexK = fractPart;
+            }else if(fractPart == 0){
+                cout << arrToPermutate[integerPart] << " ";
+                for(int i = 1; i < arrToPermutate.size(); i++){
+                    if(i != integerPart)
+                        cout << arrToPermutate[i];
+                }
+            }
+        }
+        if(indexK > 39916800 && indexK <= 479001600){
+            const int factorOf11 = 39916800;
+            int integerPart = indexK/factorOf11;
+            int fractPart = indexK%factorOf11;
+            if(fractPart > 0){
+                cout << arrToPermutate[integerPart + 1] << " ";
+                arrToPermutate[integerPart + 1];
+                for(int i = integerPart + 1; i < arrToPermutate.size() - 1; i++){
+                    arrToPermutate[i] = arrToPermutate[i + 1];
+                }
+                numberElementOfArrToPermutate--;
+                indexK = fractPart;
+            }else if(fractPart == 0){
+                cout << arrToPermutate[integerPart] << " ";
+                for(int i = 1; i < arrToPermutate.size(); i++){
+                    if(i != integerPart)
+                        cout << arrToPermutate[i];
+                }
+            }
+        }
+        
+        // if(indexK > 100000000){
+        //     const int factorOf11 = 11*10*9*8*7*6*5*4*3*2*1;
+        //     int integerPart = indexK/factorOf11;
+        //     int fractPart = indexK%factorOf11;
+        //     if(fractPart > 0){
+        //         cout << arrToPermutate[integerPart + 1];
+        //         arrToPermutate[integerPart + 1];
+        //         for(int i = integerPart + 1; i < arrToPermutate.size() - 1; i++){
+        //             arrToPermutate[i] = arrToPermutate[i + 1];
+        //         }
+        //         numberElementOfArrToPermutate--;
+        //         indexK = fractPart;
+        //     }else if(fractPart == 0){
+        //         cout << arrToPermutate[integerPart];
+        //         for(int i = 1; i < arrToPermutate.size(); i++){
+        //             if(i != integerPart)
+        //                 cout << arrToPermutate[i];
+        //         }
+        //     }
+        // }
+        
+        // nếu indexK > 10^8
+        //     a = lấy indexK/(11*10*9*8*7*6*1) 
+        //     b = lấy indexK%(11*10*9*8*7*6*1)
+        //     nếu b > 0
+        //         vị trí tiếp theo phải là index a+1
+        //         in vị trí đó ra, mảng giảm xuống còn 11
+        //         indexK cũng bị giảm
+        //     nếu b = 0
+        //         in ra luôn
+        
+        Try(1);
+    }else{
+        numberElementOfArrToPermutate = numberToPermutate;
+        for(int i = 1; i <= numberElementOfArrToPermutate; i++){
+            arrToPermutate[i] = i;
+        }
+        Try(1);
+        cout << "-1";
+    }
+    
+    return 0;
+}

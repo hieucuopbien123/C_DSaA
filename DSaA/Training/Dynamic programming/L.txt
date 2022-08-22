@@ -1,0 +1,84 @@
+#include<bits/stdc++.h>
+using namespace std;
+int N, K;
+int c[3001];
+int a[3001];
+typedef struct Data{
+    int curCapac;
+    int amountData;
+}Data;
+// vector<Data> amounts[3001];
+int amounts[3001][105] = {};
+
+int main() 
+{
+    cin >> N >> K;
+    for(int i = 1; i <= N; i++){
+        cin >> c[i];
+    }
+    for(int i = 1; i <= N; i++){
+        cin >> a[i];
+    }
+    
+    amounts[1][0] = c[1];
+    for(int i = 2; i <= N; i++){
+        for(int j = 1; j < i; j++){
+            for(int k = 0; k < K; k++){
+                // cout << "j: " << j << " and k: " << k << " and i: " << i << endl;
+                if(amounts[j][k] != 0){
+                    // cout << "Run here" << endl;
+                    if(a[j] + j >= i){
+                        amounts[i][k + 1] = max(amounts[i][k + 1], amounts[j][k] + c[i]);
+                        // cout << "Update: " << i << " " << k+1 << " " << amounts[i][k + 1] << endl;
+                        // cout << "Take from " << j << " " << k << " " << amounts[j][k] << " " << c[i] << endl;
+                    }
+                }
+            }
+        }
+    }
+    
+    int ans = -1;
+    for(int k = 1; k <= K; k++){
+        if(amounts[N][k] > 0 && ans < amounts[N][k]){
+            ans = amounts[N][k];
+        }
+    }
+    cout << ans;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // amounts[1].push_back({0, c[1]});
+    // for(int i = 1; i <= N; i++){
+    //     for(int j = i + 1; j <= i + a[i]; j++){
+    //         if(j <= N){
+    //             for(int k = 0; k < amounts[i].size(); k++){
+    //                 if(amounts[i][k].curCapac + 1 <= K){
+    //                     amounts[j].push_back({amounts[i][k].curCapac + 1, amounts[i][k].amountData + c[j]});
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // int final = 0;
+    // for(int i = 0; i < amounts[N].size(); i++){
+    //     if(amounts[N][i].amountData > final){
+    //         final = amounts[N][i].amountData;
+    //     }
+    // }
+    // cout << final;
+    
+    
+
+    return 0;
+}
+

@@ -1,0 +1,45 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+    int a;
+    cin >> a;
+        cin.ignore(32767, '\n');
+    
+    for(int i = 0; i < a; i++){
+        string temp;
+        getline(cin, temp);
+        int var = 0;
+        for(int j = 0; j < temp.length(); j ++)
+        {
+            switch(temp[j]){
+                case 'a' || 'd' || 'g' || 'j' || 'm' || 'p' || 't' || 'w' || ' ':
+                    var += 1;
+                    break;
+                case 'c':
+                case 'f':
+                case 'i':
+                case 'l':
+                case 'o':
+                case 'r':
+                case 'v':
+                case 'y':
+                    var += 3;
+                    break;
+                case 's':
+                case 'z':
+                    var += 4;
+                    break;
+                default: 
+                    var += 2;
+                    break;
+            }
+        }
+        cout << "Case #" << i+1 << ": " << var << "\n";
+    }
+
+    return 0;
+}
+ 

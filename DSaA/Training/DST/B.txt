@@ -1,0 +1,77 @@
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+using namespace std;
+#define MAX 1000
+
+typedef struct Des{
+    long pos;
+    long package;
+}Des;
+
+bool compare(Des a, Des b){
+    return a.pos < b.pos;
+}
+
+int main()
+{
+    int n = 0;
+    long k = 0;
+    unsigned long long res = 0;
+    cin >> n >> k;
+    Des arrPos[MAX]; int iPos = 0;
+    Des arrNeg[MAX]; int iNeg = 0;
+    long long pos, package;
+    for(int i = 0; i < n; i++){
+        cin >> pos >> package;
+        res += (package/k)*abs(pos);
+        package %= k;
+        if(package != 0){
+            if(pos >= 0){
+                arrPos[iPos].pos = pos;
+                arrPos[iPos++].package = package;
+            }
+            else{
+                arrNeg[iNeg].pos = pos*(-1);
+                arrNeg[iNeg++].package = package;
+            }
+        }
+    }
+    sort(arrPos, arrPos + iPos, compare);
+    sort(arrNeg, arrNeg + iNeg, compare);
+
+    int offset = k;
+    while(iPos != 0){
+        if(offset == k){
+            res += arrPos[iPos - 1].pos;
+        }
+        if(arrPos[iPos - 1].package == offset){
+            offset = k;
+            iPos--;
+        }else if(arrPos[iPos - 1].package > offset){
+            arrPos[iPos - 1].package -= offset;
+            offset = k;
+        }
+        else
+            offset -= arrPos[--iPos].package;
+    }
+    
+    offset = k;
+    while(iNeg != 0){
+        if(offset == k){
+            res += arrNeg[iNeg - 1].pos;
+        }
+        if(arrNeg[iNeg - 1].package == offset){
+            offset = k;
+            iNeg--;
+        }else if(arrNeg[iNeg - 1].package > offset){
+            arrNeg[iNeg - 1].package -= offset;
+            offset = k;
+        }
+        else
+            offset -= arrNeg[--iNeg].package;
+    }
+    cout << res*2;
+
+    return 0;
+}

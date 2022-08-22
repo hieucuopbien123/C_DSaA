@@ -1,0 +1,5 @@
+Đáp án chuẩn nhất tìm trên online GDB trước. Còn nhiều bài hay và kiến thức C++ trong GDB
+
+Nếu codeforce chưa xóa thì đăng nhập bằng nick hieu.nt194761 có url:
+https://codeforces.com/group/Ir5CI6f3FD/contests?fbclid=IwAR0VqK12dGhl9sUF9RVkzcMrmegEgOjYCjpYFne6lJezD-rwdtMmq5Q7ygQ
+

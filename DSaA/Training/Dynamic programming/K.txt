@@ -1,0 +1,63 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    unsigned long long numberOfBranches;
+    unsigned long long numberOfOutlets;
+    unsigned long long branches[101];
+    cin >> numberOfBranches >> numberOfOutlets;
+    for(unsigned long long i = 1; i <= numberOfBranches; i++){
+        cin >> branches[i];
+    }
+    unsigned long long res[numberOfBranches + 1][numberOfOutlets + 1];
+    memset(res, 0, sizeof(res));
+    for(unsigned long long i = 1; i <= numberOfBranches; i++){
+        for(unsigned long long j = 1; j <= numberOfOutlets; j++){
+            //outlet là j
+            //branch có giá trị là mảng
+            //xây base case
+            /*Nếu số outlet k bằng số nhóm của hiện tại thì là 0
+            Nếu đang là nhóm 1 mà k chia hết cho nhóm 1 thì cx là 0
+            */
+            // cout << "i = " << i << "; j = " << j << endl;
+            if(j < branches[i]){
+                res[i][j] = 0;
+                // cout << "Res: " << res[i][j] << endl;
+                continue;
+            }
+            if(i == 1){
+                if(j % branches[i] != 0){
+                    res[i][j] = 0;
+                    // cout << "Res: " << res[i][j] << endl;
+                }
+                else{
+                    res[i][j] = 1;
+                    // cout << "Res: " << res[i][j] << endl;
+                }
+                continue;
+            }
+            //nếu k là base case, xây từ con
+            //ở đây số outlet lớn hơn số phần tư nhóm hiện tại và bắt đầu từ nhóm số 2
+            if(j - branches[i] >= branches[i]){
+                res[i][j] += res[i][j - branches[i]];
+                res[i][j] %= 1000000007;
+                // cout << i << " " << j - branches[i] << endl;
+                // cout << "Add: res[i][j - branches[i]] = " << res[i][j - branches[i]] << endl;
+            }
+            if(j - branches[i] >= branches[i - 1]){
+                res[i][j] += res[i - 1][j - branches[i]];
+                res[i][j] %= 1000000007;
+                // cout << i - 1 << " " << j - branches[i] << endl;
+                // cout << "Add: res[i][j - branches[i]] = " << res[i - 1][j - branches[i]] << endl;
+            }
+            // cout << "Res: " << res[i][j] << endl;
+        }
+    }
+    cout << res[numberOfBranches][numberOfOutlets];
+    
+    
+    return 0;
+}
+
+

@@ -1,0 +1,42 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define PI 3.14159265359
+long numberOfTestcases = 0, numberOfPies = 0, numberOfFriends = 0;
+double radiusOfPie[10001];
+
+double calculate(double leftBound, double rightBound)
+{
+    if(rightBound - leftBound <= 1e-8)
+        return rightBound;
+        
+    double mid = (rightBound + leftBound)/2;
+    double currentVolume = PI*mid*mid;
+    int currentNumberOfPeople = 0;
+    for(int i = 0; i < numberOfPies; i++)
+        currentNumberOfPeople += PI*radiusOfPie[i]*radiusOfPie[i]/currentVolume;
+        
+    if(currentNumberOfPeople >= numberOfFriends)
+        return calculate(mid, rightBound);
+    else
+        return calculate(leftBound, mid);
+}
+
+int main()
+{
+    cin >> numberOfTestcases;
+    while(numberOfTestcases--){
+        cin >> numberOfPies >> numberOfFriends;
+        numberOfFriends++;
+	    double rightBound = 0, leftBound = 0;
+        for(int i = 0; i < numberOfPies; i++){
+            cin >> radiusOfPie[i];
+            if(radiusOfPie[i] > rightBound)
+                rightBound = radiusOfPie[i];
+        }
+	    double finalRadius = calculate(leftBound, rightBound);
+        
+        double volume = PI*finalRadius*finalRadius;
+        cout << fixed << setprecision(6) << volume << endl;
+    }
+    return 0;
+}

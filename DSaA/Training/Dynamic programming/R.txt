@@ -1,0 +1,23 @@
+#include <bits/stdc++.h> 
+using namespace std;
+
+int main()
+{
+    int numberOfEles = 0;
+    cin >> numberOfEles;
+    int arr[numberOfEles];
+    for(int i = 0; i < numberOfEles; i++){
+        cin >> arr[i];
+    }
+    int res = -9999;
+    int curMax = 0;//maxsub kết thúc tại vị trí thứ i-th
+    for(int i = 0; i < numberOfEles; i++){
+        curMax = max(curMax + arr[i], arr[i]);
+        if(curMax > res){
+            res = curMax;
+        }
+    }
+    cout << res;
+
+    return 0;
+}

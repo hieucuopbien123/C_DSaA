@@ -1,0 +1,60 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int MAX = 1e5 + 5;
+int n, m;
+vector< vector<int> > vt1;
+vector< vector<int> > vt2;
+stack<int> st;
+int cnt = 0;
+int vst[MAX];
+int input(){
+    ios_base::sync_with_stdio(0);
+    cin.tie(0); cout.tie(0);
+    cin >> n >> m;
+    vt1.resize(n + 1);
+    vt2.resize(n + 1);
+    for(int i = 0; i < m; i++){
+        int tp1, tp2;
+        cin >> tp1 >> tp2;
+        vt1[tp1].push_back(tp2);
+        vt2[tp2].push_back(tp1);
+    }
+}
+void dfs1(int x){
+    vst[x] = 1;
+    for(int v : vt1[x]){
+        if(!vst[v]){
+            dfs1(v);
+        }
+    }
+    st.push(x);
+}
+void dfs2(int u){
+    vst[u] = 1;
+    for(int v : vt2[u]){
+        if(!vst[v]){
+            dfs2(v);
+        }
+    }
+}
+void solve(){
+    for(int v = 1; v <= n; v++){
+        if(!vst[v]){
+            dfs1(v);
+        }
+    }
+    memset(vst, 0, sizeof(vst));
+    while(!st.empty()){
+        int u = st.top(); st.pop();
+        if(!vst[u]){
+            cnt++;
+            dfs2(u);
+        }
+    }
+    cout << cnt << endl;
+}
+int main(){
+    input();
+    solve();
+    return 0;
+}

@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef struct Edge{
+    int v, weight;
+}Edge;
+vector<Edge> adj[100001];
+vector<int> res(100001, 9999);
+vector<bool> isVisited(100001, false);
+
+void shortestPathByBFS(int a)
+{
+    queue<int> que;
+    que.push(a);
+    res[a] = 0;
+    while(!que.empty()){
+        int v = que.front();
+        que.pop();
+        for(int i = 0; i < adj[v].size(); i++){
+            int curV = adj[v][i].v;
+            if(res[curV] > res[v] + adj[v][i].weight){
+                res[curV] = res[v] + adj[v][i].weight;
+                que.push(curV);
+            }
+        }
+    }
+}
+
+int main() 
+{
+    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    int numberOfNodes, numberOfEdges;
+    cin >> numberOfNodes >> numberOfEdges;
+    int a, b, c;
+    for(int i = 1; i <= numberOfEdges; i++){
+        cin >> a >> b >> c;
+        adj[a].push_back({b, c});
+    }
+    cin >> a >> b;
+    
+    shortestPathByBFS(a);
+    if(res[b] != 9999)
+        cout << res[b];
+    else
+        cout << -1;
+        
+    return 0;
+}

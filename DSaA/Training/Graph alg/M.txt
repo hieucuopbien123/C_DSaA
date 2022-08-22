@@ -1,0 +1,68 @@
+#include<bits/stdc++.h>
+using namespace std;
+using ull = unsigned long long;
+
+typedef struct Union_Find {
+    vector<int> iParent;
+    Union_Find(int n){
+        iParent = vector<int>(n + 1);
+        for(int i = 1; i <= n; i++){
+            iParent[i] = i;
+        }
+    }
+    int find(int x){
+        if(iParent[x] == x){
+            return x;
+        } else {
+            iParent[x] = find(iParent[x]);
+            return iParent[x];
+        }
+    }
+    void unite(int x, int y){
+        iParent[find(x)] = find(y);
+    }
+}Union_Find;
+
+typedef struct edge{
+    ull u, v, weight;
+}edge;
+
+bool Edge_comp(const edge &a, const edge &b){
+    return a.weight < b.weight;
+}
+vector<edge> MST(int n, vector<edge> edges){
+    Union_Find uf(n + 1);
+    sort(edges.begin(), edges.end(), Edge_comp);
+    vector<edge> res;
+    for(int i = 0; i < edges.size(); i++){
+        ull u = edges[i].u;
+        ull v = edges[i].v;
+        if(uf.find(u) != uf.find(v)){
+            uf.unite(u, v);
+            res.push_back(edges[i]);
+        }
+    }
+    return res;
+}
+
+vector<edge> adj;
+
+int main() 
+{
+    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    int numberOfNodes, numberOfEdges;
+    cin >> numberOfNodes >> numberOfEdges;
+    ull a, b, c;
+    for(int i = 0; i < numberOfEdges; i++){
+        cin >> a >> b >> c;
+        adj.push_back({a, b, c});
+    }
+    vector<edge> mst = MST(numberOfNodes, adj);
+    ull  weight = 0;
+    for(int i = 0; i < mst.size(); i++){
+        weight += mst[i].weight;
+    }
+    cout << weight;
+    
+    return 0;
+}

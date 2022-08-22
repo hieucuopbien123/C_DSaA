@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+unsigned long long cal(unsigned long long a1, unsigned long long a2, unsigned long long b)
+{
+    if(a2 == 1){
+        return a1;
+    }
+    if(a2%2 == 1)
+        return (2*cal(a1, a2/2, b)%b + a1)%b;
+    else
+        return 2*(cal(a1, a2/2, b)%b)%b;
+}
+
+unsigned long long res(unsigned long long a, unsigned long long b)
+{
+    unsigned long long result = 0;
+    unsigned long long a1 = a;
+    unsigned long long a2 = (a + 1);
+    unsigned long long a3 = (a + 2);
+    if(a1%3 == 0)
+        a1 = a1/3;
+    else if(a2%3 == 0)
+        a2 = a2/3;
+    else if(a3%3 == 0)
+        a3 = a3/3;
+        
+    if(a1%2 == 0)
+        a1 = a1/2;
+    else if(a2%2 == 0)
+        a2 = a2/2;
+    else if(a3%2 == 0)
+        a3 = a3/2;
+    unsigned long long b1 = cal(a1, a2, b);
+    unsigned long long b2 = cal(b1, a3, b);
+    return b2;
+}
+  
+int main()
+{
+    unsigned long long n;
+    cin >> n;
+    unsigned long long a, b;
+    while(n--){
+        cin >> a >> b;
+        cout << res(a, b) << endl;
+    }
+    
+    return 0;
+}
+

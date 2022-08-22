@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() 
+{
+    int currencies[6] = {1, 5, 10, 50, 100, 500};
+    int cost;
+    cin >> cost;
+    int amountToPayback = 1000 - cost;
+    int counter = 0;
+    for(int i = 5; i >= 0; i--){
+        while(amountToPayback >= currencies[i]){
+            amountToPayback -= currencies[i];
+            counter++;
+        }
+    }
+    cout << counter;
+
+    
+    return 0;
+}

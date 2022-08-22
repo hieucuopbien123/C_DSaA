@@ -1,0 +1,65 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define MAX 200004
+
+long numberOfNodes;
+typedef struct Edge{
+    int node; 
+    long long weight;
+}Edge;
+vector <Edge> adj[MAX];
+vector<bool> isVisited(MAX, false);
+long long dist[MAX];
+long long res;
+int maxLengthCount1;
+
+void bfs(int u){
+    queue <int> que;
+    isVisited [u] = true;
+    dist[u] = 0;
+    que.push(u);
+    while(!que.empty()){
+        int v = que.front();
+        que.pop();
+        for(int i = 0; i < adj[v].size(); i++){
+            Edge x = adj[v][i];
+            if(!isVisited[x.node]){
+                dist[x.node] = x.weight + dist[v];
+                isVisited[x.node] = 1;
+                que.push(x.node);
+            }
+        }
+    }
+
+}
+int main()
+{
+    cin >> numberOfNodes;
+    for (int i = 0; i < numberOfNodes - 1; i++){
+        int a, b;
+        long long c;
+        cin >> a >> b >> c;
+        adj[a].push_back( {b,c} );
+        adj[b].push_back( {a,c} );
+    }
+    
+    //search from 1 to find maxLengthCount1 
+    bfs(1);
+    for(int i = 1; i <= numberOfNodes; i++){
+        if (res < dist[i]) 
+        {
+            maxLengthCount1 = i;
+            res = dist[i];
+        }
+    }
+    
+    //search back from maxLengthCount1 to find res
+    for (int i = 1; i <= numberOfNodes; i++)
+        isVisited[i] = false;
+    bfs(maxLengthCount1);
+    for (int i = 1; i <= numberOfNodes; i++)
+        res = max(res, dist[i]);
+    cout << res << endl;
+    
+    return 0;
+}

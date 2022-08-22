@@ -1,0 +1,23 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() 
+{
+    int numberOfTrees = 0;
+    cin >> numberOfTrees;
+    int daysToGrown[numberOfTrees];
+    for(int i = 0; i < numberOfTrees; i++){
+        cin >> daysToGrown[i];
+    }
+    sort(daysToGrown, daysToGrown + numberOfTrees, greater<int>());
+    int currentDay = 0;
+    int maxDay = 0;
+    for(int i = 0; i < numberOfTrees; i++){
+        currentDay++;
+        maxDay = max(currentDay + daysToGrown[i], maxDay);
+    }
+    cout << maxDay + 1;
+
+    
+    return 0;
+}

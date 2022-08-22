@@ -1,0 +1,113 @@
+#include <iostream>
+#include <stack>
+#include <queue>
+#include <string>
+using namespace std;
+
+void handle(stack<char>* a, stack<char>* b, queue<char>* c, int* res)
+{
+    int num = 0;
+    stack<char> tempStack;
+    while(!a->empty()){
+        char temp = a->top();
+        a->pop();
+        if(temp == '('){
+            if(!b->empty() && b->top() == ')'){
+                b->pop();
+                tempStack.push(temp);
+            }
+            else{
+                queue<char> bar;
+                if(num >= *res){
+                    c->swap(bar);
+                    while(!tempStack.empty()){
+                        c->push(tempStack.top());
+                        tempStack.pop();
+                    }
+                    *res = num;
+                    num = 0;
+                }
+            }
+        }
+        else if(temp == '['){
+            if(!b->empty() && b->top() == ']'){
+                b->pop();
+                tempStack.push(temp);
+                num++;
+            }else{
+                queue<char> bar;
+                if(num >= *res){
+                    c->swap(bar);
+                    while(!tempStack.empty()){
+                        c->push(tempStack.top());
+                        tempStack.pop();
+                    }
+                    *res = num;
+                    num = 0;
+                }
+            }
+        }else if(temp == ']' || temp == ')'){
+            tempStack.push(temp);
+            b->push(temp);
+        }
+    }
+    queue<char> bar;
+    if(num > *res){
+        c->swap(bar);
+        while(!tempStack.empty()){
+            c->push(tempStack.top());
+            tempStack.pop();
+        }
+        *res = num;
+    }
+}
+
+int main()
+{
+    string input = "";
+    cin >> input;
+    stack<char> stack1;
+    stack<char> simpStack1;
+    stack<char> stack2;
+    queue<char> result;
+    int num = 0;
+    
+    for(int i = 0; i < input.length(); i++){
+        if(input[i] == '(' || input[i] == '['){
+            stack1.push(input[i]);
+            simpStack1.push(input[i]);
+        }
+        else if(input[i] == ')'){
+            if(!simpStack1.empty() && simpStack1.top() == '('){
+                stack1.push(input[i]);
+                simpStack1.pop();
+            }else{
+                handle(&stack1, &stack2, &result, &num);
+                stack1 = stack<char>();
+                simpStack1 = stack<char>();
+                stack2 = stack<char>();
+            }
+        }else if(input[i] == ']'){
+            if(!simpStack1.empty() && simpStack1.top() == '['){
+                stack1.push(input[i]);
+                simpStack1.pop();
+            }else{
+                handle(&stack1, &stack2, &result, &num);
+                stack1 = stack<char>();
+                simpStack1 = stack<char>();
+                stack2 = stack<char>();
+            }
+        }
+    }
+    handle(&stack1, &stack2, &result, &num);
+    cout << num << endl;
+    if(num != 0){
+        while(!result.empty()){
+            cout << result.front();
+            result.pop();
+        }
+    }
+        
+    return 0;
+}
+

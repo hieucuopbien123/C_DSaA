@@ -1,0 +1,23 @@
+#include <iostream>
+#include <stack>
+using namespace std;
+
+int main()
+{
+    stack<char> str;
+    string data = "";
+    cin >> data;
+    if(data.length()%2){
+        cout << "No";
+        return 0;
+    }
+    for(int i = 0; i < data.length(); i++){
+        if(str.empty() || str.top() != data[i])
+            str.push(data[i]);
+        else
+            str.pop();
+    }
+    cout << ((str.empty()) ? "Yes" : "No");
+
+    return 0;
+}

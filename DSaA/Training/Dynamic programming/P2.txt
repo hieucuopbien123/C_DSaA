@@ -1,0 +1,56 @@
+#include <bits/stdc++.h> 
+using namespace std;
+
+//vs độ phức tạp O(n^2) chỉ chơi với 10^4 -> muốn chơi với 10^6 cần ít nhất nlogn
+//Để có n logn, ta thử phân tích. Khi duyệt qua 1 lần, mỗi phần tử ta có thể update lại các mảng cũ và cuối cùng
+//search phần tử lớn nhất là lấy thôi. Ta tưởng nó là tối ưu vì thuật toán quá chặt chẽ, thì vẫn còn 1 cách nx rút
+//xuống nlogn=> bắt buộc phải tái sử dụng cái mảng nó lưu làm sao mà bỏ được vòng for thứ 2=> thuật toán quá pro
+//binary search
+//Một increasing subsequence sẽ luôn tăng, ta cứ duyệt nếu nó tăng và tăng số đếm lên. Nếu nó giảm thì ta thg có xu
+//hướng tạo 1 mảng mới để lưu cái thứ 2 nhưng ta có thể tái sử dụng
+int main()
+{
+    int numberOfEles;
+    cin >> numberOfEles;
+    int arr[numberOfEles];
+    for(int i = 0; i < numberOfEles; i++){
+        cin >> arr[i];
+    }
+    int m = 1;
+    int res[numberOfEles];
+    res[0] = arr[0];
+    for(int i = 1; i < numberOfEles; i++){
+        if(arr[i] > res[m - 1]){
+            res[m] = arr[i];
+            m++;
+        }else{
+            int start = 0, end = m - 1;
+            int mid = 0;
+            // while(start <= end){
+            //     int mid = (start + end)/2;
+            //     if(res[mid] > arr[i]){
+            //         end = mid - 1;
+            //     }else if(res[mid] < arr[i]){
+            //         start = mid + 1;
+            //         mid = start;
+            //     }else
+            //         break;
+            // }
+            while(start <= end){
+                mid = (start + end)/2;
+                if(res[mid] >= arr[i]){
+                    end = mid - 1;
+                }else{
+                    start = mid + 1;
+                    mid = start;
+                }
+            }
+            // int* mid = lower_bound(res, res + m, arr[i]);
+            // *mid = arr[i];
+            res[mid] = arr[i];
+        }
+    }
+    cout << m;
+
+    return 0;
+}

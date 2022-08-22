@@ -1,0 +1,53 @@
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+using namespace std;
+int n, m;
+int arr[21][21];
+int res = 9999999;
+int curRes = 0;
+int check[21];
+int cur[21]; 
+int idx = 0;
+
+void Try(int k)
+{
+    for(int i = 2; i <= n; i++){
+        if(arr[cur[idx]][i] != -1 && check[i] == 0){
+            //ô này thỏa mãn thì lấy kết quả
+            curRes += arr[cur[idx]][i];
+            
+            //set các thông số cho lần sau
+            check[i] = 1;
+            idx++;
+            cur[idx] = i;
+            
+            //nếu đã xong thì lấy kết quả
+            if(k == n - 1 && arr[i][1] != -1){
+                res = min(curRes + arr[i][1], res);
+            } else if(curRes <= res){
+                Try(k + 1);
+            }
+            idx--;
+            check[i] = 0;
+            curRes -= arr[cur[idx]][i];
+        }
+    }
+}
+
+int main()
+{
+    cin >> n >> m;
+    memset(arr, -1, sizeof(arr));
+    memset(check, 0, sizeof(check));
+    for(int i = 0; i < m; i++){
+        int a, b, c;
+        cin >> a >> b >> c;
+        arr[a][b] = c;
+    }
+    cur[idx] = 1;
+    Try(1);
+    cout << res;
+
+    return 0;
+}

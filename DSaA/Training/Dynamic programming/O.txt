@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+long numPassengers;
+long distanceMatrix[23][23];
+long iMem[23][(1 << 12)];
+
+long TAXI(long from, long S){
+    //nếu là base case thì giải quyết
+        //nếu visit tất cả r thì trả ra giá trị từ nó đến 0
+        if(S == ((1 << (numPassengers + 1)) - 1)){
+            return distanceMatrix[from][0];
+        }
+    //nếu đã làm r thì lấy và kết thúc
+        if(iMem[from][S] != 0){
+            return iMem[from][S];
+        }
+    //nếu chưa làm và kp basecase
+        //xây kết quả hiện tại dựa vào giá trị hiện tại và kết quả con cứ cho là có r theo formula
+        long temp = 999;
+        // if(from > 0 && from <= numPassengers){
+        //     temp = min(temp, distanceMatrix[from][from + numPassengers] 
+        //                     + TAXI(from + numPassengers, S | 1 << from + numPassengers));
+        // }else {
+        //     for(long i = 1; i <= numPassengers; i++){
+        //         if((S & (1 << i))){
+        //             continue;
+        //         }
+        //         temp = min(temp, distanceMatrix[from][i] + TAXI(i, S | 1 << i));
+        //     }
+        // }
+        for(long i = 1; i <= numPassengers; i++){
+            if(S & (1 << i)){
+                continue;
+            }
+            temp = min(temp, distanceMatrix[from][i] + distanceMatrix[i][i + numPassengers] 
+                                + TAXI(i + numPassengers, S | 1 << i));
+        }
+    //lưu kết quả hiện tại lại và return
+    iMem[from][S] = temp;
+    return temp;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+    cin >> numPassengers;
+    memset(distanceMatrix, 0, sizeof(distanceMatrix));
+    memset(iMem, 0, sizeof(iMem));
+    for(long i = 0; i < numPassengers*2 + 1; i++){
+        for(long j = 0; j < numPassengers*2 + 1; j++){
+            cin >> distanceMatrix[i][j];
+        }
+    }
+    cout << TAXI(0, 1 << 0);
+ 
+    return 0;
+}

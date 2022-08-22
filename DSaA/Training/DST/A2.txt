@@ -1,0 +1,59 @@
+#include <iostream>
+#include <stack>
+using namespace std;
+
+long long handleData(long long arr[], long long n){
+    long long maxArea = 0;
+    stack<long long> curStack;
+    for(long long i = 0; i < n; i++){
+        if(curStack.empty() || arr[i] >= arr[curStack.top()]){
+            curStack.push(i);
+            continue;
+        }
+        while(!curStack.empty() && arr[i] < arr[curStack.top()]){
+            long long height = arr[curStack.top()];
+            long long a = curStack.top();
+            curStack.pop();
+            while(!curStack.empty() && arr[curStack.top()] == height){
+                a = curStack.top();
+                curStack.pop();
+            }
+            long long S = (curStack.empty()) ? height*i : height*(i - curStack.top() - 1);
+            if(S > maxArea)
+                maxArea = S;
+        }
+        curStack.push(i);
+    }
+    while(!curStack.empty()){
+        long long height = arr[curStack.top()];
+        long long a = curStack.top();
+        curStack.pop();
+        while(!curStack.empty() && arr[curStack.top()] == height){
+            a = curStack.top();
+            curStack.pop();
+        }
+        long long S = (curStack.empty()) ? height*(n) : height*(n - curStack.top() - 1);
+        if(S > maxArea)
+            maxArea = S;
+    }
+
+    return maxArea;
+}
+
+int main()
+{
+    long long n = 0;
+    cin >> n;
+    while(n != 0){
+        long long arr[n];
+        for(long long i = 0; i < n; i++){
+            cin >> arr[i];
+        }
+        
+        cout << handleData(arr, n) << endl;
+        
+        cin >> n;
+    }
+
+    return 0;
+}

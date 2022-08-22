@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef struct Edge{
+    int node, weight;
+}Edge;
+vector<Edge> adj[100001];
+vector<bool> isVisited(100001, false);
+int numberOfNodes;
+int nodeData[100001] = {};
+int res = 0;
+
+void dfs(int u)
+{
+    // cout << "u: " << u << endl;
+    isVisited[u] = true;
+    for(int i = 0; i < adj[u].size(); i++){
+        int v = adj[u][i].node;
+        // cout << "handle v = " << v << endl;
+        if(isVisited[v]){
+            continue;
+        }
+        dfs(v);
+        int temp = adj[u][i].weight + nodeData[v] + nodeData[u];
+        if(temp > res){
+            res = temp;
+        }
+        nodeData[u] = max(nodeData[u], adj[u][i].weight + nodeData[v]);
+        // cout << "Backtrack of " << u << " from " << v << ": " << nodeData[v] << endl;
+    }
+}
+
+int main() 
+{
+    cin >> numberOfNodes;
+    for(int i = 0; i < numberOfNodes - 1; i++){
+        int a, b, c;
+        cin >> a >> b >> c;
+        adj[a].push_back({b, c});
+        adj[b].push_back({a, c});
+    }
+    
+    dfs(1);
+    cout << res;
+    
+    return 0;
+}
+

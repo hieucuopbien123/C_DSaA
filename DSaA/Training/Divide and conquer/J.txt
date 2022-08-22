@@ -1,0 +1,99 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+double minDistance = 999;    
+long long numberOfPoint = 0;
+long long from, to;
+typedef struct Point{
+    long long x;
+    long long y;
+    long long index;
+}Point;
+
+double calculator(Point pointX, Point pointY)
+{
+    double temp = sqrt((pointX.x - pointY.x)*(pointX.x - pointY.x) + (pointX.y - pointY.y)*(pointX.y - pointY.y));
+    return temp;
+}
+
+bool compare2(Point x, Point y){
+    return x.y < y.y;
+}
+bool compare(Point x, Point y){
+    if(x.x == y.x) 
+        return x.y < y.y;
+    return x.x < y.x;
+}
+
+double getMinDistance(long long x, long long mid, long long y, Point points[])
+{
+    if(x == mid)
+        return 999;
+    long long leftComp = points[x].x - minDistance;
+    Point tempLeftPoint = {leftComp, -9999999};
+    Point* leftPointer = lower_bound(points + x, points + mid, tempLeftPoint, compare);
+    long long leftIndex = leftPointer - points;
+    
+    long long rightComp = points[mid].x + minDistance;
+    Point tempRightPoint = {rightComp, 9999999};
+    Point* rightPointer = upper_bound(points + mid, points + y, tempRightPoint, compare);
+    long long rightIndex = rightPointer - points;
+    if(rightPointer == points + y){
+        if(minDistance < rightPointer->x - points[mid].x){
+            rightIndex--;
+        }
+    }
+    Point tempArr[numberOfPoint];
+    copy(points + leftIndex, points + rightIndex + 1, tempArr + leftIndex);
+    sort(tempArr + leftIndex, tempArr + rightIndex + 1, compare2);
+    for(long long i = leftIndex; i <= rightIndex; i++){
+        for(long long j = (i - leftIndex) < 10 ? leftIndex : i - 10; j < i; j++){
+            double distance = calculator(tempArr[i], tempArr[j]);
+            if(distance < minDistance){
+                from = tempArr[i].index;
+                to = tempArr[j].index;
+                minDistance = distance;
+            }
+        }
+    }
+    return minDistance;
+}
+
+double getMinOf(double x, double y, double z)
+{
+    if(x < y && x < z)
+        return x;
+    return (y < z) ? y : z;
+}
+
+double calculateDistance(long long x, long long y, Point points[])
+{
+    if(x == y)
+        return 999;
+    long long mid = (x + y)/2;
+    double a = calculateDistance(x, mid, points);
+    double b = calculateDistance(mid + 1, y, points);
+    return getMinOf(a, b, getMinDistance(x, mid, y, points));
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+
+    cin >> numberOfPoint;
+    Point points[numberOfPoint];
+    for(long long i = 0; i < numberOfPoint; i++){
+        cin >> points[i].x >> points[i].y;
+        points[i].index = i;
+    }
+    sort(points, points + numberOfPoint, compare);
+    calculateDistance(0, numberOfPoint - 1, points);
+    if(from < to)
+        cout << from << " " << to << " ";
+    else 
+        cout << to << " " << from << " ";
+    cout << fixed << setprecision(6) << minDistance;
+
+    return 0;
+}

@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+int n, cap;
+int c[21][21];
+int dp[21][1<<21];
+int load = 0;
+int check(int k, int S){
+    if(S & (1 << k)) return 0;
+    if(k > n){
+        if((S & (1 << (k - n))) == 0) return 0;
+    }else{
+        if((load + 1) > cap) return 0;
+    }
+    return 1; 
+}
+int CBUS(int i, int S){
+    if(S == ((1 << (2*n + 1)) - 1)) {
+        return c[i][0];
+    }
+    if(dp[i][S] != -1) {
+        return dp[i][S];
+    }
+    int res = INT_MAX;
+    for(int k = 1; k <= 2*n; k++){
+        if(check(k, S)){
+            if(k <= n) load++; 
+            else load --;
+            res = min(res, c[i][k] + CBUS(k, S | (1 << k)));
+            if(k <= n) load--; // backtrack
+            else load ++;
+        }
+    }
+    dp[i][S] = res;
+    return res;
+}
+int main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cin >> n >> cap;
+    memset(dp, -1, sizeof(dp));
+    for(int i = 0; i  <= 2*n; i++){
+	    for(int j = 0; j <= 2*n; j++){
+	   	    cin >> c[i][j];
+	    }
+    }
+    cout << CBUS(0, 1 << 0) << endl;
+}

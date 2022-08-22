@@ -1,0 +1,41 @@
+#include <bits/stdc++.h> 
+using namespace std;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
+    int numberOfEles;
+    cin >> numberOfEles;
+    int arr[numberOfEles];
+    arr[0] = 0;
+    for(int i = 1; i <= numberOfEles; i++){
+        cin >> arr[i];
+        arr[i] += arr[i - 1];
+    }
+    int minOdd = 999;
+    int maxVal = -999;
+    int minEven = 999;
+    for(int i = 1; i <= numberOfEles; i++){
+        int temp = -9999;
+        if(arr[i]%2 == 1 || arr[i]%2 == -1)
+            if(arr[i] < minOdd)
+                minOdd = arr[i];
+            else
+                temp = arr[i] - minOdd;
+        else{
+            if(arr[i] < minEven)
+                minEven = arr[i];
+            else
+                temp = arr[i] - minEven;
+            maxVal = max(arr[i], maxVal);
+        }
+        maxVal = max(temp, maxVal);
+    }
+    if(maxVal == -999)
+        cout << "NOT_FOUND";
+    else
+        cout << maxVal;
+
+    return 0;
+}

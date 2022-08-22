@@ -1,0 +1,59 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+//kinh nghiệm khi mà ta kiểu duyệt từ đầu đến cuối và mỗi phần tử lại có nhiều Th xong ta nghĩ rằng sẽ dùng
+//backtracking/bruteforce được thì khi đó nên nghĩ tới 2 việc: 
+//1) Lưu mảng 2 chiều, vì mảng 2 chiều có thể là NN của vc chia ra nhiều TH thì các TH đó ta lưu là index của
+//1 chiều khác. Điều này chỉ ok khi mà chiều thứ 2 ta lưu tiếp có thể tính tuyến tính được các giá trị sau từ 
+//mảng 2 chiều các GT trước. VD: bài common subsequence thì với mỗi phần tử sequence này ta muốn for các phần
+//từ sequence kia-> ta cho mảng chiều các phần tử sequence với nhau là xong
+//2) chạy 1 vòng for nx trong vòng for dynamic để tính: VD như bài này luôn ta muốn duyệt qua số ngày hết
+//và ngày hiện tại ta muốn nó là ngày nghỉ or làm việc 2 ngày liên tiếp, 3 ngày liên tiếp ta kb được vào TH
+//nào -> chạy thêm 1 vòng for nx. Nó thg dùng cho các bài chọn 1 TH nào đó trong vô số TH
+//Vd: bài warehouse ta duyệt qua các cái rương và muốn lấy 1 chuỗi các rương có nhiều giá trị nhất. Nó éo le là
+//nếu lấy rương nhiều giá trị hơn thì về sau toàn rương thấp, nếu lấy rương ít giá trị hơn thì về sau toàn rương
+//cao. Nếu lấy nhầm tổng nhỏ thì ta phải quay lại từ đầu để duyệt lại.
+//Khi đó ta nghĩ đến vc dùng vòng for bên trong bởi đk đề bài cho là khoảng cách không quá 3 chẳng hạn thì vòng
+//for con bên trong chỉ for 3 cái trước đó thôi với mảng là tổng giá trị kết thúc tại vị trí thứ ith mà
+int main()
+{
+    int totalDays;
+    int minWorkingDay, maxWorkingDay;
+    cin >> totalDays >> minWorkingDay >> maxWorkingDay;
+    int res[totalDays + 1][2];
+    memset(res, 0, sizeof(res));
+    res[0][0] = 1;
+    res[0][1] = 1;
+    for(int i = 1; i <= totalDays; i++){
+        for(int j = 0; j <= 1; j++){
+            // cout << "i: " << i << "; j: " << j << endl;
+            //xây base case
+            //nếu ngày cuối cùng là ngày nghỉ thì làm như bth
+            if(j == 0){
+                res[i][j] = res[i - 1][1];
+                // cout << "Update1: " << res[i][j] << endl;
+                continue;
+            }
+            //nếu ngày cuối cùng là ngày làm việc thì base case là không đủ ngày
+            if(j == 1){
+                if(i < minWorkingDay){
+                    res[i][j] = 0;
+                    // cout << "Update2: " << res[i][j] << endl;
+                    continue;
+                }
+            }
+            //nếu k là base case thì xây
+            for(int k = minWorkingDay; k <= maxWorkingDay; k++){
+                if(i >= k){
+                    res[i][j] += res[i - k][0];
+                    // cout << "Update3: " << res[i][j] << endl;
+                }
+            }
+            // cout << "Update4: " << res[i][j] << endl;
+        }
+    }
+    cout << res[totalDays][0] + res[totalDays][1];
+ 
+    return 0;
+}
+//Cơ chế tương tự bài chọn xu có thứ tự:
