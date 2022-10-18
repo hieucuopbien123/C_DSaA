@@ -30,6 +30,14 @@ Trap 3: éo overflow thì vòng lặp này là vô tận vì i đến 255 là qu
 
 
 
+# Các thao tác quan trọng:
+-> reset array:
+#include <string.h>
+memset(myarray, 0, sizeof(myarray)); // for automatically-allocated arrays
+memset(myarray, 0, N*sizeof(*myarray)); // for heap-allocated arrays, where N is the number of elements
+
+
+
 # OOP C++
 Thường khai báo marco trong file h
 K thể nạp chồng Destructor

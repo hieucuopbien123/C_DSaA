@@ -1,0 +1,309 @@
+# TK thi VNG
+-> Sorting
+--> Bubble sort best case là O(n), worst là O(n^2) nhưng người ta khuyên k nên dùng vì số lần swap quá nhiều và best case khó xảy ra. Dù có thể check để implement best case là O(1) nhưng nếu k rơi vào best case sẽ bị tốn thêm
+Quicksort best và average case là O(nlogn), worst là O(n^2) nhưng ưa dùng đa số TH vì worst case khó xảy ra
+Mergesort thì cả best và worst là O(nlogn) nhưng cần nhiều bộ nhớ vì nó cần tạo ra 2 mảng phụ. Với lợi thế chia nhỏ divide and conquer trước nên với các dữ liệu cực lớn k thể sort tất cả 1 lúc mà phải chia ra từng phần r sắp xếp thì dùng merge sort vẫn pro
+Heapsort cả worst và best là O(nlogn) với cơ chế xây theo cây nhị phân, unstable
+Các thuật toán cơ bản k nói nhưng riêng selection sort best hay worst đều là O(n^2) => linear sort vẫn hơn
+=> Các phép toán sort cơ bản thực tế nhận mọi kiểu đầu vào. Đa phần là nó thực hiện các phép toán ss, dù có nhiều phép toán khác nhưng số lương các phép ss luôn nhiều nhất
+
+Heap sort là thuật toán dùng recursion chứ k dùng divide and conquer
+
+--> interchange/exchange sort: 
+vòng for 1 duyệt i từ 0 đến n
+vòng for 2 duyệt j từ i đến n
+bubble sort thì nó duyệt 2 cặp kề nhau và swap thì cái này duyệt j và swap vị trí j với i luôn chứ k chỉ kề nhau. Còn lại tính chất như bubble sort. best case O(n^2)
+
+--> Phân tích sâu về best case, worst case:
+merge sort: 
+worst case là 1 thứ tự rất ảo, ta phải truy ngược lại để có được số lần ss và swap là nhiều nhất: https://www.baeldung.com/cs/merge-sort-time-complexity
+
+Khi mảng đã sắp xếp sẵn, nó sẽ là best case của bubble sort, insertion sort, selection sort.
+
+selection sort thì best case hay worst case là O(n^2) hết nhưng worst case sẽ lâu hơn 1 tí vì số lần swap là nhiều nhất.
+
+quicksort trong trường hợp thông thường sẽ mặc định chọn pivot đầu mảng nên best case khi chọn được pivot chia đôi 2 nửa, worst case khi nó đã sắp xếp sẵn đó
+
+=> Các thuật toán cùng best case và worst case complexity thực chất vẫn khác nhau 1 constant tùy vào input như thế nào
+
+Ngoài ra còn có các phép toán ss tuyến tính với O(n) là trung bình nhưng chúng đều đặt thêm các giả định về input. VD: counting sort, radix sort, bucket sort.
+
+Các thuật toán sắp xếp tại chỗ là sx trên chính mảng đó luôn, ngược với các thuật sx với kg bổ sung như merge sort, counting sort(dùng thêm mảng hash)
+
+Các thuật toán sx ổn định nếu như nó k thay đổi thứ tự các phần tử có cùng giá trị như bubble sort, insertion sort, merge sort. Còn lại là sx k ổn định, đặc biệt là thằng quicksort k ổn định. Tính ổn định(stable) là điều cần thiết để duy trì thứ tự sx trên cùng 1 tập dữ liệu nhưng kp là vđ nếu tất cả các khóa đều khác nhau.
+
+Thuật toán sx trực tuyến như insertion sort là sx 1 phần tử mà k cần có toàn bộ dữ liệu từ đầu
+Thuật toán sx ngoại tuyến là có đầy đủ dữ liệu từ đầu như selection sort
+
+Phân loại theo cách giải:
+Cách tiếp cận chia để trị: merge sort và quicksort
+Cách tiếp cận gia tăng việc sử dụng các vòng lặp lồng nhau: bucket sort, selection sort, insertion sort.
+Giải quyết vấn đề bằng cách sử dụng cấu trúc dữ liệu: heapsort, tree sort
+Giải quyết vấn đề bằng cách sử dụng băm: counting sort.
+
+Còn nhiều loại khác như: shell sort, tree sort, tournament sort
+
+-> Sort 1 linked list
+Ta xét singly linked list, nó k thể traverse ngược và truy cập thông qua index. Nếu dùng insertion sort thì chắc chắn rất lâu vì k thể duyệt ngược như trong hướng dẫn mà phải duyệt xuôi thì tốc độ vẫn O(n^2) cả best và worst thôi
+
+Cách nhanh nhất là dùng merge sort. Ta tưởng là duyệt để tìm mid đã lâu, thật ra vẫn là O(nlogn) thôi vì ta chia ra logn lần, mỗi lần chỉ tốn O(n) trong hàm merge. Duyệt tất cả lấy mid, duyệt đầu đến mid, duyệt mid đén cuối, chia 2 list, duyệt 2 list sort vào list gốc. Tất cả chỉ tốn n thôi vì kể cả gán vào list gốc ta vẫn có thể lưu 1 biến temp bắt cái hiện tại từ first đến current. Nói chung là mỗi cái chỉ tốn n nên hợp lại là O(nlogn). Cái duyệt list đó tưởng là lâu nhưng thực ra lại là 1 phần của merge sort buộc phải duyệt nên ok.
+Thậm chí có thể lưu thêm trường index ở mỗi phần tử và lấy được số lượng phần tử bằng cách dùng end.index - start.index là được. Nói chung là k thiếu cách nhưng phải hiểu O(nlogn) mới là nhanh nhất của linked list. 
+
+Còn heap sort mới là k ổn vì ta k thể bắt được vị trí 2n+1 và 2n+2 từ n được trực tiếp, nên chậm hơn merge sort. 
+
+-> Linked list
+Cách tìm phần tử chính giữa của linked list mà chỉ cần duyệt qua 1 lần:
+C1: nếu biết size thì duyệt đếm đến size/2 là dừng. Từ cách 2 là kb size
+C2: cho a và b cùng trỏ vào begin, a tiến 1 bước, b tiến 2 bước. Khi b đến tail thì a là mid rồi
+C3: duyệt 1 lần bắn vào 1 vector r lấy vị trí vector.size()/2
+
+Same trick giải quyết vấn đề check list có chứa 1 vòng
+Same trick tìm node thứ 3 từ cuối lên của 1 danh sách liên kết đơn
+
+=> Vấn đề có thể giải quyết bằng cách: xây 1 mảng mới, tận dụng điểm lợi của các cấu trúc dữ liệu đã biết, xây trên mảng cũ có thể phải duyệt nhiều lần, dùng các PP DaQ or dynamic. Đặc biệt có 3 loại tree thường dùng là segment tree, BST, binary heap - priority queue
+Vd: tính tổng 2 singly linked list lưu vào 1 linked list mới chứa kết quả như phép cộng chia cột tiểu học ấy => dùng stack là ra mẹ rồi
+Binary heap thực tế rất nhanh vì insert và delete tốn O(logn) nhưng tìm max hay gì chỉ tốn O(1), xây heap cũng tốn O(n) là bth. Nếu k cần delete ngay thì tốc độ tìm max chỉ mất O(1), khi có delete sẽ tốn thêm log(n) nx là quá ít. Dù sao thì vẫn kém hơn segment tree về khả năng mở rộng vì segment tree cho thao tác với tổng hay gì phức tạp đều được nhưng đều là O(logn) và segment tree làm phức tạp hơn, segment tree insertion tốn O(n) vì phải xây lại cây, cũng có PP là tree rotation để thêm 1 phần tử. Cả 2 cây đều dùng thêm bộ nhớ và xây mất O(n).
+Binary heap k phải xây lại cây khi insert 1 phần tử như segment tree.
+
+Ngoài ra thì mảng tăng dần cũng là 1 kiểu data structure pro vì mảng tăng dần thì tìm kiếm được với log(n)
+
+-> Thuật toán counting sort cho O(n) thực chất implement rất dễ, cơ bản nó count số lương mỗi loại phần tử xh. Nó dùng thêm bộ nhớ lưu 2 mảng. Điều kiện áp dụng là:
+giá trị của phần tử lớn nhất k quá lớn
+Giá trị nguyên không âm
+Độ dài của danh sách k nên quá nhỏ so với giá trị phần tử lớn nhất vì mảng phụ tạo ra có thể kích thước lớn hơn nhiều so với mảng gốc sẽ k tốt
+url: https://blog.luyencode.net/counting-sort/
+
+=> dùng map sẽ đưa vấn đề theo 1 hướng khác
+
+-> Bucket sort: 
+Chia vào các package và sort từng package với insertion sort, in các package theo thứ tự ra kết quả
+Chia được vào các package là bài toán kết thúc. VD giá trị từ 1-25 thì chia vào 5 package theo từng khoảng, sau đó sort từng package. Mỗi package là 1 vector ok. Ta chia vào package trực tiếp với arr[(x[i] - 1)/(25/5)].push_back(x[i]);
+Độ phức tạp tốt nhất là O(n) khi phân bố đều vào từng package, thì có thể coi sort trong từng bucket là hso. Tồi nhất vẫn là O(n^2).
+Dùng được sort số float. Chỉ dùng khi phân bố đều trên 1 khoảng, chỉ dùng nếu mảng cần sort ta biết rõ max là bnh và từ đâu đến đâu
+
+Cơ chế của bucket sort thực ra giống counting sort cũng dùng hash: Ở lần đầu tiên có 25 phần tử chia 5 nhóm mà chỉ cần duyệt O(n), điều đó đã phá vỡ nguyên tắc của các thuật toán sắp xếp thông thường rồi. Counting sort nó dùng hash lưu các phần tử trùng nhau, ở đây nó coi phần tử trùng nhau là các phần tử có cùng tính chất hay thuộc 1 nhóm nhưng k count tăng dần như counting sort mà push cả phần tử vào luôn.
+
+--> Phân tích tại sao bucket sort lại tốn O(n) ở TH tốt nhất:
+Ý của nó là khi phân bố đều thì số lượng phần tử ở mỗi bucket là như nhau. Giả sử có n phần tử và số phần tử trong 1 bucket là k. Để tạo n bucket và duyệt từng phần tử trong array nhét vào bucket là O(n). Insertion mỗi bucket tốn O(k) nên best time là O(n+k). Chính vì insertion sort best case O(n), worst là O(n^2) nên nếu trong bucket đã sort sẵn rồi thì tốc độ còn nhanh hơn nữa. Do nó mặc định kiểu khi đã chia bucket thì số phần tử trong mỗi bucket sẽ khá nhỏ nên coi hằng số, thực chất phải đầy đủ O(n+k) mới đúng.
+Tương tự nếu phân bố k đồng đều. VD chia 2 bucket: 1 bucket chứa 1 phần tử, 1 bucket chứa n-1 phần tử thì việc tốn O(n) xây bucket ban đầu chỉ sort được 1 phần tử cũng giống như các thuật toán sort thông thường và ta dùng insertion sort với n-1 phần tử còn lại. Do đó tốn O(n^2) worst case.
+
+Space complexity: O(n+k) vì n cho từng phần tử, k cho từng bucket
+
+-> Phân biêt space complexity và auxiliary space:
+Space complexity là độ phức tạp của không gian. Vd dùng mảng 2 chiều khác với dùng mảng 1 chiều, với mỗi 1 phần tử ở mảng 1 chiều, ta có thêm 1 chiều nữa hay 1 mảng nữa bên trong. Tức là space complexity là số lần gọi lồng nhau vòng loop or đệ quy. 
+Auxiliary space là bộ nhớ phụ thêm vào or temporary space dùng trong thuật toán
+Thật ra space complexity cũng chính là auxiliary space khi ta nói tới các thuật toán đệ quy, nó cùng giá trị thôi. VD có n lần gọi đệ quy, bộ nhớ sử dụng mỗi lần gọi là 1 thì O(n) là auxiliary space và cùng là space complexity còn gì. Còn space complexity dùng trong vòng loop thường là O(1) thôi vì họ k thể create n vòng loop lồng nhau với n là số lượng phần tử được mà khi đó phải chuyển sang đệ quy là backtrack. Các thuật toán k đệ quy thì 2 giá trị này sẽ khác nhau
+
+Tuy nhiên nhiều lúc space complexity dùng thay thế cho auxiliary space dù điều này là sai
+
+VD: Thuật toán merge sort có auxiliary space là O(n) vì tổng bộ nhớ mảng phụ lưu nửa trái nửa phải mọi lần là n và space complexity cũng là n vì gọi đệ quy lại n lần. Mỗi lần gọi ta add vào stack từng level kiểu:
+mergesort(n)
+  -> mergesort(left,mid)
+    -> mergesort(left,mid của mid)
+      -> ...
+    -> mergesort(mid của mid, right)
+      -> ...
+  -> mergesort(mid,right)
+    -> ...
+=> Mỗi level là chia đôi phần tử ra thì max đệ quy lồng n/2 tức auxiliary space là O(n/2)=O(n) 
+
+VD insertion sort có space complexity là O(1) vì k tốn bộ nhớ phụ, k phụ thuộc vào n. Tương tự heap sort có auxiliary space là O(1) vì nó k dùng thêm bộ nhớ phụ mà swap ngay trên mảng gốc nhưng space complexity là O(n), nhưng đôi khi họ cũng dùng space complexity gọi thay cho auxiliary space vì số lần gọi đệ quy kqtr bằng bộ nhớ sử dụng nên gọi là space complexity của heap sort là O(1).
+
+Space complexity chuẩn còn refer đến số lần gọi đệ quy vì mỗi lần gọi hàm đều lưu data vào stack.
+VD: Quick sort best case có space complexity(auxiliary space) là O(logn) vì nó là thuật toán đệ quy và bộ nhớ dùng thêm của nó ở đây kp để lưu input mà dùng cho recursive function call. Nó là thuật toán in-place(sx tại chỗ k thêm bộ nhớ phụ). 
+Worst case là O(n) nhưng có thêm giảm space ở worst case của quick sort về O(logn): bản chất là khi gọi hàm 1, xong gọi hàm 2 lồng bên trong thì hàm 1 lưu vào stack và chưa kết thúc, xong cứ thế lưu tiếp hàm 2, hàm 3 vào stack nếu recursive k kết thúc, coi mỗi hàm là O(1) thì gọi recursive n lần sẽ thành O(n). 
+Bình thường best case:
+       8
+   4       4
+ 2   2   2   2
+1 1 1 1 1 1 1 1
+=> auxiliary là O(logn) vì stack nó lưu sâu nhất là:
+       8
+   4
+ 2
+1
+=> sau đó mới pop ra lưu tiếp
+Ở TH worst case nó là:
+       8
+      7 1
+     6 1
+    5 1
+   4 1
+  3 1
+ 2 1
+1 1
+
+Ta có thể dùng "tail call elimination" để giảm độ phức tạp space bằng cách dùng vòng while giảm đi 1 bên đệ quy: https://www.geeksforgeeks.org/quicksort-tail-call-optimization-reducing-worst-case-space-log-n/
+            8
+  4      2     1     1
+ 2   2  1  1
+1 1 1 1
+=> đây là TH best case mà dùng nó. Nó giúp giảm đi 1 bên của space complexity 1 tẹo nhưng vẫn O(n) ở worst case:
+       8
+      7 1
+     6 1
+    5 1
+   4 1
+  3 1
+ 2 1
+1 1
+=> vẫn thế
+
+Để rút gọn được worst case, ta phải check để luôn chỉ gọi đệ quy ở nửa nhỏ hơn sau khi partition, còn nửa lớn để vòng while sau làm tiếp. Như v thì worst case của quick sort nó thành O(1) cmnl nhưng do worst case đó khó xảy ra nên coi là space complexity của quick sort có thể implement là O(logn) ở mọi case
+         8
+1 1 1 1 1 1 1 1 1 1 
+
+URL tính space complexity mọi thuật toán sort: https://www.interviewkickstart.com/learn/time-complexities-of-all-sorting-algorithms 
+
+Thực tế độ cần thiết dùng 1 thuật toán thường là: time complexity > auxiliary space > space complexity
+
+-> Radix sort:
+Mọi thuật toán đều sort theo kiểu so sánh a và b nhưng radix sort lại ss từng cơ số theo cơ chế kiểu sắp xếp thư bưu điện(postman's sort).
+Nó sort theo từng cơ số 1, ss phần trăm, phần chục, phần đơn vị cho vào từng bucket. 
+
+Tốc độ: n phần tử m chữ số tức m lần chia nhóm, trong 2 lần chia và gộp các phần tử xét đúng 1 lần nên là O(2mn)=O(n)
+Với floating point thì ss k tốt khi có các số floating point vô hạn nhưng lại bằng nhau thì phải đặt 1 mốc số các chữ số để max ss.
+
+Cơ chế: sort dần từ hàng đơn vị về hàng trăm vào đúng mảng cũ. Giống counting sort có 10 phần tử thì cái này sort vào mảng temp rồi gán ngược về mảng gốc. Nhưng do duyệt hàng đơn vị xong ta duyệt hàng chục thì thứ tự bị đổi nhưng vẫn phải giữ nguyên vị trí lớn hơn hay nhỏ hơn ở hàng đơn vị trong từng nhóm. VD 120 170 126 thì ta gán 126 về nhóm cùng hàng chục là 2 tức là 120 126 170 vẫn giữ thứ tự hàng đơn vị chú k được nhét 126 về trước 120. 
+Để làm được điều đó thì counting sort xử lý ok bằng cách ta duyệt từ cuối về r điền vào vì mảng lưu counting luôn có số giảm dần vị trí từ lớn về nhỏ
+url: https://www.stdio.vn/giai-thuat-lap-trinh/distribution-sort-radix-sort-vqu1H1
+
+-> Quick sort và merge sort:
+Khi duyệt array quick sort được ưu tiên hơn merge sort: vì merge sort tốn O(n) cho space và quick sort có thể cải thiện tất cả chỉ là O(logn). Họ thg dùng randomized quicksort để lấy O(nlogn) và tránh được worst case rơi vào các TH phổ biến như already sorted.
+
+Khi duyệt linked list thì merge sort ưu tiên hơn: vì quicksort cần truy xuất vào vị trí trực tiếp rất nhiều, VD như khi ss 2 vị trí phải duyệt ngược và xuôi với nhau thì duyệt ngược sao được trong khi merge sort cả thuật toán toàn duyệt tuần tự nên phù hợp. merge sort trong linked list có space complexity thành O(1) vì nó k tốn thêm bộ nhớ
+VD nó chia được làm 2 nửa thì search con nào nhỏ hơn thì insert vào vị trí current như bth thôi bằng cách cho current->next = giá trị nhỏ hơn đó là được, có thể dùng đệ quy or loop cho cái này. Chính vì các phần tử có thể tách rời và ghép nối nên k cần tách mảng riêng. 
+
+-> Shell sort:
+Cơ chế: chia thành từng cục cách nhau n/2, n/2/2, n/2/2/2,... và sort các phần tử trong mỗi cục bằng insertion sort
+Dùng insertion sort trên mảng gốc luôn, duyệt cách nhau 1 khoảng gap là được
+
+Bestcase O(nlogn) khi array được sort sẵn rồi ta vẫn phải chạy vòng loop chia đôi liên tục giá trị gap và vòng loop trong ta sort bằng insertion sort từng cục 1 thì là nlogn
+Averagecase O(nlogn) bình thường vì chia đôi gap nên có logn, ở mỗi cục coi sort là hso thì có O(n) cục nên là O(nlogn). Tùy vào cách chọn gap.
+Worstcase O(n^2) chọn gap = 1 luôn thì sort O(n^2) tất cả
+Space O(1) vì sort trên mảng gốc
+
+-> Mảng array
+Mảng 101 phần tử chứa từ 1-100 + 1 số bị trùng với 1 trong 100 số trước, tất cả sx loạn xạ, tìm số trùng với O(n) => tổng array - tổng từ 1 đến 100
+Đó là cách hay nhất rồi, chứ dùng như counting sort thêm gấp đôi bộ nhớ thì muốn làm gì cx đc. Dùng thêm map or array như counting sort nếu nó trùng nhiều phần tử. K muốn thêm bộ nhớ thì chịu lâu hơn bằng cách sort. Cũng có thể dùng bitset nhưng ở đây rõ ràng map là mạnh nhất nếu giá trị phần tử lớn nhất lớn hơn.
+
+Loại bỏ phần tử trùng lặp, dùng cấu trúc dữ liệu check trùng xây mảng mới, nếu thao tác với mảng cũ mà muốn xóa phần tử trùng lặp nên nhớ luôn có cách hoán vị với phần tử cuối và delete phần tử cuối
+
+-> Kiểu map
+Map là 1 kiểu quá hay cho phép ta lưu và truy vấn trực tiếp. Bên cạnh các loại mảng hay linked list thì điểm lợi của map hơn 2 kiểu đó là nó cho phép lấy data với tốc độ O(1) với bất cứ vị trí số nguyên nào hay string mà k phí bộ nhớ => lưu ý khi gặp các vấn đề yêu cầu truy xuất nhanh O(1) bất kỳ như v, như kiểu thao tác với hash v.
+
+VD ta cần xác định các phần tử có giá trị trùng nhau trong mảng cách nhanh nhất. Nếu dùng vòng for thì O(n^2) ok. Nếu dùng mảng như kiểu counting sort thì phí bộ nhớ vl. Nếu dùng map thì solve ngay vì khi nó lưu k tốn bộ nhớ và truy xuất bất cứ cái nào trực tiếp, truy xuất số lượng phần tử cũng ok luôn. VD ta lưu <key, số lần key xuất hiện> là solve ngay và có thể truy xuất a[key] trực tiếp, trong khi dùng mảng ta phải tạo 1 mảng số lượng phần tử là giá trị lớn nhất của key + 1. Nếu dùng struct thì k truy xuất trực tiếp được mà phải duyệt cơ.
+Tương tự nó mở ra 1 cách mới khi dùng với counting sort. Giá trị phần tử có thể rất lớn so với số lượng phần tử cũng được, loại bỏ 1 nhược điểm của counting sort
+
+Điểm lợi của map thì ok nhưng điểm bất lợi là nó k lưu 2 giá trị trùng key được và nó k có thứ tự các element.
+Dùng bitset lợi nhất về bộ nhớ nhưng k được khi giá trị lớn
+
+VD tìm cặp (a,b) sao cho |a-b| = k best case O(n)
+
+-> Bitset
+Khi ta implement set bth thì chỉ được max cũng chỉ 21 phần tử, trong các ngôn ngữ có kiểu bitset cho phép lưu số lượng nhiều hơn khi thao tác với set
+
+Dạng bài tìm phần tử miss của mảng 1-100, k dùng sum được khi miss nhiều phần tử và có duplicate. 
+C1: tăng độ phức tạp nhưng k tốn bộ nhớ => sort r tìm cho O(nlogn)
+C2: độ phức tạp ít là O(n) nhưng tốn thêm bộ nhớ => dùng thêm bitset và duyệt qua 1 lần r duyệt bitset thấy bit 0 thì in ra. Cách khác là dùng mảng như counting sort cũng được vì giá trị phần tử nhỏ
+
+bitset cho lợi thế khi tìm check sự tồn tại hay không tồn tại khi số lượng phần tử nhỏ, nhưng điều này hoàn toàn thay thế được bằng array bth cho dễ. Do đó bitset chỉ cần dùng khi cần lợi thế trong việc thao tác với bit binary kiểu đổi cơ số hay đảo bit các thứ
+
+-> Kiểu vector của STL giúp tạo ra mảng bth nhưng kích thước biến động
+Muốn thêm ta dùng push_back bất kể số lượng phần tử hiện tại là bnh, nó tự mở rộng
+Ta có thể tạo ra vector có bnh phần tử với giá trị mặc định là gì. Ta có thể truy xuất trực tiếp phần tử thông qua [] như mảng nhưng phải trong phạm vi giá trị nó có
+Nếu ta tạo vector mà k khởi tạo số lượng phần tử với giá trị mặc định xong tự dưng vào truy xuất số lượng luôn sẽ sai vì truy xuất ngoài mảng
+
+-> String
+2 chữ là anagram nếu chúng là đảo chữ của nhau. VD: ab c và a cb chẳng hạn
+C1: dùng cấu trúc dữ liệu lưu ra 1 map chẳng hạn thì ok O(n)
+C2: sắp xếp 2 chuỗi và so sánh bằng thì O(nlogn)
+
+Để lật string bằng đệ quy: 
+C1: ta có thể đảo đầu cuối cho đến vị trí giữa
+C2: reverse(a) = reverse(a từ 1 đến cuối) + a.charAt(0);
+
+lật string đệ quy cũng giống lật linked list singly đệ quy. Nó có complex và auxiliry space cùng là O(n)
+
+k-rotation string là string gốc xoay tiến k lần. Vd euhi là 2-rotation string của hieu. Để check string kiểu này rất đơn giản là nhân đôi string lên r search tuyến tính được
+
+-> BST:
+PP nghĩ theo thứ tự: trong 1 luồng cố định, ta nghĩ 1 VD theo thú tự làm với điều kiện, cái điều kiện thêm vào là ít nhất, nói 1 cách lý tưởng sẽ xảy ra, k quay lại cái trước mà chỉ cần nói tại sao cái hiện tại lại đúng
+VD: làm sao để post order mà k dùng đệ quy. Nếu nghĩ kiểu 1 phát ra luôn sẽ rất khó, vì v ta nghĩ theo thứ tự(nhưng phải đủ và nhanh để k conflict cái cũ). Ta dùng 1 stack, nghĩ theo hướng thêm dần vào, giả sử 1 cây có 6 node tưởng tượng, duyệt root thêm vào stack, thêm right, thêm left. Pop từ stack ra left nhưng điều kiện sử dụng nên là ít nhất nên chỉ cần peek thôi. Peek nó ra xong thêm right, thêm left cho cái left trước. Lại peek rồi in ra left đó vì nó là leaf, lại peek r in ra right vì nó là leaf, lại peek r in ra mid vì 2 cái left right đã từng in(tức là có thêm mảng check ở đây). Cứ thế đến hết
+=> Với cách nghĩ như v, mỗi khi gặp 1 cái gì mới thì lại làm gì vì sao chứ k dày vò bứt óc nghĩ 1 phát ra luôn nó rất occho. Bên cạnh đó ta cũng có 1 nguyên tắc sau khi học backtracking là thay vì cứ if else dài dòng, ta có thể check điều kiện nhanh hơn bằng cách: đánh dấu luôn trên mảng hiện tại nếu mảng hiện tại k cần dùng tiếp nx sau khi duyệt qua, dùng 1 mảng mới đánh dấu. Ở đây sau khi push 1 node vào stack, thì lần sau duyệt tới sẽ hoặc là thêm node, hoặc là in ra. Điều kiện in ra lại là node lá, do đó mỗi lần thêm node cho nó xong, ta có thể biến nó thành node lá or dùng 1 mảng đánh dấu cho nó là xong chứ kp check left right in rồi mới in nữa
+
+Khi chuyển từ đệ quy sang loop(thg khử bằng stack), vấn đề chính là mỗi turn loop ta xử lý 1 cj đó tương đương với thứ ta xử lý trong mỗi turn của đệ quy. Vc gọi lại đệ quy thường là thứ cho vào stack
+VD: chuyển quick sort từ đệ quy sang loop dùng PP trên có thể ra rất nhanh. Mỗi turn đệ quy ta phải chọn pivot, xử lý 2 bên, sau đó gọi lại đệ quy với trái phải. Chạy vào vòng while ta sẽ chọn pivot, xử lý trái phải. Xong cần làm lại loop với trái phải thì lại push vào stack tiếp, đương nhiên là dữ liệu lưu được 2 biến start và end thì dùng pair mẹ đi. Thế thì từ đầu nên push start end gốc vào stack, while not empty thì làm tiếp là ok. Cũng cần có điều kiện dừng là start trùng end thì continue luôn như đệ quy v đó
+
+BFS giúp duyệt cây theo level
+
+Cây 1 node có height là 0. Height là longest path từ gốc đến 1 lá
+
+--> Cho kết quả 2 kiểu duyệt, tìm kết quả kiểu duyệt còn lại
+VD: Cho In và Pre, tìm Post.
+Kiểu gì cũng phải in theo kiểu left, right, current bằng đệ quy. Tính chất là node đầu của Pre luôn là root, tìm nó trong In thì các node phía trước sẽ là cây con trái, các node phía sau sẽ là cây con phải. Do in theo Post nên phải in con trái rồi đến con phải rôi đến node hiện tại. In con trái thì lại tìm node tiếp theo trong Pre và tìm nó trong con trái của In với kích thước phần tử là phần con trái, tương tự phần còn phải.
+
+Điều kiện đệ quy cụ thể: 
+Lấy node đầu của Pre, tìm nó trong In được giá trị là vị trí pos
+Gọi lại hàm với node đầu của pre + 1 và con trái của In (0-pos với pos phần tử)
+Gọi lại hàm với node đầu của pre + pos + 1, con phải của In (pos-(n-1) với n-pos-1 phần tử)
+In ra con hiện tại
+=> vì khi ta tìm vị trí root trong In thì 0-pos là số lượng con trái trong cả In và Pre và Post và cả cây, còn pos-n là số lượng con phải trong cả 3
+Đệ quy dừng khi gọi lại với con phải và con trái thì nó là null mẹ luôn tức là khi tìm vị trí đó trong In thì nó là phần tử đầu tiên or phần tử cuối cùng. 
+URL: https://www.geeksforgeeks.org/print-postorder-from-given-inorder-and-preorder-traversals/
+Có thể làm kiểu xây lại cây r duyệt nhưng naive k hay
+
+Tương tự với bài cho Post và In, tìm Pre: ta duyệt ngược cây Post từ cuối về thì duyệt cây phải r mới duyệt cây trái. Nhưng kết quả ta in phải là current->left->right nên ta dùng stack push theo thứ tự gọi đệ quy right, gọi left, push current vào r in ra là được.
+
+-> swap
+Trong java thì để swap 2 biến mà k dùng biến thứ 3 có nhiều cách. Trong C++ chỉ làm được với XOR, vì các phép khác nó thực hiện k theo thứ tự như java, chỉ có phép logic mới theo thứ tự thôi
+Quy tắc: b = a^b^a;
+
+-> PP loại trừ:
+Check 2 hcn có overlap. Ta dùng loại trừ khi nào nó k overlap sẽ dễ hơn. Vì các TH overlap tương tượng ra là thấy. Nếu k overlap thì 2 cạnh cùng chiều phải cùng lớn hơn right or nhỏ hơn left or lớn hơn top or nhỏ hơn bottom. Rút gọn thì chỉ cần check 1 thứ cạnh thôi là được tức 4 điều kiện or trong if đó
+
+-> Cây AVL:
+Là cây tìm kiếm nhị phân có độ cân bằng cao vì cây bth nếu mảng sx sẵn r mà cứ thêm vào cây BST bth thì search nó cũng như search tuyến tính thôi
+Cây này check hiệu số height trái phải k quá 1(balance factor). Nếu quá 1, cây phải được cân bằng bằng thuật toán quay AVL. 
+
+Quay đơn: trái, phải
+Quay ghép: trái-phải, phải trái
+url: https://blog.luyencode.net/cay-avl-phan-1-insertion/
+
+Quá hay, thuật toán nó chơi kiểu thêm như bth nhưng sau đó check xem rơi vào TH nào trong 4 TH. VD: Bất kể node mới thêm vào vị trí nào, miễn là rơi vào left left sẽ đều thực hiên rotate right như v
+
+-> Stack
+Tính trung tố: 
+gặp * or ( or số push stack
+gặp + thì tính nếu cho đến hết *
+gặp ) thì lấy ra từ đoạn mở ngoặc và gọi đệ quy => thực ra gặp ( coi là tính xong cho đến ( rồi thì cứ làm tiếp là push stack ra tính nốt cho đến khi gặp (
+Stack chưa hết thì push ra tính nốt
+
+Tính tiền tố:
+Duyệt từ cuối
+Toán hạng thì push stack
+Toán tử thì pop 2 cái ra tính r lại push
+
+Tính hậu tố: 
+Y hệt tiền tố nhưng duyệt từ trái sang
+=> Mấy cái này có 2 PP biểu diễn là expression tree hoặc stack, ta mặc định dùng stack thôi
+
+Chuyển trung tố sang hậu tố(sang tiền tố thì đảo ngược lại thôi):
+Gặp số thì in
+Gặp * cho vào stack
+Gặp + trước đó là nhân thì pop hết
+Còn cặp dấu ( ) nói chung là cơ bản: gặp ( thì push stack, gặp ) thì coi như phần trong đã tính xong, ta xử lý như bước cuối là in hết stack toán tử ra cho đến khi gặp ( thì dừng là xong
+
+-> heap
+Để tìm min trong maxheap tốn O(n) đừng có tưởng nhầm occho
+
+-> Dạng đề:
+OOP: kiểu kế thừa lồng override xong gọi gì thì làm gì ở cả Java và C++
+Thuật toán phức tạp: Đa phần các các thuật toán được implement phức tạp nhưng đều cho code và phải tư duy nhanh là code nó làm gì
+Thuật toán cơ bản: push pop stack queue thì kết quả là gì
+Các DSaA nổi tiếng: các bài tập về cây, các kiểu duyệt, các kiểu sort, find
+
+-> Recursion
+Thực tế có định lý chứng minh: mọi hàm recursion đều có thể convert sang iteration, nên k có bất cứ bài toán nào là bắt buộc phải giải bằng recurion hết
+
+

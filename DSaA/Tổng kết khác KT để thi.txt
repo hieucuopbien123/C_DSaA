@@ -8,7 +8,7 @@ Cnk tính bằng đệ quy mà k dùng memorization sẽ tốn đến O(Cnk), c�
 a^b mod c = (a mod c)^b mod c
 c nguyên tố => a^b mod c = (a mod c)^(b mod (c - 1)) mod c
 vì a^c mod c = a và a^(p-1) mod p = 1
-Divide and conquer chia đôi liên tục sẽ duyệt mọi phần tử với tốc độ O(log2n)
+Divide and conquer chia đôi liên tục sẽ duyệt mọi phần tử với tốc độ O(log2n) -> thực ra là n
 VD tính a^b mod c hay a*b mod c hay binary_search thì tốc độ O(log2b)
 Bài cưa gỗ hay chia bánh độ phức tạp là log2(max height/max radius)
 Độ phức tạp của DC: T(n) = aT(n/b) + D(n) + C(n) với a là số lượng subproblems, n/b là size của mỗi subprobs, D(n) là cost của divide operation, C(n) là cost của combination operation

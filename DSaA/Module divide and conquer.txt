@@ -17,7 +17,7 @@ divide_and_conquer(A, x) // Tìm nghiệm x của bài toán A.
 }
 => binary search k là chia để trị vì chia để trị cần ít nhất 2 bài toán con ở mỗi bước phân ra để kết hợp nghiệm của chúng lại, còn binarysearch là giảm để trị vì chỉ còn 1 bài toán con ở mỗi bước=> thật ra cũng là 1 dạng của chia để trị
 
-Chú ý chia để trị n ví dụ ta duyệt hết các phần tử. Khi chia 2 nửa xong 2 nửa ta lại chia tiếp đến khi chỉ còn 1 phần tử thì nó như là 1 kiểu duyệt với độ phức tạp là log2n v. Thú vị là dù ta đúng là gọi đệ quy tất cả phần tử thật nhưng độ phức tạp chỉ log2n trong khi duyệt tuyến tính là n. Nên ưu tiên dùng divide and conquer hơn duyệt trâu. Dù v nó vẫn chậm hơn dynamic programming nhiều lúc
+Chú ý chia để trị n ví dụ ta duyệt hết các phần tử. Khi chia 2 nửa xong 2 nửa ta lại chia tiếp đến khi chỉ còn 1 phần tử thì nó như là 1 kiểu duyệt với độ phức tạp là log2n v. Thú vị là dù ta đúng là gọi đệ quy tất cả phần tử thật nhưng độ phức tạp chỉ log2n trong khi duyệt tuyến tính là n. Nên ưu tiên dùng divide and conquer hơn duyệt trâu. Dù v nó vẫn chậm hơn dynamic programming nhiều lúc => éo đúng. Thực tế khi đệ quy ra thì khi ta gặp từng phần tử nhỏ nhất để thao tác thì có n phần tử nên thao tác thành n lần, tính độ phức tạp bằng sơ đồ cây cơ.
 
 -> Phương pháp chặn 2 đầu mút liên tục đến mức xấp xỉ. Mô hình:
 while(kết quả tìm ra so với kết quả cần tìm > sai số){
@@ -28,13 +28,19 @@ while(kết quả tìm ra so với kết quả cần tìm > sai số){
 	nếu giá trị tính ra nhỏ hơn mid
 		cho right xuống mid
 }
-Lưu ý: kết quả cho ra sẽ luôn xấp xỉ, k thể tìm được giá trị chuẩn. Nếu áp dụng với các bài tìm số nguyên chắc là chuẩn được. Tốc độ co lại rất nhanh là log2n
+Lưu ý: kết quả cho ra sẽ luôn xấp xỉ, k thể tìm được giá trị chuẩn với float. Nếu áp dụng với các bài tìm số nguyên chắc là chuẩn được. Tốc độ co lại rất nhanh là log2n
 Điều kiện dùng cách này: 1 là phải biết được khoảng mà giá trị hiện tại nằm trong là khoảng nào; 2 là phải check được kết quả tính toán ra là cần tăng left hay giảm right để có kết quả xấp xỉ là kết quả cần tìm;
 Ví dụ bài chia bánh cho người: diện tích là số thập phân chỉ cần xấp xỉ nên dùng được
 1 là: diện tích cần tìm bị chặn từ 0 đến kích thước bánh lớn nhất
 2 là: khi tính ra là dùng số bánh đó, nếu k đủ để chia thì phải giảm right xuống, nếu chia thừa thì tăng left lên
 
 Điều kiện dừng so sanh với sai số, có thể là right - left < sai số thì cái mid sẽ bị lệch nhiều nhất là sai số/2; or kết quả tính ra - kết quả thực < sai số thì là chuẩn nhất
+
+Sau khi thoát khỏi while thì kết quả kiểu: right <giá trị cần tìm> left => giá trị cần tìm có thể trùng với right or left tùy TH ta dùng dấu như nào.
+Bên cạnh đó, ta có thể tùy chỉnh khoảng. Giá trị cần tìm chơi kiểu mép phía 3 của 2->3 or mép phía 3 của 3-4 thì tùy ta dùng cặp (>,<=) hay (<,>=)
+
+Dạng chặn bound có 1 cách rút gọn tốc độ rất hay khi ta phải chạy 1 vòng for trong vòng while bởi vì nếu số lượng phần tử lớn thì chạy hết vòng for trong TH đề bài cho 1 triệu hay 1 tỉ phần tử thì đúng là vỡ alo. Do đó ta có thể rút gọn như kiểu của branch and bound là đang đi giữa đường thấy vô lý phát có thể dừng lại luôn. Vd bài eko hay aggresive cow đều rút gọn được
+Bài eko thì với mỗi mốc cây ta tính lượng gỗ và ss với lượng gỗ hiện tại để tăng left hay giảm right. Nếu có quá nhiều tầm 1 tỉ cây thì k ổn. Do duyệt thì lượng gỗ tăng lên nên check nếu gỗ tăng quá nhu cầu là dừng luôn, k cần duyệt tiếp vòng for nữa. Ta có thể cải tiến hơn nữa bằng cách sắp xếp từ lớn đến nhỏ r duyệt từ lớn thì có thể đẩy nhanh hơn điều kiện đó xảy ra nhưng k tốt ở đây vì sort mất thêm O(nlogn) nên cũng tốn bằng việc while lồng for ở TH tệ nhất
 
 Dạng chặn bound khi thao tác với số nguyên thì cx v thôi. Nhưng nếu kết quả ta cần là số thập phân và ta phải lấy số nguyên sát với số thập phân đó thì cứ căn left hay right r xử lý thôi. Chú ý ta có thể dùng là right - left > 1 cx đc, nó sẽ dừng khi right và left là 2 số liên tiếp nhau. Nhưng ta nên đặt chung theo kiểu while right>=left khi đó chỗ dưới phải dùng là left = mid + 1 và right = mid - 1. Còn right-left>1 thì là left = mid và right = mid thôi
 => trong float point thì éo được + 1 nhé 
@@ -43,7 +49,7 @@ Các lỗi thg gặp phải trong divide and conquer: for chạy từ left đế
 
 Bài cưa gỗ hay chia bánh: độ phức tạp thuận toán kp nlogn nhé vì cái chia của ta là chia từ height cao nhất cứ chia đôi nên phải là log2(max height)
 Độ phức tạp: T(n) = O(1) nếu n < nc; T(n) = aT(n/b) + D(n) + C(n) với a là số lượng subproblems, n/b là size của mỗi subprobs, D(n) là cost của divide operation, C(n) là cost của combination operation => master theorem
-Với complexity ~ 10^6 thì độ phức tạp nên là O(nlogn), còn > 10^9 trở lên thì nên là O(n) mà thôi. <10^6 tầm ~10^4 thì có thể O(n^2). Tầm ~15-20 thì O(n!) được, cao hơn thì nên <n! or Cnk như dùng branch and bound. Còn nếu rất cao ~10^18 thì nên dùng là O(logn) thôi. Tuy nhiên tùy đề bài mà có thể khắt khe hơn
+Với complexity ~ 10^6 thì độ phức tạp nên là O(nlogn), còn > 10^9 trở lên thì nên là O(n) mà thôi. <10^6 tầm ~10^4 thì có thể O(n^2). Kiểu k được để kết quả cuối quá 10^10 v. Tầm ~15-20 thì O(n!) được, cao hơn thì nên <n! or Cnk như dùng branch and bound. Còn nếu rất cao ~10^18 thì nên dùng là O(logn) thôi. Tuy nhiên tùy đề bài mà có thể khắt khe hơn
 -> Bước combine càng lớn thì thực hiện càng lâu. Combine mà duyệt 1 lần thì đã là O(nlogn) và chỉ thao tác được tầm 10^6 data r, nếu combine lâu hơn thì k dùng đc.
 
 Trong thực tế, việc chia ra rất đa dạng. Nếu ta chia theo kiểu A(n) => A(n-1) thì nó chính là tuyến tính O(n). Nhưng ta chia đôi thì là log(n) lý tưởng nhất. Còn nh kiểu chia như lấy giá trị nhỏ nhất để chia đôi-> khi đó nên dùng segment tree để vc tìm giá trị nhỏ nhất là log(n) thì D(n) sẽ là log(n)
@@ -72,5 +78,5 @@ Lỗi sai: viết divide and conquer thì viết muốn thực hiện như nào 
 Nó có khó thêm 1 chỗ là tính xong phải chừa lại ít nhất 1 chỗ cho các cái kia khi in ra. Nhưng thực chất phần đó là của in kết quả tự nghĩ về sau, qtr là bên trên
 
 => Với dạng bài divide and conquer cơ bản đó. Ta nên chia ra tập thành 2 phần: trái - phải
-Trái và phải có tính chất đối lập nhau gì đó và ta phải tìm ra được điểm giao giữa trái và phải => bí kíp 
+Trái và phải có tính chất đối lập nhau gì đó và ta phải tìm ra được điểm giao giữa trái và phải
 

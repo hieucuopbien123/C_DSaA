@@ -16,7 +16,6 @@ bool check(long long max_value)
             num++;
             if(num>m)
                 return false;
- 
         }
         else
         {
@@ -24,8 +23,6 @@ bool check(long long max_value)
         }
     }
     return true;
- 
- 
 }
 void print_ans(long long max_value)
 {
@@ -84,7 +81,6 @@ int main()
             cin>>arr[i];
             low=max(low,arr[i]);
             high+=arr[i];
- 
         }
         while(low<=high)
         {
@@ -95,6 +91,5 @@ int main()
                 low=mid+1;
         }
         print_ans(low);
- 
     }
 }

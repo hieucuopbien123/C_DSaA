@@ -36,7 +36,6 @@ int main()
                 res[i][j] = min(res[i][j], res[i - w[t]][j] + res[w[t]][j - h[t]]);
                 // cout << "C:[" << i << "][" << j << "] = " << res[i][j] << endl;
             }
-                
         }
     }
     cout << res[W][H];

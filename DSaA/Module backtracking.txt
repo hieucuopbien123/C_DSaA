@@ -1,12 +1,12 @@
 # Backtracking
-VD bài toán giải mê cung=> ta sẽ đi vào từng hướng 1, mỗi hướng rẽ nhành lại đi vào các hướng nhỏ hơn-> nếu hướng nhỏ hơn k ra đc kết quả sẽ quay lui lại vị trí trước và tìm tiếp-> cứ thế cho đến khi nào thoát khỏi maze.
-=>nó khá giống bruteforce là xem xet mọi khả năng xảy ra của vấn đề và đi vào từng cái 1 cho đến khi nào thành công. Backtracking thg dùng để tìm các TH thảo mãn các yêu cầu nào đó. Còn bruteforce nói về các thuật toán tìm kiếm tất cả các TH có thể xảy ra. Tuy nhiên có những bài toán chỉ sử dụng đc backtracking mà k dùng đc bruteforce.
+VD bài toán giải mê cung => ta sẽ đi vào từng hướng 1, mỗi hướng rẽ nhánh lại đi vào các hướng nhỏ hơn-> nếu hướng nhỏ hơn k ra đc kết quả sẽ quay lui lại vị trí trước và tìm tiếp -> cứ thế cho đến khi nào thoát khỏi maze.
+=> nó khá giống bruteforce là xem xet mọi khả năng xảy ra của vấn đề và đi vào từng cái 1 cho đến khi nào thành công. Backtracking thg dùng để tìm các TH thảo mãn các yêu cầu nào đó. Còn bruteforce nói về các thuật toán tìm kiếm tất cả các TH có thể xảy ra. Tuy nhiên có những bài toán chỉ sử dụng đc backtracking mà k dùng đc bruteforce.
 Backtracking có thể đi với recursive tùy ý còn bruteforce thì bắt buộc duyệt liên tục đến hết.
 
 -> Ví dụ bài toán tổng quát của backtracking: in ra tất cả các string n=10 phần tử từ tập hợp X có 2 phần tử {0,1} chẳng hạn.
 Nếu ta dùng bruteforce đồng nghĩa ta phải dùng 10 vòng for liên tiếp, tức là duyệt qua từng phần tử để gán vào, mỗi phần tử ta lại duyệt qua từng giá trị 0,1 có thể gán cho phần tử đó.
-Backtracking no recursion: PP pro vì thay vì sử dụng 1 vòng for ta có thể gộp lại chỉ còn 2.
-int n, count,k;
+Backtracking no recursion: PP pro vì thay vì sử dụng 10 vòng for ta có thể gộp lại chỉ còn 2.
+int n, count, k;
 int a[100], s[100];
 void PrintSolution() 
 {
@@ -45,10 +45,9 @@ void GenerateString()
         k--; //bth thì gặp ngõ cụt thì quay lui, ngõ cụt ở TH này k phải là mê cung mà là khi đã xét hết các TH, ta sẽ quay lui
     }
 }
-//luồng chạy dự đoán: ta muốn là gán tất cả các phần tử là giá trị đầu tiên-> sau đó thay thế các phần tử ở cuối là giá trị của mảng-> sau khi chạy hết thì quay lui 1 lần rồi lại gán các phần tử hiện tại là các phần tử của mảng->mỗi phần tử đó lại gán các phần tử sau nó giá trị của mảng.=>ta k thể dùng nhiều vòng for lồng cho bài này mà buộc làm như trên -> backtrack thì ta cũng làm k recursion được nhưng phức tạp ra
+//luồng chạy dự đoán: Thực chất duy trì 2 mảng a[k] là cái cần in ra và s[k] là giá trị tiếp theo, nó luôn đi trước a[k] 1 bước mà thôi. Cán đích sẽ quay lui cái trước và lặp lại thao tác
 S[k] là một mảng có cùng kích thước với mảng đích là a[k] để bám sát các giá trị đã lưu, từ đó ta có thể check đang lưu số 0 thì số sau phải lưu tiếp số 1. Ta k dùng mảng nào để lưu các số 0,1,3 cả. Tập Sk gọi là candidate set. Mỗi TH tm Đk gọi là feasible solution.
 //luồng chạy thực tế tổng quát:
-//!
 void Backtraking()
 {
     k=1;//khởi tạo giá trị ban đầu, ở đây ta cho chạy từ 1
@@ -93,7 +92,7 @@ while(quay lui chưa hết)
 Backtracking with recursion: cái trên đau cmn đầu, nếu dùng recursive ez hơn
 void Try(int k)//thử với 1 phần tử
 { 
-    //khởi tạo tập S chứa các phần tử sử dụng {0,1,3}
+    //khởi tạo tập S chứa các phần tử sử dụng {0,1,3} ở vị trí thứ k
     for(từng phần tử của S)
     {
         a[k]= y;//xử lý 1 phần nhánh
@@ -104,7 +103,7 @@ void Try(int k)//thử với 1 phần tử
         else Try(k+1);//nếu chưa thỏa mãn thì chạy tiếp với k+1 phần tử
     }
 }
-=>vc recursive ở đây đã khiến ta xử lý vấn đề 10 vòng for lồng nhau. Vc gọi try(k+1) chính là vòng for con sau vòng for lớn=> như là nhét các vòng for vào đệ quy v
+=>vc recursive ở đây đã khiến ta xử lý vấn đề 10 vòng for lồng nhau. Vc gọi try(k+1) chính là vòng for con sau vòng for lớn => như là nhét các vòng for vào đệ quy v
 =>nó sẽ chạy gán là 0->gán các phần tử khác cũng là 0->đến khi quay lui nó sẽ gán phần tử cuối là 1 r cứ quay lui liên tục đến khi hết các vòng for.
 Công dụng nx của recursive-> rút gọn vô số vòng for có quy luật vào nhau => however, backtrack có thể thực hiện bằng 2 vòng while loop như trên tức là mọi dạng đệ quy ta đều có thể khử được 
 
@@ -130,7 +129,7 @@ void try(int k){
 }
 try(<start>);
 //Ở trên ta có thể dùng 1 trong 3 TH là được: xây tập Sk chỉ toàn candidate(nếu xây được luôn) xong for nó là cứ thế mà dùng thôi; for tất cả luôn(khi k xây được luôn) rồi gọi hàm candidate để check phần tử đó có thỏa mãn k; for tất cả nhưng k dùng hàm candidate nx mà chơi kiểu thêm thông tin vào biến nào đó để các vòng phía sau k dùng các thứ đã đánh dấu ở vòng trước chẳng hạn, khi đó xử lý xong thì phải xóa bỏ thông tin
-=> nếu có thể thì cách 3 là chuẩn nhất vì trong đa số TH nó cho độ phức tạp ít nhất. Nếu k hàm candidate hay quá trình xây tập Sk sẽ phải chạy vòng for phức tạp lồng nhau. Cách 3 có thể cần nhiều vòng for để gán các giá trị ban đầu nhưng nó chỉ là các vòng for + lại. Còn vòng for lồng của các TH kia là nhân lại cơ.
+=> nếu có thể thì cách 3 là chuẩn nhất vì trong đa số TH nó cho độ phức tạp ít nhất. Nếu k hàm candidate hay quá trình xây tập Sk sẽ phải chạy vòng for phức tạp lồng nhau. Cách 3 có thể cần nhiều vòng for để gán các giá trị ban đầu nhưng nó chỉ là các vòng for + lại. Còn vòng for lồng của các TH kia là nhân lại cơ. Sai, vòng for của cách 1 mới là ngắn nhất, vòng for cách 3 làm độ phức tạp tăng rất nhanh
 VD: bài toán xếp n queen vào bàn cờ nxn ô
 Cách 1 ta tạo tập chứa mọi ô và for tất cả các ô đã điền và loại bỏ chúng xong có được 1 tập Sk hoàn chỉnh-> for tập Sk đó
 Cách 2 ta for tất cả r gọi vào hàm candidate, for các ô đã điền và check xem ô hiện tại có đc k
@@ -147,7 +146,9 @@ Khi mà backtracking mà chỉ sai có 1 test cuối thì rất có thể là ch
 -> Backtracking phải dùng linh hoạt: Bài xếp đồ vào túi là 1 ví dụ. Ta k chặn đc cận trên nhưng vẫn backtrack được với tốc độ cao và duyệt có thứ tự.
 => Bằng cách sắp xếp cái mảng trước khi backtrack thì có thể check khi nào trùng vào giá trị lớn nhất hay nhỏ nhất. Để lấy có thứ tự thì chỉ cần cái hiện tại phải lớn hơn cái trước nó. Có thể dùng backtrack for tất cả r check or xây Sk r for đc.
 Khi đó k cần check giá trị đã đi qua bằng mảng check làm gì. Cái đó chỉ dùng cho các bài lấy A và B xong lấy B và A vẫn đc mà thôi
-Khi dùng Try vòng này để xây Sk mà cần dùng số liệu của vòng Try trước thì truyền nó thành tham số hàm Try sẽ dễ nhìn hơn, dễ nhận ra hơn.
+Khi dùng Try vòng này để xây Sk mà cần dùng số liệu của vòng Try trước thì truyền nó thành tham số hàm Try sẽ dễ nhìn hơn, dễ nhận ra hơn => hay
+Th1: lấy A->B xong lấy B->A vẫn coi là 2 TH khác nhau thì ta dùng backtracking như bth
+Th2: lấy A->B xong lấy B->A thì coi là 1 nên có thể bỏ lấy B->A để tiết kiệm thì ta chỉ cần sắp xếp mảng cần lấy rồi cứ backtracking kiểu cái sau lấy sau cái trước là được. Th2 này gọi là tổ hợp, Th1 là lấy chỉnh hợp
 
 -> Lại là backtracking giải quyết time limit tối ưu:
 Ta vẫn mắc lỗi timelimit. Để fix ta phải tối ưu đặc biệt trong hàm backtrack, tối ưu hết mức có thể như gán a=b=c nhanh hơn gán a=b; b=c => nhưng thế vẫn là chưa đủ

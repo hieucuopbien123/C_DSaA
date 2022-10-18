@@ -1,4 +1,5 @@
 # Cách tư duy code thuật toán:
+
 -> Tư duy
 --> 4 PP tư duy hướng làm: đơn giản hóa; lấy ví dụ ra giấy nhanh cho mỗi TH để tính các số; tư duy theo thứ tự và giải quyết vấn đề gặp phải quay ngược nếu cần; tư duy nhanh đào sâu vào vấn đề và giải quyết luôn nhưng chỉ dùng khi bài toán dễ
 Tư duy code: viết pseudo code cho từng bước và giải cụ thể từng case ra, khi làm xong có thể clean lại, K code khi chưa hiểu tường tận cách giải quyết bằng pseudo; giả định các hàm cần có đã có r và viết ra trước sau đó mới định nghĩa hàm; Khi code bài dài thì debug luôn theo thứ tự luồng, k phải có lỗi r mới debug-> skill debug ngay là skill qtr nhất
@@ -26,7 +27,7 @@ Vc gộp các Th giúp cho vc code trở nên ngắn gọn nhưng k dễ hiểu=
 => giả sử ta có 1 mảng, ta đặt biến max,min bằng giá trị dầu tiên của mảng và so sánh từng phần tử như bth, đặt thêm index nếu cần lấy số thứ tự của phần tử max min của mảng
 
 --> sắp xếp mảng theo thứ tự:
-=> giả sử có một mảng cần sắp xếp. Có rất nhiều thuật toán và mỗi thuật toán sắp xếp sẽ có lợi riêng trong TH khác nhau. Ta k cần quá quan tâm mà sẽ làm với cơ bản trc là thuật toán selection sort chạy 2 vòng for. Chú ý với char* thì strcmp vào để sắp xếp theo chuỗi, về mặt ý nghĩa sắp xếp chuỗi như v k có giá trị về mặt so sánh tên nào lớn hơn tên nào như sẽ sắp xếp mảng của ta theo kiểu gom các tên giống nhau vào cùng một vị trí trong mảng. Từ đó mở ra nhiều bài toán về tính các giá trị liên quan đến các đại lượng mà có cùng kiểu char*=> ta sẽ chạy vòng for->tạo biến char và gán char bằng những cái cục đầu tiên, if(char[i]==char[i-1]) thì làm gì với int[i] nhét vào biến int temp và so sánh với int max; chú ý có thể lấy 1 biến đếm để biết đi đến vị trí nào đỡ phải duyệt for lần nx để làm(k muốn tạo mảng int[] thì dùng 3 biến index, temp(lưu tổng mỗi lần),max(tổng lớn nhất))
+=> giả sử có một mảng cần sắp xếp. Có rất nhiều thuật toán và mỗi thuật toán sắp xếp sẽ có lợi riêng trong TH khác nhau. Ta k cần quá quan tâm mà sẽ làm với cơ bản trc là thuật toán selection sort chạy 2 vòng for. Chú ý với char* thì strcmp vào để sắp xếp theo chuỗi, về mặt ý nghĩa sắp xếp chuỗi như v k có giá trị về mặt so sánh tên nào lớn hơn tên nào nhưng sẽ sắp xếp mảng của ta theo kiểu gom các tên giống nhau vào cùng một vị trí trong mảng. Từ đó mở ra nhiều bài toán về tính các giá trị liên quan đến các đại lượng mà có cùng kiểu char*=> ta sẽ chạy vòng for->tạo biến char và gán char bằng những cái cục đầu tiên, if(char[i]==char[i-1]) thì làm gì với int[i] nhét vào biến int temp và so sánh với int max; chú ý có thể lấy 1 biến đếm để biết đi đến vị trí nào đỡ phải duyệt for lần nx để làm(k muốn tạo mảng int[] thì dùng 3 biến index, temp(lưu tổng mỗi lần),max(tổng lớn nhất))
 
 --> swap hai biến:
 tạo biến temp ez; chú ý swap trong main thì tạo biến giá trị cx ok, swap trong hàm khác thì phải truyền vào địa chỉ và thao tác với giá trị
@@ -55,5 +56,5 @@ bài toán 2: tạo mảng int->tạo mảng int i phần tử và for r thấy 
 (từng vấn đề nhỏ ta lại nghĩ làm sao để làm đc từng ý trong vấn đề đó)
 
 =>Thật ra như thế là giải đc mọi bài r, nhưng vấn đề là cần thay đổi tư duy một chút-> ta làm như v nó quá lâu và kém hiệu suất-> do tư duy muốn so sánh cj thì nhét nó vào một mảng-> hậu quả là bh ta so sánh int phải đi kèm với char nx nên phải tạo thêm 2 mảng int và char[][]=>fix: trc khi nghĩ tạo mảng mới, ta hãy xem xem có thể tận dụng mảng cũ đc k.
-Ví dụ: ở bài toán trên, k xảy ra vấn đè j đòi hỏi các phần tử của struct phải ở nguyên vị trí-> ta tận dụng nó luôn đỡ tạo mảng mới-> tận dụng để tính int của char giống nhau->gom các char giống nhau lại thành từng nhóm kề nhau->cần sắp xếp các char* đó. Thế là xong, ta tạo biến max gán cho int if(strcmp(char[i],char[i-1])==0), tạo biến đếm nx nếu cần truy cập vào cái gì khác of struct có tổng điểm cao nhất.
+Ví dụ: ở bài toán trên, k xảy ra vấn đè j đòi hỏi các phần tử của struct phải ở nguyên vị trí-> ta tận dụng nó luôn đỡ tạo mảng mới-> tận dụng để tính int của char giống nhau->gom các char giống nhau lại thành từng nhóm kề nhau->cần sắp xếp mảng struct theo các char* đó. Thế là xong, ta tạo biến max gán cho int if(strcmp(char[i],char[i-1])==0), tạo biến đếm nx nếu cần truy cập vào cái gì khác of struct có tổng điểm cao nhất.
 

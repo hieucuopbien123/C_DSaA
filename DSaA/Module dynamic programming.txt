@@ -8,7 +8,7 @@ Cơ chế sau khi đã tìm ra được formulation top-to-bottom:
 nếu là base case=> tính luôn kết quả base case
 nếu đã tính r => lấy luôn từ memorization
 xử lý problem hiên tại: kết hợp từ kết quả đã có từ trước + số liệu ở thời điểm hiện tại
-=> kết quả có từ trước phải giúp bài toán được ez hơn và duyệt được tuyến tính để giải. Nếu kết quả đã tính k giúp giải ra cha thì k áp dụng được là do sai formulation-> phải đổi cách áp dụng, đổi biến lưu hay cái gì đó khác
+=> kết quả có từ trước phải giúp bài toán được ez hơn và duyệt được tuyến tính để giải. Nếu kết quả đã tính k giúp giải ra cha thì k áp dụng được là do sai formulation -> phải đổi cách áp dụng, đổi biến lưu hay cái gì đó khác
 
 Dynamic programming dùng được với recursive. VD: bài tính fibonacii với memorization bằng đệ quy như ta từng tính nó chính là dynamic programming dưới dạng memorization recursion. Đó là phương pháp tính top-to-bottom của dynamic nhưng như v k áp dụng cho mọi bài. 
 Để áp dụng cho mọi bài và advance thì ta phải implement bottom-to-top mới chuẩn
@@ -27,7 +27,7 @@ Trong các bài toán có thể dùng từ ngữ khác. VD cho subsequence mà c
 Để tìm ra được cách giải bài increasing sequence với O(nlogn) ta có hướng đi như sau. Bên cạnh vc duyệt đầu or đảo lại duyệt từ cuối, ta thử xét 2TH đó nếu chỉ gặp tăng dần or chỉ gặp giảm dần thì có tính được luôn kết quả or loại bỏ luôn khỏi mảng hay k. Bài này tương tự như bài xếp hàng mà tìm khoảng cách các cặp số ấy.
 VD ở bài increasing sequence ta duyệt từ trái sang phải: Nếu chỉ gặp tăng dần-> duyệt đúng O(n) là ra kết quả chỉ là đếm số phần tử mà thôi, các phần tử đã duyệt xong thậm chí chả dùng lại; Nếu chỉ gặp giảm dần-> duyệt được 5 là length = 1-> duyệt 4 tiếp thì nhỏ hơn thì length lại reset 0 + 1 cứ thế kết quả chỉ là 1. Nhờ có 2 cái đó mà ta mới có hướng đi nhanh hơn. Nếu đang giảm tự dưng tăng-> đang là 1 -> gặp tăng sẽ ++ lên. Nếu đang tăng tự dưng giảm-> đang là 5-> gặp giảm sẽ bắt đầu 1 chuỗi mới vì kb trong 2 chuỗi, chuỗi nào dài hơn trong tương lai -> từ đó mới nghĩ đến vc làm như cách đã làm là binary search do chuỗi kia luôn tăng xong...
 
-Kinh nghiệm: khi đã đơn giản phần tử mà vẫn k ra, thử đơn giản hơn nx bằng cách chỉ dùng 1 loại phần tử, xong cứ đơn giản đến mức giải đc thì thôi
+Kinh nghiệm: khi đã đơn giản số lượng phần tử mà vẫn k ra, thử đơn giản hơn nx bằng cách chỉ dùng 1 loại phần tử, xong cứ đơn giản đến mức giải đc thì thôi
 
 1 số các tư tưởng khi làm dynamic programming/duyệt tuyến tính(2 PP k giống nhau nhưng tư duy rất gần gũi): 
 maxsub: duyệt và cho biến lưu là maxsub kết thúc bằng phần tử hiện tại i-th
@@ -65,6 +65,21 @@ Ta phải hiểu rõ biến lưu là biến lưu cái gì vì biến lưu nó ch
 
 số tầm <= 10^5 thì dùng short giảm bộ nhớ rất nhiều so với int khi bị tràn
 
+có thể memset mảng int cho giá trị cực lớn: memset(arr,0x3f,sizeof(arr));
+phân biệt priority_queue và queue: queue<int> a; thì push 1, push 2 thì <queue>.front() là 1
+priority_queue<int> a; thì push 1, push 2 thì <queue>.top() là 2 vì mặc định nó là lớn nhất trên đỉnh, pop dần từ đít=> mỗi lần ta push vào nó tự động sắp xếp để trên đỉnh là giá trị lớn nhất, ta có thể chỉnh với hàm bool riêng
+priotity_queue<pair<int, int>> a; mà k có hàm bool nó cx tự sắp xếp theo thứ tự cặp pair bên trong có key first lớn nhất lên top, dùng struct phải có hàm bool. Nếu struct có 2 int thì nên dùng pair cho nhanh như trên
+
+Phân tích bài Gold Mining hard: bài gold mining ta tưởng chặt rồi nhưng vẫn có thể rút gọn được. Khi làm các bài dynamic 2 vòng for nên lưu ý điều này vì vòng for trong có TH rút gọn được. Ở đay thực chất là ta tìm max trong khoảng L1-L2 mà ta lại dùng tuyến tính, khả năng là có cách khác vì khi ta tính thì có cái gì đó nó khiến cho data tăng dần từ trái sang phải. V thì ta muốn hàm tìm max này nó là O(1) chứ kp là O(n) nên ta tìm max từ L1-L2, xong mỗi lần duyệt thêm thì tăng dần L1, L2 lên 1 đơn vị và tìm max. 
+=> Ns đến đây thì ta cũng có cách r thủ công or dùng priority queue, nhưng ở đây có 1 tính chất làm nó nhanh hơn đó là giá trị vị trí x luôn lớn hơn giá trị từ x - L2 đến x - L1 nên giá trị ở vị trí L1 luôn nhỏ hơn vị trí L2 + 1 nên mỗi lần tăng L1, L2 lên thì max nó k thể vẫn là L1 được nên ta chỉ cần 1 biến r cứ so sánh với giá trị mới nhất thôi => sai nhé, vô tình với bài này test case nó đúng chứ thực ra sai. Ta có thể implement 1 kiểu dữ liệu lưu thứ tự và độ lớn, nó sắp xếp dữ liệu sao cho muốn lấy cái lớn nhất ra lúc nào cũng được, pop thì luôn pop thứ tự nhỏ nhất ra r tự sắp xếp lại, push thì luôn push vào r tự sắp xếp lại theo độ lớn. Về lý thuyết là vô lý vì k có kiểu dữ liệu nào vừa max heap vừa array truy cập theo index được như v nhưng ta có thể làm bằng được vs bài này. priority có tính chất là push hay pop xong nó sẽ tự sắp xếp lại với độ phức tạp O(1). VD ta push vào 1, 3, 2 thì pop top là 3 ra thì 2 tự nhô lên đầu. Ví dụ đến vị trí tiếp theo ta cần pop ra vị trí L1 và thêm vào vị trí L1 + 1=> ta k cần phải pop ngay mà chỉ cần pop khi nào top có index k thuộc đúng khoảng mà thôi. Nên ta push L1+1 vào, check top nếu có index thỏa mãn thì để nguyên đấy, nếu k thì dùng while pop nó ra đến khi nào thỏa mãn thì thôi
+=> Nch là các bài 2 vòng for nên chú ý là có TH mở rộng đc như này
+
+Kinh nghiệm khi mà ta kiểu duyệt từ đầu đến cuối và mỗi phần tử lại có nhiều Th xong ta nghĩ rằng sẽ dùng backtracking/bruteforce được thì khi đó nên nghĩ tới 2 việc: 
+1) Lưu mảng 2 chiều, vì mảng 2 chiều có thể là NN của vc chia ra nhiều TH thì các TH đó ta lưu là index của 1 chiều khác. Điều này chỉ ok khi mà chiều thứ 2 ta lưu tiếp có thể tính tuyến tính được các giá trị sau từ mảng 2 chiều các GT trước. VD: bài common subsequence thì với mỗi phần tử sequence này ta muốn for các phần từ sequence kia-> ta cho mảng chiều các phần tử sequence với nhau là xong
+2) chạy 1 vòng for nx trong vòng for dynamic để tính: VD như bài này luôn ta muốn duyệt qua số ngày hết và ngày hiện tại ta muốn nó là ngày nghỉ or làm việc 2 ngày liên tiếp, 3 ngày liên tiếp ta kb được vào TH nào -> chạy thêm 1 vòng for nx. Nó thg dùng cho các bài chọn 1 TH nào đó trong vô số TH 
+Vd: bài warehouse ta duyệt qua các cái rương và muốn lấy 1 chuỗi các rương có nhiều giá trị nhất. Nó éo le là nếu lấy rương nhiều giá trị hơn thì về sau toàn rương thấp, nếu lấy rương ít giá trị hơn thì về sau toàn rương cao. Nếu lấy nhầm tổng nhỏ thì ta phải quay lại từ đầu để duyệt lại. Khi đó ta nghĩ đến vc dùng vòng for bên trong bởi đk đề bài cho là khoảng cách không quá 3 chẳng hạn thì vòng for con bên trong chỉ for 3 cái trước đó thôi với mảng là tổng giá trị kết thúc tại vị trí thứ ith mà
+=> Bí kíp => chú ý cả độ phức tạp để quyết định dùng cài nào
+
 NP hard problem là các bài toán chưa tìm ra cách giải có độ phức tạp polynomial cho nó. VD: traveling saleman problem là NP hard.
 Bài traveling saleman giải exhautive search mất O(n!) và chỉ run trong time n<=11(branch and bound).
 Dùng dynamic cho nó thì tốc độ nhanh hơn là O(n^2)*2^n dù rất lớn nhưng đã giảm rất nhiều so với n!
@@ -79,7 +94,7 @@ int cal(int m, int n){
   nếu (m,n) đã tính rồi
     return lấy luôn kết quả iMem[m][n]
   tính giá trị iMem[m][n] với int res
-    => để tính: gọi lại hàm để tính giá trị tối ưu cho đến thời điểm trước đó chẳng hạn nếu cần dùng nó + giá trị hiện tại để tính ra iMem[m][n]
+    => Để tính: gọi lại hàm để tính giá trị tối ưu cho đến thời điểm trước đó chẳng hạn nếu cần dùng nó + giá trị hiện tại để tính ra iMem[m][n]
     => Nh Th phải dùng vòng for
   gán iMem[m][n] = res;
   return res;
@@ -91,7 +106,7 @@ Bài traveling bằng dynamic k bth là vì ta thg làm kiểu duyệt tuyến t
 
 => Để giải bài toán này bắt buộc phải GIẢI ĐƯỢC CÁI GÌ CỦA BÀI TOÁN NÀY VỚI KÍCH THƯỚC NHỎ HƠN là 1 bài toán con mà dựa vào nó tính bài toán mẹ dễ hơn=> đi từ con sang mẹ ntn-> viết formula ra. Thậm chí câu traveling thì bài toán con chả biến hóa gì cả mà câu hỏi y hệt bài toán mẹ, chỉ là kích thước nhỏ hơn, số lượng cities được visit giảm dần đi. Dễ thấy phải dùng 2 chiều mới lưu hết đc vì 1 chiều chỉ lưu được đã visit những cities nào, còn phải biết đã đi đến đâu nx nên lưu: đã đi đến đâu, còn những cities nào là 2 biến 2 chiều
 
-Để trace được thì bắt buộc trong cái mảng chỉ được có 1 hướng đi => thì đúng là v mà, bài traveling saleman thì chỉ có 1 hướng đi. iMem[i][S] là chi phí rẻ nhất bắt đầu từ tp j visit tất cả thành phố chưa visit trong S => sau đó ta chạy vòng for để xem đầu tiên đi từ i đến tp j nào đó trong S mà có giá rẻ nhất, sau đó thoát khỏi vòng for thì ta lưu lại iMem[1][S] là chỉ phí đi từ 1 đến 3 -> ... chẳng hạn thì nó chỉ lưu rõ ràng 1 con đường còn gì. Ta trace ngược lại con đường đó theo cái dynamic formula
+Để trace được thì bắt buộc trong cái mảng chỉ được có 1 hướng đi => thì đúng là v mà, bài traveling saleman thì chỉ có 1 hướng đi. iMem[i][S] là chi phí rẻ nhất bắt đầu từ tp i visit tất cả thành phố chưa visit trong S => sau đó ta chạy vòng for để xem đầu tiên đi từ i đến tp j nào đó trong S mà có giá rẻ nhất, sau đó thoát khỏi vòng for thì ta lưu lại iMem[1][S] là chỉ phí đi từ 1 đến 3 -> ... chẳng hạn thì nó chỉ lưu rõ ràng 1 con đường còn gì. Ta trace ngược lại con đường đó theo cái dynamic formula
 Các bài dynamic kiểu TSP cứ hiểu cặn kẽ formula và toán tử dịch bit là ok
 
 Lưu ý: số phần tử của mảng, ví dụ có 5 thành phố thì ta phải lưu 1 số max là 11111(binary) => tức phần tử lưu là 1 << 6 là vừa đủ nhé, chứ lưu 1<<5 chỉ là 10000
@@ -99,27 +114,13 @@ max bộ nhớ với mảng 2 chiều chỉ được 1 bên là 1 << 21
 
 Nh bài phải kết hợp backtrack với dynamic bitmask như bài CBUS, đây là bài tổng quan luôn của dạng dynamic bitmask, hiếm gặp bài bitmask nào khó hơn bài này
 
-có thể memset mảng int cho giá trị cực lớn: memset(arr,0x3f,sizeof(arr));
-phân biệt priority_queue và queue: queue<int> a; thì push 1, push 2 thì <queue>.front() là 1
-priority_queue<int> a; thì push 1, push 2 thì <queue>.top() là 2 vì mặc định nó là lớn nhất trên đỉnh, pop dần từ đít=> mỗi lần ta push vào nó tự động sắp xếp để trên đỉnh là giá trị lớn nhất, ta có thể chỉnh với hàm bool riêng
-priotity_queue<pair<int, int>> a; mà k có hàm bool nó cx tự sắp xếp theo thứ tự cặp pair bên trong có key first lớn nhất lên top
-
-Phân tích bài Gold Mining hard: bài gold mining ta tưởng chặt rồi nhưng vẫn có thể rút gọn được. Khi làm các bài dynamic 2 vòng for nên lưu ý điều này vì vòng for trong có TH rút gọn được. Ở đay thực chất là ta tìm max trong khoảng L1-L2 mà ta lại dùng tuyến tính, khả năng là có cách khác vì khi ta tính thì có cái gì đó nó khiến cho data tăng dần từ trái sang phải. V thì ta muốn hàm tìm max này nó là O(1) chứ kp là O(n) nên ta tìm max từ L1-L2, xong mỗi lần duyệt thêm thì tăng dần L1, L2 lên 1 đơn vị và tìm max. 
-=> Ns đến đây thì ta cũng có cách r thủ công or dùng priority queue, nhưng ở đây có 1 tính chất làm nó nhanh hơn đó là giá trị vị trí x luôn lớn hơn giá trị từ x - L2 đến x - L1 nên giá trị ở vị trí L1 luôn nhỏ hơn vị trí L2 + 1 nên mỗi lần tăng L1, L2 lên thì max nó k thể vẫn là L1 được nên ta chỉ cần 1 biến r cứ so sánh với giá trị mới nhất thôi => sai nhé, vô tình với bài này test case nó đúng chứ thực ra sai. Ta có thể implement 1 kiểu dữ liệu lưu thứ tự và độ lớn, nó sắp xếp dữ liệu sao cho muốn lấy cái lớn nhất ra lúc nào cũng được, pop thì luôn pop thứ tự nhỏ nhất ra r tự sắp xếp lại, push thì luôn push vào r tự sắp xếp lại theo độ lớn. Về lý thuyết là vô lý vì k có kiểu dữ liệu nào vừa max heap vừa array truy cập theo index được như v nhưng ta có thể làm bằng được vs bài này. priority có tính chất là push hay pop xong nó sẽ tự sắp xếp lại với độ phức tạp O(1). VD ta push vào 1, 3, 2 thì pop top là 3 ra thì 2 tự nhô lên đầu. Ví dụ đến vị trí tiếp theo ta cần pop ra vị trí L1 và thêm vào vị trí L1 + 1=> ta k cần phải pop ngay mà chỉ cần pop khi nào top có index k thuộc đúng khoảng mà thôi. Nên ta push L1+1 vào, check top nếu có index thỏa mãn thì để nguyên đấy, nếu k thì dùng while pop nó ra đến khi nào thỏa mãn thì thôi
-=> Nch là các bài 2 vòng for nên chú ý là có TH mở rộng đc như này
-
-Kinh nghiệm khi mà ta kiểu duyệt từ đầu đến cuối và mỗi phần tử lại có nhiều Th xong ta nghĩ rằng sẽ dùng backtracking/bruteforce được thì khi đó nên nghĩ tới 2 việc: 
-1) Lưu mảng 2 chiều, vì mảng 2 chiều có thể là NN của vc chia ra nhiều TH thì các TH đó ta lưu là index của 1 chiều khác. Điều này chỉ ok khi mà chiều thứ 2 ta lưu tiếp có thể tính tuyến tính được các giá trị sau từ mảng 2 chiều các GT trước. VD: bài common subsequence thì với mỗi phần tử sequence này ta muốn for các phần từ sequence kia-> ta cho mảng chiều các phần tử sequence với nhau là xong
-2) chạy 1 vòng for nx trong vòng for dynamic để tính: VD như bài này luôn ta muốn duyệt qua số ngày hết và ngày hiện tại ta muốn nó là ngày nghỉ or làm việc 2 ngày liên tiếp, 3 ngày liên tiếp ta kb được vào TH nào -> chạy thêm 1 vòng for nx. Nó thg dùng cho các bài chọn 1 TH nào đó trong vô số TH 
-Vd: bài warehouse ta duyệt qua các cái rương và muốn lấy 1 chuỗi các rương có nhiều giá trị nhất. Nó éo le là nếu lấy rương nhiều giá trị hơn thì về sau toàn rương thấp, nếu lấy rương ít giá trị hơn thì về sau toàn rương cao. Nếu lấy nhầm tổng nhỏ thì ta phải quay lại từ đầu để duyệt lại. Khi đó ta nghĩ đến vc dùng vòng for bên trong bởi đk đề bài cho là khoảng cách không quá 3 chẳng hạn thì vòng for con bên trong chỉ for 3 cái trước đó thôi với mảng là tổng giá trị kết thúc tại vị trí thứ ith mà
-
 -> Phân tích dynamic bottom to top đệ quy bitmask:
 Dạng dynamic nếu như k làm được theo thứ tự mà phải dùng đệ quy thì thg phải dùng bitmask. Nếu k dùng bitmask cũng được nhưng sẽ phức tạp hơn.
 Phân tích bài TSP dynamic: kết quả của ta cần là chi phí nhỏ nhất visit mọi thành phố bắt đầu từ thành phố số 1. Giả sử có 5 thành phố, ta có chi phí nhỏ nhất visit 3 thành phố 1,2,4 là a rồi, ta cần tính chi phí đi tiếp thì phải tính 2 TH là 4->3->5->1 và 4->5->3->1 (hiển nhiên). Tức là ta cần lưu vào 1 kiểu dữ liệu lưu "đã visit 1,2,4" và bắt đầu đi tiếp từ thành phố số 4. Và để xét được 2 TH trên thì phải for các thành phố chưa visit là 3 và 5 để visit nó và check. 
 
 Nếu k dùng bitmask, ta cx k thể dùng mảng 2 chiều vì làm gì có kiểu dữ liệu nào nhìn vào phát là biết đã visit 1,2,4 và bắt dầu từ 4 đâu=> ta có thể dùng struct lưu 1 vector 1,2,4 và start tại 4
 Nếu dùng bitmask thì nó chẳng qua chỉ là 1 cách cung cho ta 1 cách lưu nhanh hơn mà thôi nên ở đây ta dùng S << 1 || S << 2 || S << 4 là lưu được việc dã visit 1,2,4 => mảng 2 chiều là xong. 
-Còn kích thước bitmask S trong mảng 2 chiều thì max tầm 21 phần tử thôi vì 2^21 rất lớn r. Nếu muốn lớn hơn thì cân nhắc dùng struct
+Còn kích thước bitmask S trong mảng 2 chiều thì max tầm 21 phần tử thôi vì 2^21 rất lớn r. Nếu muốn lớn hơn thì cân nhắc dùng struct or bitset nhưng sẽ gặp vấn đề về complexity k cho phép
 
 Như v quy trình hoàn toàn giống dynamic bth dùng thêm vòng for bên trong để xử lý [m][n] mà thôi. Quy trình:
 int cal(m, S)
@@ -155,16 +156,25 @@ CBUS()
       => nên để riêng hàm check cho đk trên
     nếu lấy khách thì cập nhập số khách tăng
     nếu tới đích thì cập nhập giảm số khách
-    gọi lại hàm CBUS(từ vị trí này đi tiếp, tới các vị trí hiện tại đã đi || visited vị trí này r)
+    gọi lại hàm CBUS(từ vị trí này đi tiếp, tới các vị trí hiện tại đã đi | visited vị trí này r)
     nếu giá trị trả về hợp lý thì so sánh để update
     backtrack lại điều kiện giá trị hiện tại cho các biến check như chưa từng visit node này
   cập nhập iMem
   return giá trị
 
 => Bài CBUS là tiêu chuẩn đầy đủ hơn cho dạng dynamic bitmask như này
-Điều đặc biệt của việc làm dạng này là ta làm rất vô tư như kiểu từ node hiện tại ta visit các node khác 1 lần chứ về sau nó xử lý đệ quy phức tạp như nào ta kqt. Chỉ cần quan tâm cấp độ vòng for hiện tại đi từ 1 tới mọi node khác và TH đi tới node nào min thì update là xong. 
+Điều đặc biệt của việc làm dạng này là ta làm rất vô tư như kiểu từ node hiện tại ta visit các node khác 1 lần chứ về sau nó xử lý đệ quy phức tạp như nào ta kqt. Chỉ cần quan tâm cấp độ vòng for hiện tại đi từ 1 tới mọi node khác và TH đi tới node nào min thì update là xong vì đệ quy chỉ cần 3 bước đó là đủ. 
 
 Nên nhớ iMem[i][S] là chi phí rẻ nhất visit mọi node mà chưa visited ở trong S và bắt đầu từ i. VD đi đến node cuối thì iMem[i][S] = fee[i][1] nếu quay lại node ban đầu(nếu k thì return 0). Còn tại điểm bắt đầu thì hiển nhiên rất lớn r iMem[i][S đã visit node i] = min(iMem[k][S đã visit node i và k] + phí từ i tới k) với k là mọi node liền với i.
+
+=> Bản chất bitmask, bài bth ta giải quy hoạch động là kiểu giải tiếp bài toán mặc định bài toán con là có kết quả rồi, nhưng bài này kiểu đi từ i đến các thành phố chưa visit thì ta chưa biết kết quả bài toán con như nào, dù đi từ bottom to top. 
+
+-> Khi làm quy hoạch động ta chạy đến TH ở giữa, ta phải hiểu là các TH trước đó đã là tối ưu rồi, ta đã tìm được kết quả đến TH gần nhất rồi, bh nếu thêm số liệu này thì kết quả có thể là gì. Nếu nghĩ từ đó thì có thể phá vỡ bài toán
+
+Tương tự như đệ quy có các bước: điều kiện đệ quy giải bài toán, đk dừng đến cuối, đk dừng thỏa mãn bài toán
+Trong QH động cũng có các bước: có các con tối ưu tìm cách giải tiếp, xử lý điều kiện đầu vào, giải từ đk đầu vào đến cuối ra bài toán
+Cũng là 3 bước thôi nhưng dynamic nó khó hơn khi level 2 nó chia ra 3 dạng bài: bitmask đệ quy, dùng thêm vòng for lồng bên trong, mảng 2 chiều và điều kiện con tối ưu để giải tiếp đương nhiên tùy vào 3 dạng nên k dễ tìm ra
+=> Kinh nghiệm là ta phải hiểu rất rõ bài toán mới vào code, code mù quáng dễ đi lắm
 
 
 

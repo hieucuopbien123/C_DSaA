@@ -7,7 +7,7 @@ Với undirect và direct ta coi là chung 1 dạng vì undirect lưu 2 hướng
 1 số hướng đi khi thao tác với queue:
 Khi ta cần kiểu xóa 1 node hay xóa 1 edge trong tree đi: tạo ra 1 vector cây mới và ta duyệt như bth-> nếu thỏa mãn điều kiện thì add vào cây, nếu k thì thôi
 Với cây undirected ta lưu 2 chiều vào, với cây directed chỉ có 1 chiều
-Ta tưởng thao tác với cây khó lắm thật ra rất dễ, nó chỉ quanh đỉ quẩn lại có mỗi 1 tập mảng vector và ta muốn xây hay xóa cái gì thì chỉ cần xây edge nối 2 cái node là đc. Chỉ là có 1 mảng vector và duyệt qua các edge của graph liền nhau và cho ra kết quả mà thôi. BFS cho duyệt theo level, DFS cho duyệt xong tính backtrack về.
+Ta tưởng thao tác với cây khó lắm thật ra rất dễ, nó chỉ quanh đi quẩn lại có mỗi 1 tập mảng vector và ta muốn xây hay xóa cái gì thì chỉ cần xây edge nối 2 cái node là đc. Chỉ là có 1 mảng vector và duyệt qua các edge của graph liền nhau và cho ra kết quả mà thôi. BFS cho duyệt theo level, DFS cho duyệt xong tính backtrack về.
 
 Ta đã biết cách thao tác với các tính chất mảng đặc biệt của BFS và DFS. Đôi khi để nhìn ra thuật toán, ta nên vẽ cây và ghi ra cụ thể low và num của mỗi node trên cây chẳng hạn để tìm ra quy luật
 
@@ -33,13 +33,15 @@ DFS(<node hiện tại>, <node parent>){
     nếu đã visit 
       thì bỏ qua
     (4) ta có thể thêm rất nhiều điều kiện như node hiện tại != node parent hay bằng 1 giá trị gì đó, điều kiện về cái edge hiện tại để bắt
-  (5) thời điểm sau khi visit toàn bộ node con của node hiện tại, ta muốn làm gì
+  (5) thời điểm sau khi visit toàn bộ node con của node hiện tại, ta muốn làm gì => có thể duyệt đến đâu nhét stack
 }
 
 Vận dụng giải bài addedge: cho 1 undirected graph, có bao nhiêu cặp edge nếu nối lại thì sẽ tạo thêm đúng 1 cycle
 
-Bài toán cho có bnh cặp edge tức ta có thể tìm đc đó là cặp edge nào chứ kp chỉ là đếm số. Mà đúng 1 cycle tức là tree
+Bài toán cho có bnh cặp edge tức ta có thể tìm đc đó là cặp edge nào chứ kp chỉ là đếm số. Mà đúng 1 cycle tức là tree. Chỉ có tree mới tạo ra chỉ 1 cycle khi thêm 1 edge mới.
 Giản lược bài toán: cho undirected graph, tìm các phần của tree là spanning tree
+
+=> Kinh nghiệm: đa phần phải xác định về tính chất đặc biệt của cạnh hay node đặc biệt để xử lý. Còn vc duyệt vào stack khi ngược lại cũng là 1 pp nhưng ít dùng hơn.
 
 Nhìn vào cây mẫu để giải: 
 ví dụ từ cây này ta cần lấy ra 123456, 7 14 15 9 10 11
@@ -48,7 +50,7 @@ Như v vấn đề là lấy các node này lưu như thế nào để việc t�
 
 Theo các thứ ta đã học thì rất ez để giải bài này. Để lấy ra các node đó thì chỉ cần bỏ các node không thỏa mãn khi lấy từng cục như cục đầu tiên thì bỏ 7,8 -> cục thứ 2 là bỏ 12, 13. Nhưng rõ ràng làm sao mà ta xóa node hay edge trên cây được, điều này chỉ có thể là xây cây mới, gặp edge cần thì lấy, k cần là bỏ
 
--> Khi ta dùng DFS và BFS ta duyệt qua các node, node nào đã đi thì ta k cần đi nx. Nhưng thực tế nó cũng giúp ta duyệt qua các edge là vì ở mỗi node ta đều chạy for mọi node liên kết với node đó thì đó là các cạnh còn gì:
+-> Khi ta dùng DFS và BFS ta duyệt qua các node, node nào đã đi thì ta k cần đi nx. Nhưng thực tế nó cũng giúp ta duyệt qua các edge là vì ở mỗi node ta đều chạy for mọi node liên kết với node đó thì đó là các cạnh còn gì. Tức là thực tế ta có thể duyệt qua mọi edge với DFS:
 DFS(<node hiện tại>){
   gán đã duyệt node hiện tại
   for các phần tử nối với node hiện tại
@@ -86,8 +88,10 @@ Cx đúng vì khi nó backtrack về mà 2 cái thuộc cùng 1 cycle thì low c
 Chú ý các cạnh hay node đặc biệt: 
 bridge, backedge, forward edge, tree edge, cross edge
 
+spanning tree là tree chứa mọi đỉnh của graph với số edge tối thiểu sao cho từ 1 node có thể đi tới mọi node khác. 1 graph bị rời sẽ k có spanning tree, 1 graph liền luôn có ít nhất 1 spanning tree. Ta thg xét nó với simple undirected graph luôn có ít nhất 1 spanning tree. MST là spanning tree có weight nhỏ nhất. 1 graph n node có tối đa n^(n-2) cây khung
+
 -> Kiến thức giải weight graph:
-Disjoint set là data structure thứ 3 giúp traverse graph bên cạnh BFS và DFS tree. Ta có thể implement bằng union by rank hoặc path compression(union find) => trong đa số các Th thì path compression tốt hơn union by rank nên ta sẽ chỉ dùng path compression -> disjoint set-> Kruskal
+Disjoint set là data structure thứ 3 giúp traverse graph bên cạnh BFS và DFS tree. Ta có thể implement bằng union by rank hoặc path compression(union find) => trong đa số các Th thì path compression tốt hơn union by rank nên ta sẽ chỉ dùng path compression biểu diễn -> disjoint set được dùng cho thuật toán -> Kruskal
 
 --> 2 thuật toán tìm minimum spanning tree: Kruskal dùng Union-Find và Prim dùng priority queue implementing binary heap(k cần implement lại)
 Kruskal k tốt bằng Prim khi m > 10n(số cạnh > 10 lần số đỉnh)
@@ -102,7 +106,7 @@ Implement theo thầy, khi ta push và pop khỏi queue, ta thường nghĩ rằ
 
 Khi tìm MST, ta nên dùng Kruskal vì thuật toán đơn giản. Khi cần làm gì đó dùng đến prim mới giải được thì ms dùng prim
 Dùng Kruskal giúp ta duyệt edge weight graph theo thứ tự edge từ nhỏ đến lớn, kể cả các edge k thêm vào MST cũng duyệt qua. 
-Dùng Prim cũng thế nhưng phức tạp hơn vì nó có bước update và bước pop ra khỏi queue. Có thể phát triển là ở mỗi bước là lưu 1 cái gì ở mọi node tới node root liên quan đến vấn đề về weight. VD ta có thể lưu khoảng cách ngắn nhất từ mọi node đến node root. Prim nó giúp lưu kiểu đệ quy VD A B C là kc min thì khi ta tính kc min từ A đến C nó sẽ tính kc min từ C đến mọi node nối với A và lưu vào mảng node C đó nên dis[c] = dis[b] + weight[b,c] => cơ chế là v
+Dùng Prim cũng thế nhưng phức tạp hơn vì nó có bước update và bước pop ra khỏi queue. Có thể phát triển là ở mỗi bước là lưu 1 cái gì ở mọi node tới node root liên quan đến vấn đề về weight. VD ta có thể lưu khoảng cách ngắn nhất từ mọi node đến node root. Prim nó giúp lưu kiểu đệ quy VD A B C là kc min thì khi ta tính kc min từ A đến C nó sẽ tính kc min từ C đến mọi node nối với A và lưu vào mảng node C đó nên dis[c] = dis[b] + weight[b,c] với b là tất cả các node nối với c và tạo dis[c] là min => cơ chế là v
 Tương tự kc chi phí nhỏ nhất mà bất cứ 1 cái gì lq đến queue. Khi đó priority queue phải dùng đúng. Priority queue trong prim ở mỗi bước lưu 1 cái gì đó (nhỏ) nhất trong các node đến cái cây đang xây. Có thể là kc nhỏ nhất or khoảng cách lơn nhất ta có thể tùy chỉnh
 Để làm chủ được prim: Với thuật tìm MST thì prim nó tìm các node thỏa mãn tính chất là kc nhỏ nhất đến cái cây hiện tại thì chơi. Còn Dijkstra nó tìm mọi node có edge gắn với node vừa duyệt chứ chả lọc gì cả
 Bh ta cứ hiểu khi dùng Dijkstra nó cho phép ta duyệt 1 cái graph theo thứ tự: lấy các node và edge tách ra 1 tập riêng, khởi đầu bằng việc thêm 1 node vào-> sau đó đi từ node đó thêm dần các edge hay node khác vào tập riêng theo thứ tự do ta quyết định thứ tự nào và edge nào lấy, edge nào k. Với cơ chế là mọi node đều lưu 1 cái gì đó trong quá trình duyệt và update sau khi duyệt được từng edge
@@ -172,4 +176,13 @@ Với dynamic BFS ta cứ tư duy là 1 cái cây nhiều nhánh thì DFS sẽ c
 Mấu chốt dynamic DFS(k bitmask) ta phải tìm được formula. Bài Network: [m][n] là node m dùng k route có minimum route weight là bnh với cơ chế [m][n] = [con của m][n-1] + m->n => đừng nghĩ đến table nhé. Và TH m xen giữa nx
 
 Nhiều bài ép buộc dùng printf mới nhanh. Bắt buộc mới được cơ.
+
+TK PP:
+Duyệt xong cho vào stack check sau vòng for(bài strongly connected comps). PP lưu vào stack khi duyệt chính là 1 cách để duyệt 1 cụm các cycle lồng nhau. 
+Để chơi với cycle: 1) Dùng stack pop ra hết khi low = num có thể lấy hết các cycle lồng nhau; 2) Dùng stack xong pop ra theo low nào thì lấy được các node cùng low thôi.
+DFS low/num d/f
+BFS pred/dis
+Tính chất với bridge và art point, check được các loại edge
+Check được 1 node có bao nhiêu con rời tạo 1 nhánh mới
+
 

@@ -1,4 +1,5 @@
 Data Structure and Algorithm
+URL: https://codeforces.com/group/Ir5CI6f3FD/contests?fbclid=IwAR0VqK12dGhl9sUF9RVkzcMrmegEgOjYCjpYFne6lJezD-rwdtMmq5Q7ygQ
 
 
 # Basic
@@ -29,7 +30,7 @@ Dùng 2 lệnh này thì mỗi khi dùng cin và cout tương đương với dù
 ios_base::sync_with_stdio(false); bật hay tắt đồng bộ luồng C++ với luồng C. VD dùng cin cout của C++ sẽ bất lợi về tg vì phải chờ đồng bộ với stdin/stdout của C nên dùng như này để tắt. Các cuộc thi thường dùng nếu đầu vào lệnh dài.
 cin.tie(0); cout.tie(0); để ngăn sự đồng bộ giữa cin và cout: chỉ khi cout xuất ra hết thì cin mới nhập vào (và ngược lại). Việc đồng bộ này chỉ có chương trình tương tác mới cần. Mặc định thì cin tie to cout.
 
--> Max long trong C/C++ là 9*10^18, nếu vượt quá mốc này có thể sẽ k lưu đc. Khi dùng là lld với long long, nếu unsigned long long thì sẽ nhiều hơn gấp đôi thì cx chỉ là 18*10^18 mà thôi, vẫn bé hơn 9*10^19 và là llu. Nhiều compiler còn cho thấy khoảng long long của C nhỏ hơn khoảng long long của C++. Nên nếu thao tác với dữ liệu lớn thì nên dùng C++ iostream hơn là stdio.h
+-> Max long long trong C/C++ là 9*10^18, nếu vượt quá mốc này có thể sẽ k lưu đc. Khi dùng là lld với long long, nếu unsigned long long thì sẽ nhiều hơn gấp đôi thì cx chỉ là 18*10^18 mà thôi, vẫn bé hơn 9*10^19 và là llu. Nhiều compiler còn cho thấy khoảng long long của C nhỏ hơn khoảng long long của C++. Nên nếu thao tác với dữ liệu lớn thì nên dùng C++ iostream hơn là stdio.h
 Còn vấn đề là: double có kiểu rộng hơn unsigned long long rất nhiều. Tức là ta có thể dùng double cho dữ liệu int lớn xong in ra với: cout << fixed << setprecision(0) << a; trong thư viện iomanip. Thậm chí dùng được với long double là kiểu cực cực lớn đc luôn. Cả long long và double đều chiếm 8bytes bộ nhớ
 Nhưng có nhiều bài tập nó bắt buộc dùng long long và chỉ được dùng long long. Khi đó nó cho đầu vào là 2 số long long, nhưng cộng hai số vào thì lại thành vượt quá long long và tính tổng. Khi đó ta phải tính /10 và %10 để chia số đó 2 phần mà thao tác như bình thường. Nếu quá quá lớn thì dùng string processing.
 => tùy bài mà ô thầy cho test case ảo dã man, có gì dùng hẳn long double trong bài tập
@@ -51,6 +52,10 @@ pow(10,9) trả ra double nhé, phải cast về long long=> (long long)pow(10,9
 
 
 
+# Cách tư duy code thuật toán
+
+
+
 # DSaA mức cơ bản:
 -> Linkedlist có 1 lỗi quan trọng-> ta truyền địa chỉ vào hàm thì vc thay đổi địa chỉ trong hàm k làm thay đổi biến-> do đó có 1 cách rất đơn giản là cái root là biến global mà ta dùng trong hàm thay đổi địa chỉ thì nó sẽ bị đổi, nhưng nếu truyền nó làm đối số truyền vào hàm thì nó sẽ như là truyền copy biến global luôn và k bị đổi. Như v muốn dùng root trong hàm vô tình đổi nó mà ta lại k muốn thì cứ truyền vào làm đối số thôi
 Nếu muốn truyền địa chỉ vào làm đối số trong 1 hàm đổi địa chỉ thì chỉ cần return nó r gán biến đó = hàm ở nơi dùng là đc, or truyền con trỏ **-> return k hay vì chỉ đc vs 1 biến
@@ -61,7 +66,7 @@ Tại sao dùng ds móc nối đơn: xóa dễ, vô hạn, lưu đc giãn cách.
 
 -> Điểm lợi của binary search tree: tốc độ search của BST nhanh hơn nhiều so với search tuyến tính 1 mảng bth vì ez. Do đó dùng BST để lưu và search đã là 1 kiểu search tốt r. Do đó trong các bài tập mà có sự tìm kiếm or sắp xếp, ta có thể dùng BST cho nhanh chứ kp chỉ dữ liệu dạng cây mới dùng BST để lưu.
 
--> Dạng bài cụ thể phổ thông nhất của queue=>Đề bài Có vài cái quầy hàng ví dụ 3 cái, mỗi cái sẽ thực hiện tiếp khách, kiểu hàng đợi. Thời gian tiếp 1 khách là khác nhau do ta quyết định, thời gian khách tới là khác nhau luôn. Phải viết program tính toán thời gian xử lý từng khách đến vào các thời gian khác nhau. Thời gian chờ của họ là bao nhiêu. Thông tin về thời gian đến, thời gian handle 1 ông khách cụ thể, số lượng khách cùng đến vào 1 khoảng thời gian được lưu trong 1 file và ta sẽ lấy ra dùng.
+-> Dạng bài cụ thể phổ thông nhất của queue => Đề bài Có vài cái quầy hàng ví dụ 3 cái, mỗi cái sẽ thực hiện tiếp khách, kiểu hàng đợi. Thời gian tiếp 1 khách là khác nhau do ta quyết định, thời gian khách tới là khác nhau luôn. Phải viết program tính toán thời gian xử lý từng khách đến vào các thời gian khác nhau. Thời gian chờ của họ là bao nhiêu. Thông tin về thời gian đến, thời gian handle 1 ông khách cụ thể, số lượng khách cùng đến vào 1 khoảng thời gian được lưu trong 1 file và ta sẽ lấy ra dùng.
 => Giải quyết được bài này là giải quyết đc gần như mọi dạng queue phổ thông với bài toán thực tế. Khi làm họ có thể cho dễ hơn, lc bỏ 1 vài điều kiện, VD: cho 1 cục 'khách' cùng lúc chứ k có thời gian tới khác nhau hoặc cho thời gian tiếp khách đều như nhau với mọi khách.
 => Để giải ta phải nghĩ hàng đợi kiểu khác: Ta cần một mảng lưu 'quầy' và 1 mảng lưu 'khách' rồi từ từ lấy khách ra add vào quầy. Nếu quầy trống thì nhét vào, quầy có rồi thì cho thời gian trôi qua đến khi quầy trống thì nhét vào=>thế là xong. 
 => Cái mảng lưu quầy thì cần chứa biến 'khách' và timeremain là thời gian còn lại để xử xong khách đó, nếu timeremain về 0 tức là quầy đã sẵn sàng phục vụ. Cái mảng lưu khách là 1 queue ta add vào và lấy ra nhét vào quầy từ từ.
@@ -73,8 +78,47 @@ Tại sao dùng ds móc nối đơn: xóa dễ, vô hạn, lưu đc giãn cách.
 Đồng thời phải biết tư duy các TH đặc biệt, VD: với số thì có số 0, số +-1 các số âm dương bth, các số âm, dương cực lớn. Các điểm mút đều phải xét hết VD k có dữ liệu nào, hoặc có quá nhiều dữ liệu,..
 
 -> Về vấn đề dùng kết hợp. VD: thêm breadthSearch cho tree->phải dùng thêm queue kết hợp với tree. Lúc đó ta sẽ phân vân kb nên include tree trong queue hay queue trong tree->tùy vào mục đích ta muốn.
-VD: ta muốn thêm 1 hàm breadthSearch cho tree để khi file include tree vào phát là dùng đc hàm breadthSearch luôn=>như v phải dùng queue với kiểu dữ liệu tree là biến=>do k có template nên buộc cut cái struct dữ liệu tree sang file queue và include queue trong tree để dùng.
+VD: ta muốn thêm 1 hàm breadthSearch cho tree để khi file include tree vào phát là dùng đc hàm breadthSearch luôn=>như v phải dùng queue với kiểu dữ liệu node tree là biến=>do k có template nên buộc cut cái struct dữ liệu tree sang file queue và include queue trong tree để dùng.
 Nếu ta muốn thêm breadthSearch or 1 hàm gì đó dùng queue<Tree> nhưng chỉ cần ở file main thì có thể làm như trên nhưng có cách ez hơn. Đó là ta dùng typedef kiểu tree ở trong queue bth còn ở file main ta include<tree> trc rồi include<queue>=>do compile từ trên xuống ngay file main nên nó load kiểu tree tồn tại xong đọc file queue khai báo tree cx k sao. Trừ khi dùng queue trong tree hay tree trong queue mới căng chứ cả 2 dùng ở file khác thì ok.
+
+-> Ở mức basic, ta mặc định đã biết từ trước:
+Search: linear sentinel search, binary search, BST, hash table, self organizing search, linear search
+Các thao tác với cây BST
+Sort: Linear(insertion) sort, quick sort, selection sort, merge sort, heap sort, bubble sort
+Các tạo và sử dụng: set, priority_queue, queue, stack, doubly linked list, linked list, dequeue, map và các dạng bài tập áp dụng
+Thao tác với mảng số, mảng string, các phép tính toán, so sánh, logic và thuật toán cơ bản, đọc ghi file, cấp phát động, convert số sang string, flush đệm và các thứ cơ bản
+
+Cây BST có điểm lợi là ta có thể biểu diễn nó dạng mảng. Khi đó phẩn tử n sẽ có 2 con là 2n+1 và 2n+2 là cơ chế xây heap sort
+
+-> Kinh nghiệm:
+Đệ quy: tìm điều kiện đệ quy giải bài bao gồm tham số đầu vào -> tìm điều kiện dừng khi chạy hết -> tìm đk dừng khi thỏa mãn bài toán và giải ra được kết quả
+Khả năng chia TH if else với dấu đạt đến trình độ cao
+
+Phải xoay sở k thể tạo mảng tĩnh quá 10^6 phần tử được
+
+Khi cần 2 phần tử ta k nhất thiết phải dùng struct mà có thể dùng pair luôn cho nhanh. Khi cần kiểu 2 phần tử refer tới 1 phần tử thì dùng map<pair<>,<>> cũng tốt hơn
+
+
+
+# Thuật toán tìm kiếm:
+-> Linear Sentinel search là phiên bản cải tiến của linear search bằng cách sử dung phần tử cầm canh(sentinel).
+Ví dụ tìm trong tập S[n] 1 phần tử x. Tìm kiếm linear search sẽ dùng vòng for(int i = 0; i < n; i++)-> như v mỗi vòng phải ss i với n=> cải tiến có mỗi 1 chút là gán phần tử cuối cùng là phần tử cầm canh giá trị x tức S[n]=x=> dĩ nhiên phần tử cuối của mảng phải trống.
+=>như v ta chỉ cần ss S[k]==x thì lấy, k thì k++=> mỗi vòng kp ss để tìm đk dừng nx=> hay cái sentinel chỉ giúp làm đc dừng mà thôi.
+Các thuật toán đều cần chú ý điều kiện dừng: ví dụ tìm được là điều kiện dừng, duyệt hêt cũng là điều kiện dừng
+
+-> Self-organizing search: là thuật toán áp dụng tìm kiếm nhiều lần sẽ có lợi, tìm kiếm a và nhét a lên để lần sau tìm a sẽ lợi hơn=> thg thì sẽ swap a với cái trc nó=> tìm a càng nh thì a càng ưu tiên lên đầu-> gọi là transpose=> nếu dùng linklist thì k cần swap con trỏ mà hoán vị trường data giữa 2 biến. 
+Còn 1 cách khác nhét lên đầu luôn thì phải xóa con trỏ đó r insert vào head.
+Chuẩn hơn nx thì dùng biến count lưu số lần tìm kiếm của mỗi phần tử->mỗi lần tìm kiếm thì update nó và ss r sắp xếp lại=>chỉ có lợi cho linear search
+Trong các công cụ tìm kiếm cũng dùng self organizing, những cái gì hay tìm kiếm nó lưu sang mảng riêng cmnl
+Giải thuật tham lam(greedy algorithm) là giải thuật tìm ra 1 candidate tối ưu cho bài toán hiện tại. Xong r lại làm thao tác tương tự với bài toán kích thước nhỏ hơn do đã chọn đc 1 candidate-> giải thuật này cho lựa chọn tối ưu cho mỗi TH nhưng có thể k tối ưu cho bài toán tổng thể
+
+
+
+# Sort
+-> Merge Sort
+Giả sử ta có 1 GB data mà chỉ được sử dụng 100MB trong main memory để sort dữ liệu-> cách tốt nhất là dùng merge sort vì nó có divide and conquer, nó có thể tách data ra thành từng cục 100MB và sort 10 lần sau đó dùng merging technique. Ở đây ta đã có trong đĩa cứng 10 group, mỗi group 100MB đã sort xong r. Ta load từng 10 items của mỗi group vào và chọn ra item nhỏ nhất lưu vào disk-> thay thế item nhỏ nhất đó bằng item nhỏ thứ 2 trong group load vào main memory-> lại tìm phần tử nhỏ nhất-> lặp lại như v y hệt merge sort chỉ là ta làm với 10 group với 10 item 1 lúc
+
+Ta cần phân biệt RAM là main memory lưu ứng dụng; cache memory thg lưu ở trong CPU; Còn 1 nơi lưu trữ nx là hard disk. Đầu tiên ứng dụng sẽ được lưu trong hard disk, mở ứng dụng nên thì nó được lưu trên RAM để ta thao tác, với các tác vụ cần lưu trữ nhỏ bên trong thì nó dùng cache. Bấm lưu thì nó lại lưu tiếp vào ổ cứng. NN là vì cache nhanh và nhỏ hơn RAM, RAM nhanh và nhỏ hơn lưu trên hard disk.
 
 
 
@@ -113,6 +157,8 @@ Khi gặp các dạng bài tính toán số cực lớn kiểu có phép tính p
 -> Có các bài phải biên dịch thử với số to mới nhìn ra: như bài permutation list khi biên dịch thử vs 1000 sẽ thấy chả bh dùng hết thật, kể cả thứ tự thứ 10^9 trong từ điển cx chỉ đụng đến 13 số cuối
 Các bài tràn số, có bài phải giải hẳn bằng 1 pp khác mới đc, có bài nó chỉ bị nghẽn ở cái đầu mút cuối cùng. Khi bị nghẽn ở đầu mút cuối cùng thì chỉ cần xử lý thêm nó thôi, tách nó ra để tính riêng hay co gọn đi cx đc. Khi đó kết quả sẽ chỉ sai 1 vài test case cuối
 
+-> Nghĩ từ case chung trước ở giữa r mới tính các case ở mép
+
 
 
 # Brute Force
@@ -123,7 +169,9 @@ Brute Force là thuật toán trực tiếp duyệt qua toàn bộ và tính to�
 # Recursive:
 Có cấu trúc là một hàm gọi đến chính nó(Có các Th return phép tính và phải tính toán rất nh nhưng có nh Th nó là thuật toán nhanh). 
 
--> Cách tạo recursive: xác định điều kiện dừng-> tìm các phép tính or điều kiện giống nhau có tác dụng chia nhỏ bài toán thành con(thg là về tính toán giống nhau or về phần tử) và đk giống nhau đó phải phù hợp vs điều kiện dừng(ví dụ thao tác giống nhau từ đâu đến đâu cho đến khi gặp điều kiện dừng)-> từ đó xác định vị trí đặt hàm đệ quy-> đối số đầu vào là gì, xử lý ntn ra đc bài toán nhớ bao hết mọi TH
+Các bước: tìm cách loop bằng cách gọi lại(tham số là gì) + tìm điều kiện tính ra kết quả (hàm return) vì đôi khi hàm return nó bị tách riêng chứ k return luôn giá trị gọi đệ quy, tìm điều kiện dừng khi đi đến cuối và viết điều kiện dừng làm sao để tính ra kết quả
+
+-> Cách tạo recursive: xác định điều kiện dừng -> tìm các phép tính or điều kiện giống nhau có tác dụng chia nhỏ bài toán thành con(thg là về tính toán giống nhau or về phần tử) và đk giống nhau đó phải phù hợp vs điều kiện dừng(ví dụ thao tác giống nhau từ đâu đến đâu cho đến khi gặp điều kiện dừng)-> từ đó xác định vị trí đặt hàm đệ quy-> đối số đầu vào là gì, xử lý ntn ra đc bài toán nhớ bao hết mọi TH
 Vd: bài toán tìm GTLN của subarray của 1 mảng-> ta k thể tìm điều kiện giống nhau là cách tính toán đc, như kiểu tìm trọng lượng subarray của array mẹ thì phải tìm subarray của array con r co nhỏ dần lại->sai ở chỗ cách tính toán giống nhau nhưng nó k có qh j vs nhau(ta k thể cộng thêm 1 phần tử vào là ra val of subarray lớn đc) nên k chia nhỏ ra để tính từ từ lên toàn bộ đc. Cái tính giống nhau này chỉ có thể gom chung vào 1 hàm để tính chứ k thể tính hàm nhỏ phục vụ cho vc tính hàm to. Tính mẹ từ con rất khó ở TH này vì ta phải truyền vào cả mảng mỗi lần gọi đệ quy, xong cả biến đếm để biết nó đi đến đâu và đi đến hết ms đc dừng-> nếu làm đệ quy với phép tính như quy hoạch động thì cx đc nhưng phức tạp lắm, ta k nên đi từ con sang mẹ mà đệ quy đi từ mẹ sang con, còn từ con sang mẹ nhường cho qhđ=> ta chỉ có thể chia phần tử ra (chia phần tử là cách rất phổ biến) để tính toán bao hết mọi TH. 
 Lấy bài toán trên làm ví dụ: nếu ta tìm điểm giống nhau về tính toán thì nó phải có quan hệ vs nhau ms chia nhỏ r đệ quy đc, còn chia nhỏ phần tử thì chả cần quan hệ vì bản thân vc chia nhỏ phần tử đã là chia nhỏ để đệ quy r. Qtr là sau khi chia nhỏ thì có dùng đc k-> có vì nó yêu cầu tìm max thì kiểu gì cx phải tính hết các trọng lượng của dãy nhỏ và cx có điều kiện dừng là tính hết k sót phần tử nào. Sau khi chia như v thì xuất hiện 3 Th trái phải và 1 phần trái phải thì chỉ cần viết ra r ss là xong(chứ kp cứ return hàm đó ms là đệ quy)
 Điều kiện giống nhau để chia nhỏ:
@@ -133,7 +181,7 @@ Lấy bài toán trên làm ví dụ: nếu ta tìm điểm giống nhau về t�
 -> Bản chất của đệ quy:
 Đệ quy cho ta duyệt qua mọi phần tử khi ta return hàm với kích thước nhỏ hơn. Nếu ta chỉ return có 1 cái đồng nghĩa với vc ta chỉ cần ra 1 kết quả duy nhất ở vòng cuối cùng, nhưng đồng thời cũng cho ta duyệt qua mọi phần tử theo quy luật bất kỳ. VD: return func(n-2); thì tức là ta duyệt qua cách đôi một phần tử. Nhờ đó ta cũng dùng để kiểm tra các điều kiện khi duyệt ví dụ gặp chữ số lẻ thì làm gì hay xử lý palidrome, sai phát dừng luôn.
 Đệ quy cho ta tính toán theo 1 dãy có quy luật. VD: return func() + n; và n thay đổi theo mỗi vòng tức là cộng vào 1 dãy số có quy luật or return func()+func() thì là cộng liên tục theo chiều sâu của không gian(dùng cây nhị phân để hiểu rõ chiều bị mở rộng). 
-Đệ quy cho ta chia TH, khi ta k return mà gọi hàm nhiều lần trong hàm(VD bài tìm dãy con max) thì sẽ chia ra với điều kiện là các TH đó là duy nhất và k thể rơi vào TH khác.
+Đệ quy cho ta chia TH, khi ta k return mà gọi hàm nhiều lần trong hàm(VD bài tìm dãy con max) thì sẽ chia ra với điều kiện là các TH đó là duy nhất và k thể rơi vào TH khác. Các TH k đan xen lẫn nhau để tránh tăng complexity như tính fibonacii.
 
 -> Tối ưu đệ quy với memorization: 
 Ta có thể lưu giá trị tính toán vào 1 mảng thoải mái. Mảng đó có thể là global miễn là kết quả thay đổi được và lưu sau mỗi loop.
@@ -153,6 +201,9 @@ Khi dùng memorization thì độ phức tạp bị giảm chỉ còn là O(n*k)
 
 
 # Branch and bound
+Khi ta for tất cả phần tử và check điều kiện liên quan đến các khoảng if else phức tạp thì nên chia sao cho số lượng câu điều kiện ngắn nhất có thể. Vd bài CBUS ta chia khoảng theo từng range trong vòng for chia đôi ra hơn là check xem if else xe có bao nhiêu khách phức tạp
+Thêm vào đó vc save data và restore data trong bài CBUS ta sửa cũng ok hơn là dùng if else. Có thể dùng toán tử 3 ngôi arr[i>n ? i-n : i] cũng được
+
 -> Branch and bound giống như backtracking nhưng nhanh hơn ở 1 số bài toán dùng được. Backtracking thg dùng cho kiểu liệt kê hết mọi TH, nhưng VD tìm đường đi ngắn nhất chẳng hạn thì đang xét dở tự dưng thấy nó lớn quá thì ta xét ĐK dừng luôn k tính tiếp nx sẽ nhanh hơn, bài toán của branch and bound luôn chỉ có 1 kết quả. Mọi thứ ta vẫn code y nguyên nhưng thêm 2 biến nx:
 Biến res: lưu kết quả đúng nhất ở thời điểm hiện tại
 Biến curRes: lưu kết quả đang tính toán-> nếu đang tính toán mà kém hơn kết quả đúng nhất-> k cần try k + 1 nx mà dừng luôn; nếu đã thỏa mãn đk cuối thì cập nhập kết quả mới đúng nhất nếu thấy cái đúng hơn
@@ -183,8 +234,7 @@ void Try(int k)
 Ta vẫn có thể thêm biến check[n] như khi dùng backtrack PP3 để tăng tốc độ
 Branch and bound có thể mở rộng nx bằng cách xử lý chặt chẽ hơn <curRes vẫn thỏa mãn so với res> bằng cách thêm curRes với phần còn lại là TH tối ưu nhất vẫn thỏa mãn thì mới đi tiếp
 
-
--> Tư duy branch and bound: thay vì backtrack rằng duyệt hết thì kiếm tra điều kiện thỏa mãn thì lấy. Ta dùng duyệt đến đâu kiểm tra điều kiện đến đấy. Nếu điều kiện k thỏa mãn thì backtrack luôn -> như v nếu duyệt hết, tức là trên đường đi đều thỏa mãn hết r. Ta kiểm tra điều kiện của cái cuối nx thôi r tính luôn
+-> Tư duy branch and bound: thay vì backtrack rằng duyệt hết thì kiểm tra điều kiện thỏa mãn thì lấy. Ta dùng duyệt đến đâu kiểm tra điều kiện đến đấy. Nếu điều kiện k thỏa mãn thì dừng backtrack luôn -> như v nếu duyệt hết, tức là trên đường đi đều thỏa mãn hết r. Ta kiểm tra điều kiện của cái cuối nx thôi r tính luôn
 Sơ đồ mở rộng: 
 for bth
 	handle
@@ -202,37 +252,20 @@ for bth
 Bên cạnh các cách đó thì còn dựa vào kinh nghiệm. Ta có thể tra google dạng đơn giản hơn của bài toán để áp dụng vì nhiều bài có tính chất giúp giải đơn giản hơn nhưng ta kb nên tự giải rất chậm
 Cho đến bh ta mới nhận ra tầm quan trọng kinh khủng của clean code và pseudo code.
 Khi code không rung chân, k lắc lư người, k hát, k nghĩ linh tinh, tập trung và k ồn ào, yêu thích.
-Lỗi backtrack: lỗi thứ nhất là khi Try(k+1)=> nghiêm cấm k++; lỗi thứ 2 là trong backtrack nghiêm cấm dùng break và continue => nó phải quay lui nên nếu k chạy thì chỉ cần để {} trống; k đặt tên biến là index, count, max, min, new,..
+
+Lỗi backtrack: lỗi thứ nhất là khi Try(k+1) => nghiêm cấm k++; lỗi thứ 2 là trong backtrack nghiêm cấm dùng break và continue => nó phải quay lui nên nếu k chạy thì chỉ cần để {} trống, nếu chưa gán thay đổi gì thì dùng continue được hoặc quay lui trước r continue sau; k đặt tên biến là index, count, max, min, new,...
 
 -> Backtracking với 10^9 phần tử thì dù tập candidate có nhỏ thế nào cũng sẽ toang
-Trong khi backtrack, ta sẵn sàng khởi tạo thêm hàng đống mảng hay dữ liệu phức tạp ở 1 thời điểm để biến việc check trở thành hằng số ở mỗi bước. Như bài string binary k chứa bao nhiêu số 0 liên tiếp thứ mấy-> ngày xưa ta sẽ làm là cứ sinh ra binary r vào trong chạy vòng for check. Nhưng ta bt pp branch and bound rằng nhét cái điều kiện check đó ra ngoài thì điều kiện đó sẽ là nếu vượt quá số 0 phát k đi tiếp nx mà dừng luôn. Nhưng để check xem có bao nhiêu số 0 cho đến h ta phải dùng mảng. Nếu dùng 1 biến là ăn cứt ngay vì nếu gặp 1 thì reset về 0, về sau chuyển sang 0 thì k được nx. Ta khai báo thêm 1 mảng là đc.
+Trong khi backtrack, ta sẵn sàng khởi tạo thêm hàng đống mảng hay dữ liệu phức tạp ở 1 thời điểm để biến việc check trở thành hằng số ở mỗi bước. Như bài string binary k chứa bao nhiêu số 0 liên tiếp thứ mấy -> ngày xưa ta sẽ làm là cứ sinh ra binary r vào trong chạy vòng for check. Nhưng ta bt pp branch and bound rằng nhét cái điều kiện check đó ra ngoài thì điều kiện đó sẽ là nếu vượt quá số 0 phát k đi tiếp nx mà dừng luôn. Thực chất ta hoàn toàn check từ trước khi dùng điều kiện dừng luôn về số lượng số 0. Nhưng để check xem có bao nhiêu số 0 cho đến h ta phải dùng mảng. Nếu dùng 1 biến là ăn cứt ngay vì nếu gặp 1 thì reset về 0, về sau chuyển sang 0 thì k được nx. Ta khai báo thêm 1 mảng là đc.
 
-
-
-# Thuật toán tìm kiếm:
--> Linear Sentinel search là phiên bản cải tiến của linear search bằng cách sử dung phần tử cầm canh(sentinel).
-Ví dụ tìm trong tập S[n] 1 phần tử x. Tìm kiếm linear search sẽ dùng vòng for(int i = 0; i < n; i++)-> như v mỗi vòng phải ss i với n=> cải tiến có mỗi 1 chút là gán phần tử cuối cùng là phần tử cầm canh giá trị x tức S[n]=x=> dĩ nhiên phần tử cuối của mảng phải trống.
-=>như v ta chỉ cần ss S[k]==x thì lấy, k thì k++=> mỗi vòng kp ss để tìm đk dừng nx=> hay cái sentinel chỉ giúp làm đc dừng mà thôi.
-Các thuật toán đều cần chú ý điều kiện dừng: ví dụ tìm được là điều kiện dừng, duyệt hêt cũng là điều kiện dừng
-
--> Self-organizing search: là thuật toán áp dụng tìm kiếm nhiều lần sẽ có lợi, tìm kiếm a và nhét a lên để lần sau tìm a sẽ lợi hơn=> thg thì sẽ swap a với cái trc nó=> tìm a càng nh thì a càng ưu tiên lên đầu-> gọi là transpose=>k cần swap con trỏ mà hoán vị trường data giữa 2 biến. 
-Còn 1 cách khác nhét lên đầu luôn thì phải xóa con trỏ đó r insert vào head.
-Chuẩn hơn nx thì dùng biến count lưu số lần tìm kiếm của mỗi phần tử->mỗi lần tìm kiếm thì update nó và ss r sắp xếp lại=>chỉ có lợi cho linear search
-Trong các công cụ tìm kiếm cũng dùng self organizing, những cái gì hay tìm kiếm nó lưu sang mảng riêng cmnl
-Giải thuật tham lam(greedy algorithm) là giải thuật tìm ra 1 candidate tối ưu cho bài toán hiện tại. Xong r lại làm thao tác tương tự với bài toán kích thước nhỏ hơn do đã chọn đc 1 candidate-> giải thuật này cho lựa chọn tối ưu cho mỗi TH nhưng có thể k tối ưu cho bài toán tổng thể
-
-
-
-# Sort
--> Merge Sort
-Giả sử ta có 1 GB data mà chỉ được sử dụng 100MB trong main memory để sort dữ liệu-> cách tốt nhất là dùng merge sort vì nó có divide and conquer, nó có thể tách data ra thành từng cục 100MB và sort 10 lần sau đó dùng merging technique. Ở đây ta đã có trong đĩa cứng 10 group, mỗi group 100MB đã sort xong r. Ta load từng 10 items của mỗi group vào và chọn ra item nhỏ nhất lưu vào disk-> thay thế item nhỏ nhất đó bằng item nhỏ thứ 2 trong group load vào main memory-> lại tìm phần tử nhỏ nhất-> lặp lại như v y hệt merge sort chỉ là ta làm với 10 group với 10 item 1 lúc
-
-Ta cần phân biệt RAM là main memory lưu ứng dụng; cache memory thg lưu ở trong CPU; Còn 1 nơi lưu trữ nx là hard disk. Đầu tiên ứng dụng sẽ được lưu trong hard disk, mở ứng dụng nên thì nó được lưu trên RAM để ta thao tác, với các tác vụ cần lưu trữ nhỏ bên trong thì nó dùng cache. Bấm lưu thì nó lại lưu tiếp vào ổ cứng. NN là vì cache nhanh và nhỏ hơn RAM, RAM nhanh và nhỏ hơn lưu trên hard disk.
+-> Có vài lưu ý rất hay: 
+Bản chất backtracking là có các ô và ta sắp xếp các thứ vào các ô mà thôi, nếu ta hiểu các ô đó là gì, xếp cái gì thì sẽ hiểu tường tận nó. 
+Khi backtrack cần làm rõ 2 dạng bài là sắp xếp có lặp hay không lặp. Với các dạng bài cho phép lặp kiểu giai thừa như 123 khác 213 VD bài TSP thì max ta chỉ xử lý với n = 20 nhưng nếu 123 và 213 như nhau VD bài Knapsack thì có thể xử lý với n = 30, 2 dạng này rất quan trọng và trong code implement rất dễ nên cần phân biệt. 
 
 
 
 # Segment Tree
-Thông thường ta lưu data vào array thì update 1 phần tử tốn O(1), lấy tổng từ vị trí l đến vị trí m sẽ tốn O(n) với n là kích thước của mảng(bằng vòng for). Nhưng dùng segment tree sẽ là 1 array lưu tổng từ vị trí số 1 đến vị trí thứ i. Như v tính tổng sẽ là O(logn) còn update lại thành O(n)=> thg dùng khi dữ liệu ít cần update. => tùy loại tree
+Thông thường ta lưu data vào array thì update 1 phần tử tốn O(1), lấy tổng từ vị trí l đến vị trí m sẽ tốn O(n) với n là kích thước của mảng(bằng vòng for). Nhưng dùng segment tree sẽ là 1 array lưu tổng từ vị trí số 1 đến vị trí thứ i. Như v tính tổng sẽ là O(logn) còn update lại thành O(n) (tức input r xây lại) => thg dùng khi dữ liệu ít cần update => tùy loại tree
 
 -> Biểu diễn: node lá là element of input array, các internal node biểu diễn thứ cần lưu giữa các node con, ở dạng bài này thì node trong lưu tổng 2 node con
 => Ứng dụng + Divide and Conquer: Bài tính diện tích hcn lớn nhất trong biểu đồ histogram
@@ -247,7 +280,7 @@ Thông thường ta lưu data vào array thì update 1 phần tử tốn O(1), l
 
 
 # Other
-Lỗi đau đớn nhất: sai compiler; chuyển từ int sang long => đây chính là lỗi occho nhất. Làm perfect mà vẫn sai thì check các lỗi này
+-> Lỗi đau đớn nhất: sai compiler; chuyển từ int sang long => đây chính là lỗi occho nhất. Làm perfect mà vẫn sai thì check các lỗi này
 
 1 vài lỗi chết người: chú ý unsigned long long với i = 0 thì -- nó ra số cực lớn vì underflow chứ éo ra âm làm ta sai-> nên ưu tiên long long thôi
 Bài tìm fibo word cho ta kinh nghiệm khi ta k thể lưu được thì ta cứ chia nhỏ. ở đây ta dùng divide and conquer 2 cái lồng nhau vì chia nhỏ 1 lần vẫn bị tràn bộ nhớ, ta lại chia nhỏ tiếp -> cứ divide and conquer liên tục

@@ -7,6 +7,7 @@ int curNum = 0;
 int bridges = 0;
 int numberOfAPs = 0;
 vector<bool> countThis(100001, false);
+int dfs_child = 0;
 
 void find_bridges(int u, int p)
 {
@@ -20,6 +21,9 @@ void find_bridges(int u, int p)
         int v = adj[u][i];
         if(v == p) continue;
         if(num[v] == -1){
+            if(p == -1){
+                dfs_child++;
+            }
             find_bridges(v, u);
             low[u] = min(low[u], low[v]);
             if(countThis[u] == false){
@@ -58,7 +62,12 @@ int main()
     
     for(int i = 1; i <= numberOfVertices; i++){
         if(num[i] == -1){
+            dfs_child = 0;
             find_bridges(i, -1);
+            if(dfs_child > 1) {
+                countThis[i] == true;
+                numberOfAPs++;
+            }
             curNum = 0;
         }
     }
