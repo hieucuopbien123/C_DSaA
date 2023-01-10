@@ -90,7 +90,7 @@ Tương tự nếu phân bố k đồng đều. VD chia 2 bucket: 1 bucket chứ
 Space complexity: O(n+k) vì n cho từng phần tử, k cho từng bucket
 
 -> Phân biêt space complexity và auxiliary space:
-Space complexity là độ phức tạp của không gian. Vd dùng mảng 2 chiều khác với dùng mảng 1 chiều, với mỗi 1 phần tử ở mảng 1 chiều, ta có thêm 1 chiều nữa hay 1 mảng nữa bên trong. Tức là space complexity là số lần gọi lồng nhau vòng loop or đệ quy. 
+Space complexity là độ phức tạp của không gian. Vd dùng mảng 2 chiều khác với dùng mảng 1 chiều, với mỗi 1 phần tử ở mảng 1 chiều, ta có thêm 1 chiều nữa hay 1 mảng nữa bên trong. Tức là space complexity là số lần gọi lồng nhau vòng loop or đệ quy để duyệt hết mang/
 Auxiliary space là bộ nhớ phụ thêm vào or temporary space dùng trong thuật toán
 Thật ra space complexity cũng chính là auxiliary space khi ta nói tới các thuật toán đệ quy, nó cùng giá trị thôi. VD có n lần gọi đệ quy, bộ nhớ sử dụng mỗi lần gọi là 1 thì O(n) là auxiliary space và cùng là space complexity còn gì. Còn space complexity dùng trong vòng loop thường là O(1) thôi vì họ k thể create n vòng loop lồng nhau với n là số lượng phần tử được mà khi đó phải chuyển sang đệ quy là backtrack. Các thuật toán k đệ quy thì 2 giá trị này sẽ khác nhau
 

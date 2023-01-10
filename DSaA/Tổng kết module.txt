@@ -126,6 +126,11 @@ Ta cần phân biệt RAM là main memory lưu ứng dụng; cache memory thg l�
 Adhoc tiếng là giải pháp cho 1 vấn đề cụ thể. adhoc problems là các thuật toán k rơi vào các dạng chung đã biết mà là 1 vài thứ riêng biệt giải quyết 1 vấn đề cụ thể.
 VD: bấm phím điện thoại hay cut down store là những dạng toán kiểu chỉ giải quyết được 1 vấn đề cụ thể, vd trong thực tế chả có cái nào giống dạng bấm phím đc nx, nó chỉ xuất hiện trong dạng bấm điện thoại này thôi
 
+-> Bài toán ABCD-ABC=DCDC đi tìm ABCD. Chia case như bảng tính lớp 1
+D = C + C => C + 10 - B = D => D > C and B > C and B + 10 - A - 1 = C => A - 1 = D
+D + 10 - C = C and D < C => C - B - 1 = D and C > B + 1 -> B + 10 - A = C => A - 1 = D
+=> Giải PT 4 ẩn ra kết quả
+
 -> Cộng 2 số cực lớn
 Cách 1: dùng unsigned long long a,b; thì 2 số đó phải lưu được trong khoảng đó-> sau đó cộng vào mà quá khoảng thì phải làm kiểu chia lấy dư và nguyên cho 10 r cộng từng phần
 Cách 2: dùng long double và dùng cout << fixed << setprecision(0);
@@ -142,7 +147,7 @@ Các tính chất của mod:
 tính chất trên liên quan đến số nguyên tố
 (a + b) mod c = (a mod c + b mod c) mod c
 a*b mod c = (a mod c * b mod c) mod c  => k đúng khi có phép chia
-tương đương với: a^b mod c = (a mod c)^b => phép nhân và cộng chả cần nhớ cũng được vì nó như nhau và hiển nhiên, nhưng tính chất về số nguyên tố phải nhớ
+tương đương với: a^b mod c = (a mod c)^b mod c => phép nhân và cộng chả cần nhớ cũng được vì nó như nhau và hiển nhiên, nhưng tính chất về số nguyên tố phải nhớ
 
 Phép toán chết tiệt: định lý fermat về modulo:
 nếu p nguyên tố, a nguyên bất kỳ thì a^p mod p = a
@@ -280,8 +285,11 @@ Thông thường ta lưu data vào array thì update 1 phần tử tốn O(1), l
 
 
 # Other
--> Lỗi đau đớn nhất: sai compiler; chuyển từ int sang long => đây chính là lỗi occho nhất. Làm perfect mà vẫn sai thì check các lỗi này
+-> Lỗi: sai compiler; chuyển từ int sang long => đây chính là lỗi occho nhất. Làm perfect mà vẫn sai thì check các lỗi này
 
 1 vài lỗi chết người: chú ý unsigned long long với i = 0 thì -- nó ra số cực lớn vì underflow chứ éo ra âm làm ta sai-> nên ưu tiên long long thôi
 Bài tìm fibo word cho ta kinh nghiệm khi ta k thể lưu được thì ta cứ chia nhỏ. ở đây ta dùng divide and conquer 2 cái lồng nhau vì chia nhỏ 1 lần vẫn bị tràn bộ nhớ, ta lại chia nhỏ tiếp -> cứ divide and conquer liên tục
+
+Khi viết if else phải viết đủ TH
+
 
