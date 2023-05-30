@@ -1,5 +1,7 @@
 ﻿C++:
 
+
+
 # Basic
 1 số compiler k dùng được _getch()=> chỉ nên dùng getch() trong thư viện conio.h or dùng system("pause") trong stdlib.h
 cout<<(()?:)<<endl;or()?(cout<<):(cout<<);or int a=(b)?10:100;//có đủ ngoặc ms in đc,nhớ lỗi ss bằng
@@ -199,4 +201,8 @@ std::to_string(số)=>đổi số thành string, có thể dùng stringstream
 string.data()=>từ string về const char* giống c_str()
 <stringstream>.str() trả về string từ stringstream
 c_str() là const char* từ string
+
+-> Objective-C (Obj-C) là một ngôn ngữ lập trình hướng đối tượng do Steve Jobs sáng lập để viết ứng dụng cho iOS, Mac OS X. Nó được phát triển dựa nền tảng của C và C++ nhưng chỉ chuyên cho iOS
+
+-> GTK là viết tắt của "GIMP Toolkit" (Trình bày thông tin chi tiết cho môi trường X), đôi khi còn được gọi là "GNOME Toolkit". GTK là một bộ công cụ ứng dụng đồ họa giao diện người dùng (GUI) được phát triển để xây dựng các ứng dụng đồ họa chạy trên nhiều nền tảng khác nhau như Linux, Windows và macOS, chỉ dùng C thuần
 
