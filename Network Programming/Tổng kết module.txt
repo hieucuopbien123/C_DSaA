@@ -1,0 +1,189 @@
+Lập trình socket:
+
+
+# Basic
+-> Con trỏ hàm trong C++ có tác dụng giúp dùng làm callback function hay trong event drive programming gọi hàm khi bắt sự kiện
+Constant pointer: int * const a
+Pointer to a constant value: const int * a
+Constant pointer to a constant value: const int * const a
+
+-> Slide 7 Lecture 2 đầy đủ TCP/IP
+Slide 27 mô tả đầy đủ 3 way handshake
+
+-> Có 3 mô hình thì hybrid là mô hình vừa P2P, vừa client server. Peer register content at central server và peer query central server for data. Và các peer có thể tương tác trực tiếp với nhau, nó chỉ cần query server để lấy ip address of buddies.
+Tất cả cơ sở hạ tầng được abstract hết và các app tầng app chỉ cần qt việc sử dụng.
+Mục tiêu là xây dựng 1 ứng dụng mà nhiều client dùng nó có thể tương tác với nhau thông qua internet. Nếu 2 process cùng máy sẽ tương tác trực tiếp inter-process tùy vào hđh, nếu khác host thì trao đổi message qua mạng
+Client process khởi tạo kết nối, server process wait to be contacted
+
+Client luôn biết gì đó về server, ít nhất là socket address của server. Còn server k cần biết gì về client
+Socket server khi nhận tin từ 1 socket client phải dựa vào header để biết phải gửi tiếp tới socket client nào khác. Server khi nhận phải demultiplexing để biết điều đó. Khi nó gửi đi sẽ phải multiplexing để đóng thêm transport header để gửi đi tiếp (để về sau còn demultiplexing tiếp).
+Quá trình demultiplexing là việc nó xem IP header(đến từ tầng network) và transport layer có port number. Dựa vào 2 cái đó mà gửi tiếp tới đích
+
+Chỉ cần nhớ gửi 3 thứ: ACK, SEQ, Data. Với ACK cái muốn nhận, SEQ là cái đang gửi
+
+Dùng buffer để control flow. Kích thước buffer có giới hạn nên lượng TCP segment payload 1 lần gửi k quá lớn
+
+1 socket được xđ bởi 4 tuple: source id, des ip, source port, des port
+1 webserver có nhiều socket khác nhau cho mỗi client
+
+-> 2 nhiệm vụ của router là routing và forwarding. Routing là xđ đường đi của gói tin tới đích với routing alg, xđ được path. Forwarding là quá trình đưa packet từ đầu input tới output của 1 router, tức là qtr xử lý trong 1 router.
+
+Interface là gì. Nó giống ip address. IP address gắn với 1 interface. Nó là connection giữa router, host và physical link. 1 host thường có 1 or 2 interface VD Ethenet hay wireless 802.11, còn router thường có nhiều interface. Gói tin đi vào từng interface là vào từng cụm mạng chứa nhiều host khác nhau rồi tiếp tục xem path đi vào máy nào. Slide 44
+
+-> NAT khiến mọi datagram đi và về local network đều chỉ dùng 1 IP address, 1 cho đi và 1 cho về. Vc config đổi IP bên trong hay đổi ISP đều k visible to the world, cũng tăng bảo mật
+Thuật toán khá đơn giản, replace ip và port của local sang NAT IP address và new port, tương tự với chiều nhận về
+NAT IP là ip được gán riêng cho cục đó để connect ra thế giới
+port của mỗi cục là khác nhau. mà port có 16 bit, đủ để tạo ra 60000 connection đồng thời mà chỉ cần 1 ip address
+
+=> Thuật toán NAT là 1 giải pháp cho tình trạng thiếu địa chỉ nhưng gây ra tranh cãi:
+- Router thực hiện thuật toán NAT để redirect tới đích nhưng nó chỉ nên xử lý max tới 3 layer, NAT khiến nó phải xử lý cả tầng transport vì liên quan tới port
+- NAT khiến P2P app trở nên khó xử lý vì dev k muốn qt tới mấy vấn đề về router mà chỉ cần dùng interface code thôi
+- Tình trạng thiếu địa chỉ nên được xử lý tốt hơn bởi IPv6
+=> Slide 53 xử lý vấn đề của NAT
+
+-> SDN (Software Defined Networking) là 1 PP mà admin sẽ manage network thông qua lower level functionality. Cách truyền thống thì network hardware sẽ xđ cách package được forward nhưng bh điều đó là do software quản lý. 
+Nó chia tách Network control plane và data plane. Control plane quản lý network topology và forward behavior, còn data plane forward packet theo cái behavior mà control plane được config
+
+-> unicast, multicast, broadcast
+Unicast: This is a one-to-one communication method where data is sent from a single source to a single destination. In this method, the sender sends data to a specific IP address and the data is received only by the intended recipient. Unicast is commonly used in most everyday internet communications, such as email, web browsing, and file transfer.
+
+Multicast: This is a one-to-many communication method where data is sent from a single source to a group of recipients. In this method, the sender sends data to a multicast IP address, and the data is received by all hosts that have joined the multicast group. Multicast is commonly used for streaming live video, audio, and other multimedia content over the internet.
+
+Broadcast: This is a one-to-all communication method where data is sent from a single source to all the hosts on a network. In this method, the sender sends data to the broadcast address, which is a special IP address that represents all hosts on a network. Broadcast is commonly used for network discovery, such as finding other hosts on a network, or for sending network-wide announcements. However, it is generally not used for data transfer, as it can consume a lot of network bandwidth and create network congestion.
+Broadcast buộc dùng UDP. Ta dùng TCP và gửi lại tất cả client thì tự gọi là broadcast nhưng thực tế ta đang gửi lần lượt từng người 1 liên tục.
+
+-> UDP: connection k check => nên bắt error khi connect vì nếu k bắt thì nó cứ tưởng connect thành công sẽ chạy tiếp recvfrom và kẹt blocking ở hàm đó vô tận
+
+VD khi dùng các giao thức FTP và POP: phía người dùng chỉ nhìn thấy kết quả, k qt các qtr gửi liên tục checking các thứnhưng cơ chế ngầm bên trong gửi qua lại rất nhiều
+
+
+
+# Xử lý bytestream trong socket
+-> Vấn đề bytestream trong socket:
+1) send "bull" -> lưu vào buffer là bull
+send "dog" -> lưu tiếp vào buffer là dog
+=> lấy ra bulldog => nhưng gửi vào 2 message mà
+
+2) Gửi 1 message dài hơn app.buffer nhưng quá lớn nên tách thành 2 message => message 1 kín luôn socket buffer và đang xử lý thì nhận về message 2 k còn chỗ mà lưu
+
+3) 1 message dài quá cho vào socket buffer đủ => nhưng app buffer lại ít hơn socket buffer nên chỉ lấy ra 1 phần để xử lý nên sai
+
+4) Sender muốn gửi bulldog => nhưng window size là 4 quá nhỏ nên chỉ gửi bull => sau đó gửi dog nhưng application buffer của receiver lại lấy bull ra xử lý luôn là k đúng
+
+5) Gửi tin 2 tin nhưng tin 1 lỗi thì yêu cầu gửi lại tin 1 => usecase k xảy ra với TCP => nó tự động gửi lại nếu message bị lỗi. Thậm chí trong code phía người dùng ta k cần lo điều đó mà chi cần xử lý data nhận về, còn cơ chế fault tolerance hoàn toàn tự động.
+
+-> Các cách fix vấn đề trên
+C1: Fixed length message
+Phía gửi: nếu kích thước lớn hơn buffer là 5 bytes thì phải chỉa ra thành nhiều cục 5 bytes, nếu bé hơn 5 bytes thì pad 0 vào cho đủ 5 bytes => lãng phí
+=> Hoặc phía nhận gặp 5 bytes đầu xử lý thiếu dữ liệu sẽ k tốt
+
+C2: Dùng delimeter
+Tiết kiệm, gửi message1 delimeter message2 delimeter => miễn tổng kích thước nhỏ hơn tối đa là được. Còn đâu cứ gửi liên tiếp vào buff thoải mái
+=> message mà chứa delimeter là toang. Ở đây ta coi delimeter là ký tự kết thúc của mỗi message luôn
+
+C3: Length prefix
+Message length --- Real Message
+Receiver sẽ tránh được vì chờ đủ dữ liệu mới xử lý chứ k xử lý khi chưa đủ dữ liệu
+=> Cách mạnh nhất
+
+
+
+# Xử lý message
+1 header của message mà socket truyền cho nhau nên chứa: command type, độ dài, type of data
+
+MESSAGE: [Header][Body]
+Header: chứa thông tin message type, body size
+Body: chứa data body thực sự
+=> Phần header nhỏ và kích thước fix cứng
+
+Data body: text oriented hoặc bytes oriented, chứa control message
+[Command][real data] => thg gắn nhiều trường nối nhau ngăn cách bằng ký tự đặc biệt tự định nghĩa (với text oriented). Còn bytes oriented có cách để decode và encode qua lại dạng class object luôn đó
+
+
+
+# Các mô hình ở phía server(slide):
+Có 2 quá trình là chờ gói tin từ client tới và copy data từ kernel vào bộ đệm của ứng dụng để xử lý
+
+Blocking I/O Model: accept, connect, send, recv
+Pb: recv nhận data từ socket mà đã được connect (TCP)
+recvfrom nhận data từ socket nhưng k cần connect từ trước (UDP). Cả 2 hàm đều blocking.
+Cơ chế: Server gọi recvfrom nhận sẽ gọi 1 system call tới kernel, kernel chờ dữ liệu tới từ tầng vật lý, rồi lưu vào bộ đệm của tầng mạng. Kernel nhận data sẽ copy datagram từ kernel vào user và return OK to user mode. Vc xử lý là socket là ở tầng transport. Tất cả đều blocking mode. 
+
+Non blocking I/O model:
+Process gọi liên tục lệnh recvfrom để check data lấy được từ kernel. Kernel gửi lại liên tục data, nếu k có data vẫn gửi lại liên tục báo là chưa có data. Như v hàm recvfrom gọi rồi kết thúc liên tục chứ k gọi 1 lần r block hoàn toàn cái app. Xen giữa các lúc gọi recvfrom, app có thể làm các cái khác. 
+Nếu nhận data vào đúng lúc đang k gọi check recvfrom thì sao. Thực tế chả sao cả vì data được lưu trong đệm, lần gọi recvfrom sau sẽ bảo kernel lấy từ đệm ra xử lý thôi mà.
+
+Multiplexing IO Model:
+Block trong 2 hàm select và recfrom, giữa 2 hàm đó vẫn thực hiện task khác được.
+
+Signal driven I/O model:
+Chỉ block ở phase 2 khi xử lý và gửi lại data cho user. 
+Còn phase 1 chờ data xuất hiện thì nó k block mà connect signal slot để khi có data nó tự báo về bất đồng bộ
+
+Asynchronous I/O model: cả 2 phase đều thực hiện bth như blocking mode nhưng gọi hàm khác chạy điều này bất đồng bộ. Vừa thực hiện task khác, vừa thực hiện 2 phase trong quá trình 1 cách bất đồng bộ (đơn luông)
+
+
+
+# Multiprocess server:
+One child per client: con giống cha vì có cả listenfd và conndf, do đó ta muốn mỗi socket con ở server phải là 1 process riêng nên khi cha gọi fork, con sẽ phải đóng cái listendf lại, cha sẽ đóng conndf hiện tại lại
+Dùng waitpid vì đưa vào queue và xử lý hết, k có client nào bị zombie state
+Khi terminate, client gửi message FIN và client con trong server sẽ gửi SIGCHILD tới server parent để server terminate child đó (terminate process con đó)
+
+Multithread server: 
+Mỗi client con xử lý trên 1 thread riêng mà thôi. Dùng thêm cơ chế mutex chẳng hạn để tránh 2 child cùng truy cập vào 1 shared memory.
+
+
+
+# Socket implement C++
+Hàm select() gọi kernel check các socket xem có data hay không mà có thể lấy bằng hàm recv(). Hàm này được gọi 1 cách bất đồng bộ và chương trình vẫn tiếp tục chạy. Nếu nằm trong loop gọi quay lại hàm này thì nó check trùng với hàm trước và k làm gì thêm.
+Nó trả về giá trị nếu có data hoặc timeout kết thúc. Khi đó nếu vòng loop gọi lại nó thì nó khởi tạo chạy mới tiếp thôi
+
+Hàm FD_SET của C xđ descriptor nào ta muốn kernel check
+Còn có FD_ZERO, FD_ISSET, FD_CLR
+
+Ready to read: buffer có data; có connection mới; có socket error; Nửa đọc của kết nối đã đóng;
+Ready to write: socket is connected (or UDP thì k cần); nửa ghi của kết nối đã đóng; connection completed or faild; Có socket error
+=> Kết nối socket thg bao gồm 1 nửa gửi dữ liệu, 1 nửa nhận dữ liệu. Khi nửa nhận dữ liệu (read half) đóng tức k còn data mới gửi từ đối tác qua socket nửa thì có thể đọc mà k lo lắng về vc bị chặn.
+
+Server có 2 mảng: readfds và client[] 
+readfds lưu các descriptor của máy(k chỉ socket mà file cũng có descriptor lưu ở đây). Cả 2 loại mảng đều bị giới hạn size nhé. Khi có connection mới, nó thêm vào cả 2 mảng này. 
+Client[]: list fd của client socket
+readfds: list cặp key val [fd socket - trạng thái 1/0]
+1 là sẵn sàng đọc, 0 là k có dữ liệu đến socket or socket đã đóng
+Vc khởi tạo socket mới k nhất thiết phải lần lượt trong readfds, miễn là k vượt quá maxfd là được
+
+Hàm poll() vai trò như select nhưng có điểm khác. Tính năng chung của nó là cung thêm thông tin khi xử lý với stream device(file socket đều có thể gắn với stream để lấy data liên tục)
+
+SS:
+select ra đời trước còn poll ra đời khi Window Vista or lỗi implement trong MAC OS X 10.3
+select dùng 3 bit data mỗi filedesscriptor còn poll dùng 64 bit nên lúc invoke call cần copy nhiều hơn vào kernel space. NN là vì poll dùng với mọi stream device.
+select hỗ trợ microsecond timeout nhưng poll chỉ provide milisecond
+poll có > 1024 file handles cùng lúc, còn select dùng mặc định theo hệ thống
+poll có nhiều loại sự kiện xư lý khi gửi và nhận data.
+
+=> Implement trong ứng dụng rất khó để nhìn ra sự khác biệt giữa 2 cái.
+
+-> Tạo non-blocking IO
+recv recvfrom sẽ block cho đến khi có data socket gửi tới
+send sendto sẽ block cho đến khi có buffer có freespace
+accept sẽ block khi có connection mới kết nối tới
+connect sẽ block cho đến khi client nhận ACK sau khi gửi SYN để tạo connection
+
+Quy trình:
+Dùng ioctl và fcntl setup flag và file sang trạng thái non-blocking. 
+App sẽ tự chạy hàng loạt lệnh recvfrom liên tiếp, mỗi khi nhận mà chưa có data, kernel gửi lại signal EWOULDBLOCK để app đóng lệnh recvfrom lại và thực hiện lệnh recvfrom mới thay vì chạy 1 lệnh recvfrom chờ mãi đến khi có data.
+
+Hàm select của socket có tác dụng kiểm tra socket ở 1 thời điểm có sẵn sàng đọc, ghi hay có lỗi gì không trước khi thực hiện các đọc ghi thực sự trên nó.
+
+-> Signal-driven I/O: 
+app chỉ cần connect signal, khi nào có data thì kernel sẽ notify để app xử lý thôi. Cũng phải dùng 2 hàm fcntl và ioctl thôi
+
+Quy trình: 
+App set signal handler để xử lý cho SIGIO signal
+App gán cho 1 process có khả năng nhận SIGIO signal
+Enable signal driven I/O cho socket.
+
+=> Ngoài ra còn có hàm readv và writev để ghi dữ liệu vào file or đọc từ file ra
+recvmsg và sendmsg được sử dụng để nhận và gửi dữ liệu trên socket thông qua cấu trúc msghdr. Hai hàm này cung cấp khả năng mở rộng và linh hoạt hơn so với các hàm recv và send thông thường bằng cách cho phép truyền thêm thông tin như địa chỉ nguồn/gốc, thông tin kiểm soát, các đặc tính khác nhau của gói tin, v.v.
+
+
