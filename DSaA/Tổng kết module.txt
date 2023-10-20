@@ -8,15 +8,27 @@ value of subarray(trọng lượng của dãy con là tổng các giá trị c�
 
 1 thuật toán tốt hay k sẽ đánh giá vào tốc độ và độ hao hụt tài nguyên. Ví dụ: số lần thực hiện một phép cộng với cùng đầu vào sẽ cho thấy thuật toán có tốc độ nhanh hay chậm. Khi lượng phần tử lên tới hàng tỉ thì bắt đầu lộ rõ, 1 thuật toán có thể chỉ mất vài giây, còn cái khác mất vài ngày và k còn phù hợp áp dụng thực tế
 
-Thư viện STL còn nhiều kiểu dữ liệu khác: list<int>, priority_queue<int>, set<int>, map<int, int>, deque<int>, vector<int>
+Thư viện STL còn nhiều kiểu dữ liệu khác: list<int>, priority_queue<int>, set<int>, map<int, int>, deque<int>, vector<int> 
 set nó k chấp nhận phần tử trùng và các phần tử add vào sẽ theo 1 thứ tự quy luật định nghĩa từ lúc khởi tạo, k dùng đc với at
 list cx k dùng đc với at, nó chính là doubly linked list của C++ có con trỏ 2 chiều để truy cập, thêm đầu cuối thoải mái
+vector khác mảng là mảng phải xđ số lượng phần tử ở build time, vector thì thoải mái thêm bớt. Ngoài thuộc tính đó thì mảng giống vector nhưng người ta vẫn hay dùng vector hơn vì các thư viện ngôn ngữ thường hỗ trợ sẵn các phương thức at, delete, insert trên vector còn mảng phải implement thủ công
 deque = double-ended queue có tính chất của cả stack và queue. Nó cho phép thao tác với đầu cuối mà lại truy cập được với at
 
-Tùy TH dùng các kiểu data structure khác nhau: vector, dynamic array, static array, singly linked list, doubly linked list, stack, queue, priority_queue, set, deque, map, pair, segment tree, binary search tree, hash table, tree, heap, multidimensional array, integer set, cây TH + BFS, ...
+//!!!!
+-> Tùy TH dùng các kiểu data structure khác nhau: vector, dynamic array, static array, singly linked list, doubly linked list, stack, queue, priority_queue, set, deque, map, pair, segment tree, binary search tree, hash table, tree, heap, multidimensional array, integer set, cây TH + BFS, ...
 Basic data type: int, short, long, float, double, long long, unsigned long long, long double, string, char*, const char*, std::array,...
 => tùy việc lưu kiểu dữ liệu như thế nào và dữ liệu đó thg dùng thuật toán nào
 
+dynamic array: là 1 kiểu data ta đã dùng mà lại không biết. Nó là kiểu mảng có thể thay đổi kích thước mảng trong runtime. Nó là 1 thuật ngữ chung hơn vector mà ta có thể tự implement hoặc dùng trong các ngôn ngữ hỗ trợ nó. Còn vector thì tùy ngôn ngữ hỗ trợ hay không mà sử dụng thôi. 
+Khi nào dùng? Nó có chức năng tương đương vector nếu ngôn ngữ hỗ trợ. Nếu ngôn ngữ hỗ trợ cái nào cung nhiều tính năng phù hợp hơn thì dùng, nhưng thường các ngôn ngữ hỗ trợ vector chứ hiếm thấy hỗ trợ dynamic array
+VD: int n = 5; // Số lượng phần tử trong mảng, có thể được nhập từ người dùng tại runtime
+int* arr = new int[n]; // Tạo mảng động
+=> Đây cũng là 1 cách tạo mảng động nhưng các tính năng như push, delete, get k hỗ trợ. Ta có thể tạo ra 1 class DynamicArray wrap mảng int *arr lại và cung ra các hàm tính năng là thành kiểu dynamic array thôi => tốt nhất là C++ dùng vector
+
+Phân tích về độ phức tạp của thuật toán heapify xây max heap tree cho priority_queue:
+Nếu thêm từng phần tử vào priority_queue thì k sao, nhưng nếu xây priority_queue từ 1 mảng có sẵn, ta sẽ phải heapify từ phần tử n/2 đến 0 nhưng chỉ tốn O(n) chứ kp O(n*log2(n)) ở worst case. NN là vì giả sử ta xét 1 cây heap có n phần tử. Ở level n-1, mỗi phần tử chỉ cần swap max là 1 lần O(1), ở level n-2 mỗi phần tử swap max O(2). Chi đến khi có 1 phần tử mới swap max là O(n) => Cuối cùng họ coi phức tạp chỉ ở mức O(n) 
+
+//!!!!
 Cỡ 10^9 đều chấp nhận được 1 vòng for, kp lo nghĩ
 K được khai báo mảng kiểu [1e7] nhé mà phải viết rõ ra. 
 1 mảng có kích thước bị giới hạn tầm 10^7 phần tử, nếu lớn hơn sẽ báo lỗi.
